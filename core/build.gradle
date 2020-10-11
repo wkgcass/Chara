@@ -36,6 +36,10 @@ jlink {
     }
 }
 
+application {
+    mainClass = 'net.cassite.desktop.chara.Main'
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

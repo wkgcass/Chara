@@ -4,12 +4,17 @@ import os
 
 TO_ADD = '// ***LICENSE*** This file is licensed under GPLv2 with Classpath Exception. See LICENSE file under project root for more info\n\n'
 
+modified = False
+
 def attach(fname):
     f = open(fname, 'r')
     s = f.read()
     f.close()
     if s.startswith(TO_ADD):
+        print ('ok: ' + fname)
         return
+    global modified
+    modified = True
     print ('attach: ' + fname)
     f = open(fname, 'w')
     s = TO_ADD + s
@@ -28,3 +33,6 @@ def travel(base):
             travel(fullname)
 
 travel('.')
+if modified:
+    exit(1)
+exit(0)

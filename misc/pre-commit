@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+./misc/attach-license.py
