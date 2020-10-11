@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+
+group 'net.cassite.desktop.chara'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+javafx {
+    version = 11
+    modules = ['javafx.controls', 'javafx.swing']
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+jar {
+    archiveName = 'kokori.jar'
+}
+
+dependencies {
+    compile files('../../core/build/libs/chara.jar')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
