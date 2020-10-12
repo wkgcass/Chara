@@ -199,7 +199,7 @@ kokori.model +
 推荐使用`gradle wrapper`。  
 可以直接从`kokori`工程目录中，将这几个文件拷贝到你的目录里，然后做一些修改。
 
-* `gradle`: 这是个软链接，相当于本repo根目录的gradle目录
+* `gradle`: gradle wrapper相关文件
 * `gradlew`: linux/macos通过这个脚本使用gradlew
 * `gradlew.bat`: windows通过这个脚本使用gradlew
 * `build.gradle`: gradle配置文件1
