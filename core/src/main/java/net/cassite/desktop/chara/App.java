@@ -168,7 +168,6 @@ public class App {
         rootScalePane.setOnMouseDragged(dragHandler);
         rootScalePane.setOnMouseClicked(this::click);
         NativeMouseListenerUtils.setOnMouseMoved(this::mouseMove);
-        rootPane.setOnMouseExited(this::mouseLeave);
 
         // scene config
         scene.setOnKeyPressed(this::keyPressed);
@@ -295,16 +294,6 @@ public class App {
         chara.click(x, y);
     }
 
-    private void mouseLeave(MouseEvent e) {
-        double x = e.getX() / primaryStage.getScaleRatio() + primaryStage.getCutLeft();
-        double y = e.getY() / primaryStage.getScaleRatio() + primaryStage.getCutTop();
-        assert Logger.debug("mouse leave at (" + x + "," + y + ")");
-        chara.mouseLeave();
-
-        // hide input box
-        inputBox.hide();
-    }
-
     private void mouseMove(NativeMouseEvent e) {
         double x = e.getX();
         double y = e.getY();
@@ -328,6 +317,34 @@ public class App {
                 inputBox.hide();
             }
         }
+
+        // check mouse enter/leave
+        double mx = e.getX();
+        double my = e.getY();
+        double px = primaryStage.getAbsoluteX();
+        double py = primaryStage.getAbsoluteY();
+        double w = primaryStage.getStage().getWidth();
+        double h = primaryStage.getStage().getHeight();
+        if (mx < px || mx > px + w || my < py || my > py + h) {
+            // leaves
+            if (!mouseLeaves) {
+                mouseLeaves = true;
+                mouseLeave(x, y);
+            }
+        } else {
+            // enters
+            mouseLeaves = false;
+        }
+    }
+
+    private boolean mouseLeaves = true;
+
+    private void mouseLeave(double x, double y) {
+        assert Logger.debug("mouse leave at (" + x + "," + y + ")");
+        chara.mouseLeave();
+
+        // hide input box
+        inputBox.hide();
     }
 
     private final TimeBasedAnimationHelper bondBarAnimationHelper = new TimeBasedAnimationHelper(
