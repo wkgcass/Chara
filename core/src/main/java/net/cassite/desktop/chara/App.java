@@ -89,6 +89,12 @@ public class App {
             Utils.cancelAllTimers();
             chara.release();
             ThreadUtils.get().shutdownNow();
+            if (messageStage != null) {
+                if (messageStage.isShowing()) {
+                    messageStage.hide();
+                }
+            }
+            Alert.shutdown();
         });
 
         // calculate MAX_WIDTH and MAX_HEIGHT

@@ -14,6 +14,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.util.Utils;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class Alert {
     private Alert() {
     }
@@ -22,6 +24,9 @@ public class Alert {
     private static final int MARGIN_VERTICAL = 30;
     private static final int FONT_SIZE = 64;
     private static final double MAX_OPACITY = 0.65;
+
+    private static final Object _VALUE_ = new Object();
+    private static final ConcurrentHashMap<Stage, Object> showingStages = new ConcurrentHashMap<>();
 
     public static void alert(String msg) {
         if (!Platform.isFxApplicationThread()) {
@@ -64,6 +69,7 @@ public class Alert {
         }
         final int fDuration = duration;
 
+        showingStages.put(stage, _VALUE_);
         stage.show();
         new TimeBasedAnimationHelper(500, 50 / HZ.UNIT,
             p -> stage.setOpacity(p * MAX_OPACITY))
@@ -71,12 +77,23 @@ public class Alert {
                 Utils.delayNoRecord(fDuration, () ->
                     new TimeBasedAnimationHelper(500, 50 / HZ.UNIT,
                         p -> stage.setOpacity(MAX_OPACITY - p * MAX_OPACITY))
-                        .setFinishCallback(stage::hide)
+                        .setFinishCallback(() -> {
+                            showingStages.remove(stage);
+                            stage.hide();
+                        })
                         .play()
                 )
             )
             .play();
 
-        pane.setOnMouseClicked(e -> stage.hide());
+        pane.setOnMouseClicked(e -> {
+            showingStages.remove(stage);
+            stage.hide();
+        });
+    }
+
+    public static void shutdown() {
+        showingStages.keySet().forEach(Stage::hide);
+        showingStages.clear();
     }
 }
