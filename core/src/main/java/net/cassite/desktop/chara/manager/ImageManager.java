@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -221,7 +222,12 @@ public class ImageManager {
         }
 
         Logger.info("loading from cache: " + name);
-        return new XImage(lastTime, x, y, new Image("file://" + imageFile.getAbsolutePath()));
+        try {
+            return new XImage(lastTime, x, y, new Image(imageFile.toURI().toURL().toString()));
+        } catch (MalformedURLException e) {
+            Logger.shouldNotReachHere(e);
+            return null;
+        }
     }
 
     private static void deleteDir(File file) {

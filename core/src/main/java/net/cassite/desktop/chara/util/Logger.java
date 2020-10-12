@@ -121,4 +121,8 @@ public class Logger {
             Utils.shutdownProgram();
         }).start();
     }
+
+    public static void shouldNotReachHere(Throwable e) {
+        fatal("should not reach here", e);
+    }
 }
