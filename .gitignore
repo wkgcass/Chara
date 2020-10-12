@@ -4,3 +4,4 @@ build/
 out/
 .class
 .jar
+.DS_Store
