@@ -99,11 +99,11 @@ public class App {
             var screens = Screen.getScreens();
             for (Screen s : screens) {
                 var bounds = s.getBounds();
-                if (bounds.getWidth() * 0.9 < maxWidth) {
-                    maxWidth = bounds.getWidth() * 0.9;
+                if (bounds.getWidth() * 1.1 < maxWidth) {
+                    maxWidth = bounds.getWidth() * 1.1;
                 }
-                if (bounds.getHeight() * 0.9 < maxHeight) {
-                    maxHeight = bounds.getHeight() * 0.9;
+                if (bounds.getHeight() * 1.1 < maxHeight) {
+                    maxHeight = bounds.getHeight() * 1.1;
                 }
             }
             if (maxWidth / chara.data().imageWidth * chara.data().imageHeight < maxHeight) {
