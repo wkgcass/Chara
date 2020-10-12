@@ -16,6 +16,7 @@ public class InputBox extends TextField {
     public InputBox(Pane rootPane, Pane rootScalePane) {
         this.rootPane = rootPane;
         this.rootScalePane = rootScalePane;
+        this.setOpacity(0); // initially transparent
     }
 
     private boolean inputBoxVisible = false;
