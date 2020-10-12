@@ -27,6 +27,7 @@ import net.cassite.desktop.chara.manager.ImageManager;
 import net.cassite.desktop.chara.manager.ModelManager;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
+import net.cassite.desktop.chara.util.Utils;
 
 import java.awt.*;
 import java.io.File;
@@ -146,7 +147,9 @@ public class Main extends Application {
                 Stage chooseModelConfigStage = new Stage();
                 chooseModelConfigStage.initStyle(StageStyle.UTILITY);
                 chooseModelConfigStage.setWidth(256);
-                chooseModelConfigStage.setHeight(300);
+                chooseModelConfigStage.setHeight(290);
+                chooseModelConfigStage.setResizable(false);
+                Utils.fixStageSize(chooseModelConfigStage, StageStyle.UTILITY);
                 chooseModelConfigStage.centerOnScreen();
                 chooseModelConfigStage.setTitle("Select existing model config");
 
@@ -279,9 +282,10 @@ public class Main extends Application {
             Stage loadingStage = new Stage();
             loadingStage.initStyle(StageStyle.UTILITY);
             loadingStage.setWidth(600);
-            loadingStage.setHeight(90);
+            loadingStage.setHeight(80);
             loadingStage.setResizable(false);
             loadingStage.setTitle("Loading...");
+            Utils.fixStageSize(loadingStage, StageStyle.UTILITY);
             loadingStage.centerOnScreen();
 
             Pane pane = new Pane();

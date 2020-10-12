@@ -3,6 +3,10 @@
 package net.cassite.desktop.chara.util;
 
 import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.ThreadUtils;
 
 import java.util.Random;
@@ -86,5 +90,24 @@ public class Utils {
 
     public static void shortDelay(Runnable r) {
         ThreadUtils.get().scheduleFX(r, 50, TimeUnit.MILLISECONDS);
+    }
+
+    public static void fixStageSize(Stage stage, StageStyle style) {
+        // build a stage to calculate dW and dH
+        Stage s = new Stage();
+        s.initStyle(style);
+        Pane pane = new Pane();
+        Scene scene = new Scene(pane);
+        s.setScene(scene);
+        s.setOpacity(0);
+        s.show();
+
+        double dW = s.getWidth() - scene.getWidth();
+        double dH = s.getHeight() - scene.getHeight();
+
+        s.hide();
+
+        stage.setWidth(stage.getWidth() + dW);
+        stage.setHeight(stage.getHeight() + dH);
     }
 }
