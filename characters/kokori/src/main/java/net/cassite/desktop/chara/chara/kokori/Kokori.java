@@ -428,8 +428,9 @@ public class Kokori implements Chara {
     private void clickRune(double x, double y) {
         assert Logger.debug("click rune");
         if (!armRight.runeIsVisible()) {
-            assert Logger.debug("fall to click cloth because it's not visible");
+            assert Logger.debug("fall to click rune because it's not visible");
             clickCloth(x, y);
+            return;
         }
         armRight.runeFlow();
         Utils.delay("hide-rune", 1000, armRight::hideRune);
