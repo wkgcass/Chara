@@ -8,6 +8,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.ThreadUtils;
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
 
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -84,6 +86,12 @@ public class Utils {
     }
 
     public static void shutdownProgram() {
+        if (GlobalScreen.isNativeHookRegistered()) {
+            try {
+                GlobalScreen.unregisterNativeHook();
+            } catch (NativeHookException ignore) {
+            }
+        }
         ThreadUtils.get().shutdownNow();
         Platform.runLater(Platform::exit);
     }

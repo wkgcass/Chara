@@ -22,12 +22,15 @@ import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.cassite.desktop.chara.control.NativeMouseListenerUtils;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.ImageManager;
 import net.cassite.desktop.chara.manager.ModelManager;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.Utils;
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
 
 import java.awt.*;
 import java.io.File;
@@ -35,6 +38,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 public class Main extends Application {
     @Override
@@ -100,6 +105,7 @@ public class Main extends Application {
     }
 
     private void preWork(Runnable cb) {
+        registerNativeHook();
         chooseModel(() ->
             chooseModelFile(() ->
                 loadModel(() ->
@@ -109,6 +115,22 @@ public class Main extends Application {
                 )
             )
         );
+    }
+
+    private void registerNativeHook() {
+        // disable native mouse logger
+        java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GlobalScreen.class.getPackageName());
+        LogManager.getLogManager().reset();
+        logger.setLevel(Level.WARNING);
+        logger.setUseParentHandlers(false);
+        // enable native mouse
+        try {
+            GlobalScreen.registerNativeHook();
+            GlobalScreen.addNativeMouseMotionListener(NativeMouseListenerUtils.get());
+        } catch (NativeHookException e) {
+            Logger.error("register native hook failed\n" +
+                "it's necessary for detecting the mouse movements", e);
+        }
     }
 
     private void chooseModel(Runnable cb) {

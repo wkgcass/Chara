@@ -5,6 +5,8 @@ module net.cassite.desktop.chara {
     requires javafx.controls;
     requires javafx.swing;
     requires java.desktop;
+    requires java.logging;
+    requires jnativehook;
     exports vjson;
     exports net.cassite.desktop.chara;
     exports net.cassite.desktop.chara.chara;

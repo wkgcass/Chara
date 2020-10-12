@@ -18,6 +18,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.chara.Chara;
+import net.cassite.desktop.chara.control.NativeMouseListenerUtils;
 import net.cassite.desktop.chara.graphic.*;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.i18n.Words;
@@ -25,6 +26,9 @@ import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.Utils;
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
+import org.jnativehook.mouse.NativeMouseEvent;
 
 public class App {
     private final StageTransformer primaryStage;
@@ -95,6 +99,12 @@ public class App {
                 }
             }
             Alert.shutdown();
+            if (GlobalScreen.isNativeHookRegistered()) {
+                try {
+                    GlobalScreen.unregisterNativeHook();
+                } catch (NativeHookException ignore) {
+                }
+            }
         });
 
         // calculate MAX_WIDTH and MAX_HEIGHT
@@ -157,7 +167,7 @@ public class App {
         rootScalePane.setOnMousePressed(dragHandler);
         rootScalePane.setOnMouseDragged(dragHandler);
         rootScalePane.setOnMouseClicked(this::click);
-        rootScalePane.setOnMouseMoved(this::mouseMove);
+        NativeMouseListenerUtils.setOnMouseMoved(this::mouseMove);
         rootPane.setOnMouseExited(this::mouseLeave);
 
         // scene config
@@ -295,9 +305,15 @@ public class App {
         inputBox.hide();
     }
 
-    private void mouseMove(MouseEvent e) {
+    private void mouseMove(NativeMouseEvent e) {
         double x = e.getX();
         double y = e.getY();
+        x -= primaryStage.getAbsoluteX();
+        y -= primaryStage.getAbsoluteY();
+
+        x /= primaryStage.getScaleRatio();
+        y /= primaryStage.getScaleRatio();
+
         x += primaryStage.getCutLeft();
         y += primaryStage.getCutTop();
         chara.mouseMove(x, y);
