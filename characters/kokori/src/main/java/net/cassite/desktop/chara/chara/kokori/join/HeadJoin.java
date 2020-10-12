@@ -14,6 +14,7 @@ public class HeadJoin {
     private final Rotate headRotate;
     private final Rotate hairSideLeftRotate;
     private final Rotate hairSideRightRotate;
+    private final Rotate hairBackRotate;
 
     private int state = 0; // 0:default, 1:left, 2:right
 
@@ -28,12 +29,13 @@ public class HeadJoin {
         headRotate = new Rotate(0, 682, 655);
         hairSideLeftRotate = new Rotate(0, 797, 585);
         hairSideRightRotate = new Rotate(0, 582, 595);
+        hairBackRotate = new Rotate(0, 687, 600);
 
         head.getRoot().getTransforms().add(headRotate);
         hair.getRoot().getTransforms().add(headRotate);
         hairSide.getLeftGroup().getTransforms().addAll(headRotate, hairSideLeftRotate);
         hairSide.getRightGroup().getTransforms().addAll(headRotate, hairSideRightRotate);
-        hairBack.getRoot().getTransforms().add(headRotate);
+        hairBack.getRoot().getTransforms().addAll(headRotate, hairBackRotate);
         handleEye(eyeLeft);
         handleEye(eyeRight);
         mouth.getRoot().getTransforms().add(headRotate);
@@ -89,6 +91,7 @@ public class HeadJoin {
         headRotate.setAngle(angle);
         hairSideRightRotate.setAngle(-angle);
         hairSideLeftRotate.setAngle(-angle);
+        hairBackRotate.setAngle(-angle * 0.8);
     }
 
     public int getState() {
