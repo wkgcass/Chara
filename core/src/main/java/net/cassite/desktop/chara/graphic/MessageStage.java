@@ -8,6 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
@@ -34,6 +35,7 @@ public class MessageStage extends Stage {
         scene.setFill(Color.TRANSPARENT);
         setWidth(Consts.MSG_STAGE_WIDTH);
         setScene(scene);
+        getIcons().add(Global.modelIcon);
 
         ThreadUtils.get().scheduleAtFixedRateFX(this::checkPopBubble, 0, 500, TimeUnit.MILLISECONDS);
     }

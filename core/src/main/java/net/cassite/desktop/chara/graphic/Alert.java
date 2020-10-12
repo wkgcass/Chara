@@ -12,6 +12,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.util.Utils;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,6 +53,9 @@ public class Alert {
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.setOpacity(0);
+        if (Global.modelIcon != null) {
+            stage.getIcons().add(Global.modelIcon);
+        }
 
         Pane pane = new Pane();
         pane.setBackground(Background.EMPTY);
