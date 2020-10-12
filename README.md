@@ -209,7 +209,14 @@ kokori.model +
 
 ### 4. 基础依赖
 
-在`build.gradle`配置的`dependencies`中，需要确保有这一行：`compile files('../../core/build/libs/chara.jar')`，用于加载基础框架依赖。
+在`build.gradle`配置的`dependencies`中，需要确保有如下配置：
+
+1. `compile files('../../core/build/libs/chara.jar')`，用于加载基础框架依赖。
+2. `compile group: 'com.1stleg', name: 'jnativehook', version: '2.1.0'`，这是基础框架依赖的一部分，为了调试方便可以添加，打包时忽略即可
+
+在`build.gradle`配置的`javafx`中，需要确保有如下配置：
+
+1. `modules = ['javafx.controls', 'javafx.swing']`，这也是基础框架的依赖，为了调试方便可以添加
 
 ### 5. 编译基础框架
 
