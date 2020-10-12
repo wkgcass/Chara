@@ -9,6 +9,9 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 11
 targetCompatibility = 11
 
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
 javafx {
     version = 11
     modules = ['javafx.controls']
