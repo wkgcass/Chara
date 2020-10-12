@@ -26,7 +26,7 @@ public class ThreadUtils {
 
     public void shutdownNow() {
         isShutdown = true;
-        Platform.runLater(exec::shutdownNow);
+        exec.shutdownNow();
     }
 
     public boolean isShutdown() {
