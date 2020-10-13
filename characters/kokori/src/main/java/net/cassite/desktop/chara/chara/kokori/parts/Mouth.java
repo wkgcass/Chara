@@ -143,20 +143,20 @@ public class Mouth extends AbstractPart {
         } else if (state == 1) {
             removeAll();
             animaHappyToDefault.addTo(root);
-            animaHappyToDefault.play(60, () -> {
+            animaHappyToDefault.setPauseCallbackOnce(() -> {
                 mouthOpen.addTo(root);
                 mouthDefaultToAnimateOpen(() -> {
                 });
-            });
+            }).play(60);
         } else {
             assert state == 2;
             removeAll();
             animaSadToDefault.addTo(root);
-            animaSadToDefault.play(60, () -> {
+            animaSadToDefault.setPauseCallbackOnce(() -> {
                 mouthOpen.addTo(root);
                 mouthDefaultToAnimateOpen(() -> {
                 });
-            });
+            }).play(60);
         }
         resetRotate();
         state = 3;

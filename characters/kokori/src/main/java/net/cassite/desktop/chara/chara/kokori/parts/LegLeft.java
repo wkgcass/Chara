@@ -18,7 +18,24 @@ public class LegLeft extends AbstractPart {
         anima.addTo(root);
     }
 
-    public void tighten() {
-        anima.play();
+    private boolean isTighten = false;
+
+    public void loose() {
+        if (!isTighten) {
+            return;
+        }
+        isTighten = false;
+
+        anima.resetTo(4).play();
+    }
+
+    public void tighten(Runnable cb) {
+        if (isTighten) {
+            cb.run();
+            return;
+        }
+        isTighten = true;
+
+        anima.resetTo(0).setEndFrame(4).setPauseCallbackOnce(cb).play();
     }
 }

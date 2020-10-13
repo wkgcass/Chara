@@ -452,7 +452,7 @@ public class Kokori implements Chara {
         if (level >= 1) {
             Utils.shortDelay(mouth::toHappy);
             redCheek.show();
-            legLeft.tighten();
+            legLeft.tighten(legLeft::loose);
             dressFront.flutter();
             dressBack.flutter();
             Utils.delay("click-crotch-happy", 1500, () -> {
@@ -464,7 +464,15 @@ public class Kokori implements Chara {
             if (level > -1) {
                 redCheek.show();
             }
-            legLeft.tighten();
+            if (level <= -1) {
+                if (Utils.random(0.3)) {
+                    Utils.shortDelay(eyeLeft::removeHighlight);
+                    Utils.shortDelay(eyeRight::removeHighlight);
+                } else {
+                    redCheek.show();
+                }
+            }
+            legLeft.tighten(legLeft::loose);
             armRight.protectCrotch();
             armRight.hideArrow();
             armRight.hideRune();
@@ -473,21 +481,15 @@ public class Kokori implements Chara {
             Utils.delay("click-crotch", 1500, () -> {
                 redCheek.hide();
                 resetMouth();
+                resetHighlight();
                 armRight.moveToDefaultPosition();
             });
-            if (level <= -1) {
-                if (Utils.random(0.3)) {
-                    Utils.shortDelay(eyeLeft::removeHighlight);
-                    Utils.shortDelay(eyeRight::removeHighlight);
-                    Utils.delay("lose-highlight", 1500, this::resetHighlight);
-                }
-            }
         }
     }
 
     private void clickLegLeft(double x, double y) {
         assert Logger.debug("click leg left");
-        legLeft.tighten();
+        legLeft.tighten(legLeft::loose);
         dressFront.flutter();
         dressBack.flutter();
         redCheek.show();

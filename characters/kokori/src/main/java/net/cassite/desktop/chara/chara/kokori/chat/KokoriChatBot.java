@@ -32,7 +32,7 @@ public class KokoriChatBot {
     private void doTakeMessage(String msg) {
         // check special commands
         if (msg.startsWith("::")) {
-            runCommand(msg.substring("::" .length()));
+            runCommand(msg.substring("::".length()));
             return;
         }
 
@@ -62,18 +62,18 @@ public class KokoriChatBot {
             String cmd = cmd0;
 
             if (cmd.startsWith("repeat:")) {
-                appCallback.showMessage(cmd.substring("repeat:" .length()));
+                appCallback.showMessage(cmd.substring("repeat:".length()));
                 return;
             } else if (cmd.startsWith("get:")) {
-                cmd = cmd.substring("get:" .length());
+                cmd = cmd.substring("get:".length());
                 if (cmd.equals("bond_point")) {
                     appCallback.showMessage(String.format("%.3f", personality.getBondPoint()));
                     return;
                 }
             } else if (cmd.startsWith("set:")) {
-                cmd = cmd.substring("set:" .length());
+                cmd = cmd.substring("set:".length());
                 if (cmd.startsWith("bond_point:")) {
-                    cmd = cmd.substring("bond_point:" .length());
+                    cmd = cmd.substring("bond_point:".length());
                     double d;
                     try {
                         d = Double.parseDouble(cmd);
@@ -86,44 +86,44 @@ public class KokoriChatBot {
                     return;
                 }
             } else if (cmd.startsWith("animate:")) {
-                cmd = cmd.substring("animate:" .length());
-                if ("rune:show" .equals(cmd)) {
+                cmd = cmd.substring("animate:".length());
+                if ("rune:show".equals(cmd)) {
                     kokori.armRight.showRune();
                     return;
-                } else if ("red_cheek:show" .equals(cmd)) {
+                } else if ("red_cheek:show".equals(cmd)) {
                     kokori.redCheek.show();
                     return;
-                } else if ("red_cheek:hide" .equals(cmd)) {
+                } else if ("red_cheek:hide".equals(cmd)) {
                     kokori.redCheek.hide();
                     return;
-                } else if ("mouth:happy" .equals(cmd)) {
+                } else if ("mouth:happy".equals(cmd)) {
                     kokori.mouth.toHappy();
                     return;
-                } else if ("mouth:sad" .equals(cmd)) {
+                } else if ("mouth:sad".equals(cmd)) {
                     kokori.mouth.toSad();
                     return;
-                } else if ("mouth:open" .equals(cmd)) {
+                } else if ("mouth:open".equals(cmd)) {
                     kokori.mouth.toOpen();
                     return;
-                } else if ("mouth:default" .equals(cmd)) {
+                } else if ("mouth:default".equals(cmd)) {
                     kokori.mouth.toDefault();
                     return;
-                } else if ("mouth:left" .equals(cmd)) {
+                } else if ("mouth:left".equals(cmd)) {
                     kokori.mouth.tiltToLeft();
                     return;
-                } else if ("mouth:right" .equals(cmd)) {
+                } else if ("mouth:right".equals(cmd)) {
                     kokori.mouth.tiltToRight();
                     return;
-                } else if ("highlight:show" .equals(cmd)) {
+                } else if ("highlight:show".equals(cmd)) {
                     kokori.eyeLeft.addHighlight();
                     kokori.eyeRight.addHighlight();
                     return;
-                } else if ("highlight:hide" .equals(cmd)) {
+                } else if ("highlight:hide".equals(cmd)) {
                     kokori.eyeLeft.removeHighlight();
                     kokori.eyeRight.removeHighlight();
                     return;
                 } else if (cmd.startsWith("eye:zoom:")) {
-                    String sd = cmd.substring("eye:zoom:" .length());
+                    String sd = cmd.substring("eye:zoom:".length());
                     double d;
                     try {
                         d = Double.parseDouble(sd);
@@ -134,14 +134,30 @@ public class KokoriChatBot {
                     kokori.eyeLeft.zoom(d);
                     kokori.eyeRight.zoom(d);
                     return;
-                } else if ("head:right" .equals(cmd)) {
+                } else if ("head:right".equals(cmd)) {
                     kokori.headJoin.tiltToRight();
                     return;
-                } else if ("head:left" .equals(cmd)) {
+                } else if ("head:left".equals(cmd)) {
                     kokori.headJoin.tiltToLeft();
                     return;
-                } else if ("head:default" .equals(cmd)) {
+                } else if ("head:default".equals(cmd)) {
                     kokori.headJoin.toDefaultPosition();
+                    return;
+                } else if ("arm_right:tighten".equals(cmd)) {
+                    kokori.armRight.tighten();
+                    return;
+                } else if ("arm_right:down".equals(cmd)) {
+                    kokori.armRight.protectCrotch();
+                    return;
+                } else if ("arm_right:default".equals(cmd)) {
+                    kokori.armRight.moveToDefaultPosition();
+                    return;
+                } else if ("leg_left:tighten".equals(cmd)) {
+                    kokori.legLeft.tighten(() -> {
+                    });
+                    return;
+                } else if ("leg_left:loose".equals(cmd)) {
+                    kokori.legLeft.loose();
                     return;
                 }
             }

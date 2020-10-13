@@ -25,7 +25,7 @@ public class Anima implements Updatable {
     private int endFrame;
     private long lastUpdateMillis;
 
-    private Runnable pauseCallback;
+    private Runnable pauseCallbackOnce = null;
 
     public Anima(String defaultImage, String... animationImages) {
         this.defaultImage = ImageManager.load(defaultImage);
@@ -45,16 +45,24 @@ public class Anima implements Updatable {
         this.imageView.setSmooth(true);
         this.imageView.setLayoutX(0);
         this.imageView.setLayoutY(0);
-        reset();
+        resetTo(-1);
     }
 
-    public void reset() {
-        pause();
+    public Anima resetTo(int frame) {
+        pauseCallbackOnce = null;
+        pause(false);
         this.fps = DEFAULT_FPS;
-        this.currentFrame = 0;
         this.endFrame = animationImages.size() - 1;
         this.lastUpdateMillis = -1;
-        setImage(defaultImage);
+        if (frame == -1) {
+            this.currentFrame = 0;
+            setImage(defaultImage);
+        } else {
+            this.currentFrame = frame;
+            setImage(animationImages.get(frame));
+        }
+
+        return this;
     }
 
     private void setImage(XImage image) {
@@ -69,36 +77,42 @@ public class Anima implements Updatable {
         return playing;
     }
 
-    public void play(double fps, Runnable pauseCallback) {
+    public Anima setPauseCallbackOnce(Runnable pauseCallbackOnce) {
+        this.pauseCallbackOnce = pauseCallbackOnce;
+        return this;
+    }
+
+    public void play(double fps) {
         if (this.currentFrame == this.endFrame) {
             var endFrame = this.endFrame;
-            reset();
+            resetTo(0);
             this.endFrame = endFrame;
         }
         this.fps = fps;
         this.playing = true;
-        this.pauseCallback = pauseCallback;
         HZ.get().register(this);
-    }
-
-    public void play(double fps) {
-        play(fps, null);
     }
 
     public void play() {
         play(this.fps);
     }
 
-    public void pause() {
+    public void pause(boolean runCallback) {
         playing = false;
         HZ.get().deregister(this);
 
-        // run callback (once)
-        var pauseCallbackLocal = this.pauseCallback;
-        this.pauseCallback = null;
-        if (pauseCallbackLocal != null) {
-            Platform.runLater(pauseCallbackLocal);
+        if (runCallback) {
+            // run callback (once)
+            var pauseCallbackLocal = this.pauseCallbackOnce;
+            this.pauseCallbackOnce = null;
+            if (pauseCallbackLocal != null) {
+                Platform.runLater(pauseCallbackLocal);
+            }
         }
+    }
+
+    public void pause() {
+        pause(true);
     }
 
     @Override
@@ -128,7 +142,7 @@ public class Anima implements Updatable {
         setImage(animationImages.get(frames));
 
         if (currentFrame == endFrame) {
-            pause();
+            pause(true);
         }
     }
 
@@ -140,11 +154,8 @@ public class Anima implements Updatable {
         div.getChildren().remove(this.imageView);
     }
 
-    public void setCurrentFrame(int currentFrame) {
-        this.currentFrame = currentFrame;
-    }
-
-    public void setEndFrame(int endFrame) {
+    public Anima setEndFrame(int endFrame) {
         this.endFrame = endFrame;
+        return this;
     }
 }
