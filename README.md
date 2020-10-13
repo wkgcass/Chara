@@ -43,13 +43,14 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 模型文件是一个zip包。按如下要求打zip包后将后缀名改为`.model`即可。
 
-其中zip的根目录需要放置：`model.json`，`icon.png`，`code`目录，`words`目录，以及一个与模型名称同名的目录。
+其中zip的根目录需要放置：`model.json`，`icon.png`，`code`目录，`values`目录，`words`目录，以及一个与模型名称同名的目录。
 
 |                  | 说明
 |------------------|-------------------------------
 | `model.json`     | 模型配置文件
 | `icon.png`       | 用于配置窗口图标
 | `code`           | 存放模型相关的代码，目录下可以存放多个`.jar`文件
+| `values`         | 存放常量信息，例如宽高、坐标、比例等
 | `words`          | 可选。用于扩充代码中没有包含的对话文本
 | 模型名称同名目录 | 存放模型相关资源，例如图片资源等
 
@@ -60,9 +61,11 @@ Chara是一款基于JavaFX的桌面人物软件。
 ```js
 {
   "name": "模型的名字，例如kokori",
-  "compatibleMinCodeVersion": 1000000, // 代码最低版本号，比方说版本号是x.y.z，那么这里填 x * 1_000_000 + y * 1000 + z
-  "compatibleMaxCodeVersion": -1, // 代码最高版本号，写-1表示没有要求
-  "modelClass": "模型实现的类名" // 该类需要有一个无参public的构造函数，并且必须在module-info中export其所在的包
+  "version": 1000000, // 模型版本号。格式是这样：比方说版本号是x.y.z，那么这里填 x * 1_000_000 + y * 1000 + z
+  "compatibleMinCodeVersion": 1000000, // 基础代码的最低版本号
+  "compatibleMaxCodeVersion": -1, // 基础代码的最高版本号，写-1表示没有要求
+  "modelClass": "模型实现的类名", // 该类需要有一个无参public的构造函数，并且必须在module-info中export其所在的包
+  "extra": { } // 该字段可选。这个字段的内容没有限制。可以存入各类自定义信息，比如作者、网站、git等信息。
 }
 ```
 
@@ -129,6 +132,30 @@ new WordsSelector(
 )
 ```
 
+### values
+
+values目录中存放模型的常量配置，例如宽高、坐标、比例等。
+
+values目录中的文件均需要为`.json`文件，其格式如下：
+
+```
+{
+  "integers": {
+    "key": 123
+  },
+  "doubles": {
+    "key": 1.23
+  },
+  "integerRectangles": {
+    "key": [1, 2, 3, 4]
+  }
+}
+```
+
+文件中的字段均为可选的。需要注意的是值的类型。在`integers`中，只能填写整数类型的值，在`doubles`中，只能填写小数，如果取值是一个整数，则需要在末尾添加`.0`后缀使其变为一个小数。
+
+在代码中，可以通过`ModelInitConfig`的`getInt(str)`, `getDouble(str)`, `getIntegerRectangle(str)`等方法取得这里定义的常量。可以参考`kokori`的实现。
+
 ### code
 
 code目录中存放模型代码的`.jar`文件。需要将所有依赖的jar也一并放入其中，加载模型文件时会加载这里所有的`.jar`文件。
@@ -139,6 +166,10 @@ code目录中存放模型代码的`.jar`文件。需要将所有依赖的jar也�
 
 该目录名需要和`model.json`中配置的`name`字段一致。图片资源文件都需要放置在该目录中。基础代码中的`ImageManager.load(...)`会加载这个目录中的资源文件。  
 该目录内部的结构没有特定要求，按照自己喜好组织即可。
+
+### 其他
+
+在模型文件中还可以放置一些其他文件，例如LICENSE、README等。
 
 ### 参考目录
 
@@ -155,6 +186,11 @@ kokori.model +
              |         +-- normal
              |         |
              |       .....
+             |
+             +-- values +
+             |          |
+             |          +-- scale.json
+             |          +-- values.json
              |
              +-- code +
              |        |
