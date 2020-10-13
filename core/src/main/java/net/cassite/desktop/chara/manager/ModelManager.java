@@ -51,12 +51,14 @@ public class ModelManager {
         }
 
         String name;
+        int version;
         int minVer;
         int maxVer;
         String modelClass;
         try {
             JSON.Object o = (JSON.Object) modelJsonInst;
             name = o.getString("name");
+            version = o.getInt("version");
             minVer = o.getInt("compatibleMinCodeVersion");
             maxVer = o.getInt("compatibleMaxCodeVersion");
             modelClass = o.getString("modelClass");
@@ -100,6 +102,8 @@ public class ModelManager {
 
         // prepare init config
         ModelInitConfig modelInitConfig = new ModelInitConfig();
+        modelInitConfig.version = version;
+        Global.modelVersion = version;
 
         // get words
         var words = new HashMap<String, WordsSelector>();

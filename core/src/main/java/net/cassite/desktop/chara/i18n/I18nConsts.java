@@ -31,11 +31,13 @@ public class I18nConsts {
         ("使用组合键Ctrl+Shift+Win/Cmd+下列快捷按键:\n" +
             "+H  显示帮助信息\n" +
             "+C  开启或关闭对话功能\n" +
-            "+T  窗口是否放置在最前")
+            "+T  窗口是否放置在最前\n" +
+            "+V  显示模型版本")
         .setEn("Use combination of Ctrl+Shift+Win/Cmd+ following hot keys:\n" +
             "+H  show help message\n" +
             "+C  enable or disable chat feature\n" +
-            "+T  enable or disable window always on top")
+            "+T  enable or disable window always on top\n" +
+            "+V  show model version")
         .build();
     public static final Words messageEnabled = new WordsBuilder
         ("对话功能已启用")

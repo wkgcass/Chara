@@ -10,6 +10,7 @@ public class Global {
     public static String modelName;
     public static String modelFilePath;
     public static Image modelIcon;
+    public static int modelVersion;
 
     private Global() {
     }

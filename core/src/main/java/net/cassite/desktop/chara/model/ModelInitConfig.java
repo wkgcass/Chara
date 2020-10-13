@@ -9,6 +9,7 @@ import net.cassite.desktop.chara.util.Rec;
 import java.util.Map;
 
 public class ModelInitConfig {
+    public int version;
     public Map<String, WordsSelector> interactionWordsSelectors;
     private Map<String, Integer> integerValuesMap;
     private Map<String, Double> doubleValuesMap;

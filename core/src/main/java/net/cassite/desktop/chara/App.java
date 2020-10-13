@@ -537,9 +537,18 @@ public class App {
                 setOrUnsetAlwaysTop();
             } else if (e.getCode() == KeyCode.H) {
                 showHelpMessage();
+            } else if (e.getCode() == KeyCode.V) {
+                showVersion();
             }
 
         }
+    }
+
+    private void showVersion() {
+        String ver = (Global.modelVersion / 1_000_000)
+            + "." + ((Global.modelVersion / 1_000) % 1_000)
+            + "." + (Global.modelVersion % 1_000);
+        Alert.alert(ver);
     }
 
     private void showHelpMessage() {
