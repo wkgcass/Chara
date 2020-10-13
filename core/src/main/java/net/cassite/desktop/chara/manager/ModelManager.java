@@ -9,6 +9,7 @@ import net.cassite.desktop.chara.model.Model;
 import net.cassite.desktop.chara.model.ModelInitConfig;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
+import net.cassite.desktop.chara.util.Rec;
 import net.cassite.desktop.chara.util.ZipFileInputStreamDelegate;
 import vjson.JSON;
 
@@ -39,51 +40,28 @@ public class ModelManager {
             Logger.fatal("open model file failed", e);
             return null;
         }
-        ZipEntry confEntry = zipFile.getEntry("model.json");
-        if (confEntry == null) {
+        ZipEntry modelJsonEntry = zipFile.getEntry("model.json");
+        if (modelJsonEntry == null) {
             Logger.fatal("invalid model file, model configuration not found in " + modelFile);
             return null;
         }
-        InputStream inputStream;
-        try {
-            inputStream = zipFile.getInputStream(confEntry);
-        } catch (IOException e) {
-            Logger.fatal("get input stream from model configuration failed", e);
-            return null;
-        }
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        try {
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-            inputStream.close();
-        } catch (IOException e) {
-            Logger.fatal("reading model configuration failed", e);
+        JSON.Instance<?> modelJsonInst = readJson(zipFile, modelJsonEntry);
+        if (modelJsonInst == null) {
             return null;
         }
 
-        //noinspection rawtypes
-        JSON.Instance inst;
-        try {
-            inst = JSON.parse(sb.toString());
-        } catch (Exception e) {
-            Logger.fatal("invalid model configuration format", e);
-            return null;
-        }
         String name;
         int minVer;
         int maxVer;
         String modelClass;
         try {
-            JSON.Object o = (JSON.Object) inst;
+            JSON.Object o = (JSON.Object) modelJsonInst;
             name = o.getString("name");
             minVer = o.getInt("compatibleMinCodeVersion");
             maxVer = o.getInt("compatibleMaxCodeVersion");
             modelClass = o.getString("modelClass");
         } catch (RuntimeException e) {
-            Logger.fatal("invalid model configuration format", e);
+            Logger.fatal("invalid model configuration format: " + modelJsonEntry.getName(), e);
             return null;
         }
         String minVerStr = (minVer / 1_000_000) + "." + ((minVer / 1_000) % 1_000) + "." + (minVer % 1000);
@@ -147,6 +125,41 @@ public class ModelManager {
         }
         modelInitConfig.interactionWordsSelectors = words;
 
+        // get values
+        var intMap = new HashMap<String, Integer>();
+        var doubleMap = new HashMap<String, Double>();
+        var intRecMap = new HashMap<String, Rec>();
+        var valuesJsonEntry = zipFile.getEntry("values.json");
+        if (valuesJsonEntry != null) {
+            var valuesJsonInst = readJson(zipFile, valuesJsonEntry);
+            if (valuesJsonInst == null) {
+                return null;
+            }
+            try {
+                var o = (JSON.Object) valuesJsonInst;
+                var integers = o.getObject("integers");
+                for (String key : integers.keySet()) {
+                    intMap.put(key, integers.getInt(key));
+                }
+                var doubles = o.getObject("doubles");
+                for (String key : doubles.keySet()) {
+                    doubleMap.put(key, doubles.getDouble(key));
+                }
+                var integerRec = o.getObject("integerRectangles");
+                for (String key : integerRec.keySet()) {
+                    var arr = integerRec.getArray(key);
+                    Rec rec = new Rec(arr.getInt(0), arr.getInt(1), arr.getInt(2), arr.getInt(3));
+                    intRecMap.put(key, rec);
+                }
+            } catch (Exception e) {
+                Logger.fatal("invalid model configuration format: " + valuesJsonEntry.getName(), e);
+                return null;
+            }
+        }
+        modelInitConfig.setIntegerValuesMap(intMap);
+        modelInitConfig.setDoubleValuesMap(doubleMap);
+        modelInitConfig.setIntegerRectanglesMap(intRecMap);
+
         // init
         selected.init(modelInitConfig);
 
@@ -164,6 +177,38 @@ public class ModelManager {
         } catch (IOException ignore) {
         }
         return selected;
+    }
+
+    private static JSON.Instance<?> readJson(ZipFile zipFile, ZipEntry entry) {
+        InputStream inputStream;
+        try {
+            inputStream = zipFile.getInputStream(entry);
+        } catch (IOException e) {
+            Logger.fatal("get input stream from model configuration failed: " + entry.getName(), e);
+            return null;
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try {
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            Logger.fatal("reading model configuration failed: " + entry.getName(), e);
+            return null;
+        }
+
+        //noinspection rawtypes
+        JSON.Instance inst;
+        try {
+            inst = JSON.parse(sb.toString());
+        } catch (Exception e) {
+            Logger.fatal("invalid model configuration format: " + entry.getName(), e);
+            return null;
+        }
+        return inst;
     }
 
     private static void initCode(ZipFile zipFile, String modelName, String modelClass) throws Exception {

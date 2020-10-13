@@ -8,8 +8,10 @@ import javafx.scene.transform.Translate;
 import net.cassite.desktop.chara.graphic.Div;
 import net.cassite.desktop.chara.graphic.Static;
 import net.cassite.desktop.chara.graphic.TimeBasedAnimationHelper;
+import net.cassite.desktop.chara.model.kokori.KokoriConsts;
 
 public class ArmLeft extends AbstractPart {
+    private final KokoriConsts kokoriConsts;
     private final Rotate shoulderRotate;
     private final Rotate elbowRotate;
     private final Translate elbowTranslate;
@@ -18,8 +20,9 @@ public class ArmLeft extends AbstractPart {
 
     private boolean bowShown = false;
 
-    public ArmLeft(Group parent) {
+    public ArmLeft(KokoriConsts kokoriConsts, Group parent) {
         super(parent);
+        this.kokoriConsts = kokoriConsts;
 
         Static bow = new Static("static/039_bow.PNG");
         Static hand = new Static("static/040_hand_left.PNG");
@@ -38,9 +41,9 @@ public class ArmLeft extends AbstractPart {
         hand.addTo(elbowRotateGroup);
         bow.addTo(elbowRotateGroup);
 
-        shoulderRotate = new Rotate(0, 835, 787);
+        shoulderRotate = new Rotate(0, kokoriConsts.armLeft_shoulderRotate_x, kokoriConsts.armLeft_shoulderRotate_y);
         shoulderRotateGroup.getTransforms().add(shoulderRotate);
-        elbowRotate = new Rotate(0, 820, 1060);
+        elbowRotate = new Rotate(0, kokoriConsts.armLeft_elbowRotate_x, kokoriConsts.armLeft_elbowRotate_y);
         elbowTranslate = new Translate();
         elbowRotateGroup.getTransforms().addAll(elbowRotate, elbowTranslate);
 
@@ -52,10 +55,10 @@ public class ArmLeft extends AbstractPart {
             return;
         }
         bowShown = true;
-        targetShoulderAngle = -15;
-        targetElbowAngle = -16;
-        targetElbowTranslateX = -0.5;
-        targetElbowTranslateY = 5;
+        targetShoulderAngle = kokoriConsts.armLeft_showBow_targetShoulderAngle;
+        targetElbowAngle = kokoriConsts.armLeft_showBow_targetElbowAngle;
+        targetElbowTranslateX = kokoriConsts.armLeft_showBow_targetElbowTranslateX;
+        targetElbowTranslateY = kokoriConsts.armLeft_showBow_targetElbowTranslateY;
         play();
     }
 

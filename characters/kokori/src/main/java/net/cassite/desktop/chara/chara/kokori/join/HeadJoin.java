@@ -5,9 +5,10 @@ package net.cassite.desktop.chara.chara.kokori.join;
 import javafx.scene.transform.Rotate;
 import net.cassite.desktop.chara.chara.kokori.parts.*;
 import net.cassite.desktop.chara.graphic.TimeBasedAnimationHelper;
+import net.cassite.desktop.chara.model.kokori.KokoriConsts;
 
 public class HeadJoin {
-    private static final double MAX_ANGLE = 10;
+    private final KokoriConsts kokoriConsts;
 
     private final Hair hair;
 
@@ -22,14 +23,15 @@ public class HeadJoin {
         300, this::update
     );
 
-    public HeadJoin(Head head, Hair hair, HairSide hairSide, HairBack hairBack,
+    public HeadJoin(KokoriConsts kokoriConsts, Head head, Hair hair, HairSide hairSide, HairBack hairBack,
                     EyeJoin eyeLeft, EyeJoin eyeRight, Mouth mouth, RedCheek redCheek) {
+        this.kokoriConsts = kokoriConsts;
         this.hair = hair;
 
-        headRotate = new Rotate(0, 682, 655);
-        hairSideLeftRotate = new Rotate(0, 797, 585);
-        hairSideRightRotate = new Rotate(0, 582, 595);
-        hairBackRotate = new Rotate(0, 687, 600);
+        headRotate = new Rotate(0, kokoriConsts.headJoin_headRotate_x, kokoriConsts.headJoin_headRotate_y);
+        hairSideLeftRotate = new Rotate(0, kokoriConsts.headJoin_hairSideLeftRotate_x, kokoriConsts.headJoin_hairSideLeftRotate_y);
+        hairSideRightRotate = new Rotate(0, kokoriConsts.headJoin_hairSideRightRotate_x, kokoriConsts.headJoin_hairSideRightRotate_y);
+        hairBackRotate = new Rotate(0, kokoriConsts.headJoin_hairBackRotate_x, kokoriConsts.headJoin_hairBackRotate_y);
 
         head.getRoot().getTransforms().add(headRotate);
         hair.getRoot().getTransforms().add(headRotate);
@@ -53,7 +55,7 @@ public class HeadJoin {
             return;
         }
         state = 1;
-        targetAngle = +MAX_ANGLE;
+        targetAngle = kokoriConsts.headJoin_tiltToLeft_targetAngle;
         play();
         hair.swing();
     }
@@ -63,7 +65,7 @@ public class HeadJoin {
             return;
         }
         state = 2;
-        targetAngle = -MAX_ANGLE;
+        targetAngle = kokoriConsts.headJoin_tiltToRight_targetAngle;
         play();
         hair.swing();
     }

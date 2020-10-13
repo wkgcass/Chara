@@ -7,9 +7,12 @@ import javafx.scene.transform.Rotate;
 import net.cassite.desktop.chara.graphic.Anima;
 import net.cassite.desktop.chara.graphic.Static;
 import net.cassite.desktop.chara.graphic.TimeBasedAnimationHelper;
+import net.cassite.desktop.chara.model.kokori.KokoriConsts;
 import net.cassite.desktop.chara.util.Utils;
 
 public class Mouth extends AbstractPart {
+    private final KokoriConsts kokoriConsts;
+
     private final Anima animaHappyToDefault;
     private final Anima animaDefaultToHappy;
     private final Anima animaDefaultToSad;
@@ -22,8 +25,9 @@ public class Mouth extends AbstractPart {
 
     private final Rotate rotate;
 
-    public Mouth(Group parent) {
+    public Mouth(KokoriConsts kokoriConsts, Group parent) {
         super(parent);
+        this.kokoriConsts = kokoriConsts;
 
         animaHappyToDefault = new Anima("animation/mouth/mouth_000.png",
             Utils.buildSeqNames("animation/mouth/mouth_", 0, 12, ".png"));
@@ -38,14 +42,12 @@ public class Mouth extends AbstractPart {
         animaSadToHappy = new Anima("animation/mouth/mouth_019.png",
             Utils.buildSeqNamesReverse("animation/mouth/mouth_", 19, 0, ".png"));
         mouthOpen = new Static("static/005_z05_mouth_open.PNG");
-        mouthOpen.resizeY(0.15);
+        mouthOpen.resizeY(kokoriConsts.mouth_mouthOpen_yMinRatio);
         mouthLine = new Static("static/005_mouth_line.PNG");
 
         animaDefaultToHappy.addTo(root);
 
-        rotate = new Rotate();
-        rotate.setPivotX(684);
-        rotate.setPivotY(648);
+        rotate = new Rotate(0, kokoriConsts.mouth_rotate_x, kokoriConsts.mouth_rotate_y);
         root.getTransforms().add(rotate);
     }
 
@@ -167,13 +169,13 @@ public class Mouth extends AbstractPart {
 
     private void mouthOpenAnimateToDefault(Runnable cb) {
         beginOpenMouthRatio = mouthOpen.getResizeRatioY();
-        targetOpenMouthRatio = 0.15;
+        targetOpenMouthRatio = kokoriConsts.mouth_mouthOpen_yMinRatio;
         mouthOpenAnimationHelper.setFinishCallback(cb).play();
     }
 
     private void mouthDefaultToAnimateOpen(Runnable cb) {
         beginOpenMouthRatio = mouthOpen.getResizeRatioY();
-        targetOpenMouthRatio = 1;
+        targetOpenMouthRatio = kokoriConsts.mouth_mouthOpen_yMaxRatio;
         mouthOpenAnimationHelper.setFinishCallback(cb).play();
     }
 
@@ -189,10 +191,10 @@ public class Mouth extends AbstractPart {
     }
 
     public void tiltToRight() {
-        rotate.setAngle(10);
+        rotate.setAngle(kokoriConsts.mouth_tiltToRight_angle);
     }
 
     public void tiltToLeft() {
-        rotate.setAngle(-10);
+        rotate.setAngle(kokoriConsts.mouth_tiltToLeft_angle);
     }
 }

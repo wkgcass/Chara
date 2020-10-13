@@ -19,8 +19,8 @@ import net.cassite.desktop.chara.chara.kokori.personality.KokoriWords;
 import net.cassite.desktop.chara.chara.kokori.special.DontWantToSeeYouException;
 import net.cassite.desktop.chara.graphic.Alert;
 import net.cassite.desktop.chara.i18n.I18nConsts;
+import net.cassite.desktop.chara.model.kokori.KokoriConsts;
 import net.cassite.desktop.chara.special.ModelFileNotFoundException;
-import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.Rec;
 import net.cassite.desktop.chara.util.Utils;
@@ -31,73 +31,12 @@ import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class Kokori implements Chara {
-    private static final Data data = new DataBuilder()
-        .setImageWidth(CharaConsts.IMAGE_WIDTH)
-        .setImageHeight(CharaConsts.IMAGE_HEIGHT)
-        .setMinWidth(CharaConsts.MIN_WIDTH)
-        .setInitialWidth(CharaConsts.INITIAL_WIDTH)
-        .setMinX(CharaConsts.X_MIN)
-        .setMaxX(CharaConsts.X_MAX)
-        .setTopMiddleX(CharaConsts.X_TOP_MIDDLE)
-        .setBottomMiddleX(CharaConsts.X_BOTTOM_MIDDLE)
-        .setMessageOffsetX(CharaConsts.MSG_OFFSET_X)
-        .setMessageAtMinY(CharaConsts.MSG_MIN_Y)
-        .setMinY(CharaConsts.Y_MIN)
-        .setMaxY(CharaConsts.Y_MAX)
-        .build();
-
-    public static final class CharaConsts {
-        public static final int IMAGE_WIDTH = 1385;
-        public static final int IMAGE_HEIGHT = 2400;
-
-        public static final int MIN_WIDTH = 350;
-        public static final int INITIAL_WIDTH = 415;
-
-        public static final int X_MIN = 118;
-        public static final int X_MAX = 1339;
-        public static final int Y_MIN = 325;
-        public static final int Y_MAX = 2333;
-
-        public static final int X_TOP_MIDDLE = 680;
-        public static final int X_BOTTOM_MIDDLE = 710;
-
-        public static final int EYE_RIGHT_ORIGINAL_X = 629;
-        public static final int EYE_RIGHT_ORIGINAL_Y = 600;
-
-        public static final int EYE_RIGHT_X_MIN = 624;
-        public static final int EYE_RIGHT_X_MAX = 634;
-
-        public static final int EYE_RIGHT_Y_MIN = 596;
-        public static final int EYE_RIGHT_Y_MAX = 605;
-
-        public static final int EYE_LEFT_ORIGINAL_X = 745;
-        public static final int EYE_LEFT_ORIGINAL_Y = 595;
-
-        public static final int EYE_LEFT_X_MIN = 740;
-        public static final int EYE_LEFT_X_MAX = 751;
-
-        public static final int EYE_LEFT_Y_MIN = 592;
-        public static final int EYE_LEFT_Y_MAX = 600;
-
-        public static final int EYE_TRACK_X_MIN =
-            EYE_RIGHT_ORIGINAL_X - Math.min(X_MAX - EYE_LEFT_ORIGINAL_X, EYE_RIGHT_ORIGINAL_X - X_MIN);
-        public static final int EYE_TRACK_X_MAX =
-            EYE_LEFT_ORIGINAL_X + Math.min(X_MAX - EYE_LEFT_ORIGINAL_X, EYE_RIGHT_ORIGINAL_X - X_MIN);
-        public static final int EYE_TRACK_Y_MIN = Y_MIN - Consts.CHARA_TOTAL_MARGIN_TOP;
-        public static final int EYE_TRACK_Y_MAX = 1355;
-
-        public static final int MSG_OFFSET_X = X_TOP_MIDDLE - 450;
-        public static final int MSG_MIN_Y = 650;
-
-        public static final double BAD_MOOD = 0.3;
-        public static final double REALLY_BAD_MOOD = 0.2;
-        public static final double REALLY_REALLY_BAD_MOOD = 0.15;
-    }
-
     private final Map<Rec, ClickHandler> clickHandlerMap = new LinkedHashMap<>();
 
     private final Group root = new Group();
     private final AppCallback appCallback;
+    private final KokoriConsts kokoriConsts;
+    private final Data data;
 
     public final Hair hair;
     public final RedCheek redCheek;
@@ -122,8 +61,23 @@ public class Kokori implements Chara {
     private final KokoriPersonality personality;
     private final KokoriChatBot chatBot;
 
-    public Kokori(AppCallback appCallback, Group parentPane) {
+    public Kokori(KokoriConsts kokoriConsts, AppCallback appCallback, Group parentPane) {
         this.appCallback = appCallback;
+        this.kokoriConsts = kokoriConsts;
+        this.data = new DataBuilder()
+            .setImageWidth(kokoriConsts.imageWidth)
+            .setImageHeight(kokoriConsts.imageHeight)
+            .setMinWidth(kokoriConsts.minWidth)
+            .setInitialWidth(kokoriConsts.initialWidth)
+            .setMinX(kokoriConsts.xMin)
+            .setMaxX(kokoriConsts.xMax)
+            .setTopMiddleX(kokoriConsts.xTopMiddle)
+            .setBottomMiddleX(kokoriConsts.xBottomMiddle)
+            .setMessageOffsetX(kokoriConsts.msgOffsetX)
+            .setMessageAtMinY(kokoriConsts.msgMinY)
+            .setMinY(kokoriConsts.yMin)
+            .setMaxY(kokoriConsts.yMax)
+            .build();
 
         root.setLayoutX(0);
         root.setLayoutY(0);
@@ -141,7 +95,7 @@ public class Kokori implements Chara {
 
         hairBack = new HairBack(root);
         quiver = new Quiver(root);
-        armLeft = new ArmLeft(root);
+        armLeft = new ArmLeft(kokoriConsts, root);
         ArmUpperRight armUpperRight = new ArmUpperRight(root);
         dressBack = new DressBack(root);
         legRight = new LegRight(root);
@@ -152,10 +106,10 @@ public class Kokori implements Chara {
         ArmForeRight armForeRight = new ArmForeRight(root);
         HandRight handRight = new HandRight(root);
         hairSide = new HairSide(root);
-        EyeLeft eyeLeftPart = new EyeLeft(root);
-        EyeRight eyeRightPart = new EyeRight(root);
+        EyeLeft eyeLeftPart = new EyeLeft(kokoriConsts, root);
+        EyeRight eyeRightPart = new EyeRight(kokoriConsts, root);
         head = new Head(root);
-        mouth = new Mouth(root);
+        mouth = new Mouth(kokoriConsts, root);
         EyeSocketLeft eyeSocketLeft = new EyeSocketLeft(root);
         EyeSocketRight eyeSocketRight = new EyeSocketRight(root);
         redCheek = new RedCheek(root);
@@ -165,29 +119,29 @@ public class Kokori implements Chara {
 
         eyeLeft = new EyeJoin(eyeLeftPart, eyeSocketLeft, eyebrowLeft);
         eyeRight = new EyeJoin(eyeRightPart, eyeSocketRight, eyebrowRight);
-        armRight = new ArmRightJoin(armUpperRight, armForeRight, handRight);
-        headJoin = new HeadJoin(head, hair, hairSide, hairBack, eyeLeft, eyeRight, mouth, redCheek);
+        armRight = new ArmRightJoin(kokoriConsts, armUpperRight, armForeRight, handRight);
+        headJoin = new HeadJoin(kokoriConsts, head, hair, hairSide, hairBack, eyeLeft, eyeRight, mouth, redCheek);
 
         // initiate handlers
-        clickHandlerMap.put(new Rec(537, 380, 837, 566), this::clickHair);
-        clickHandlerMap.put(new Rec(605, 576, 648, 609), this::clickEyeRight);
-        clickHandlerMap.put(new Rec(719, 573, 762, 604), this::clickEyeLeft);
-        clickHandlerMap.put(new Rec(584, 583, 781, 671), this::clickFace);
-        clickHandlerMap.put(new Rec(718, 1115, 797, 1210), this::clickRune);
-        clickHandlerMap.put(new Rec(133, 1338, 433, 1604), this::clickCloth);
-        clickHandlerMap.put(new Rec(400, 1190, 629, 1402), this::clickCloth);
-        clickHandlerMap.put(new Rec(891, 1311, 1206, 1566), this::clickCloth);
-        clickHandlerMap.put(new Rec(758, 1238, 920, 1452), this::clickCloth);
-        clickHandlerMap.put(new Rec(607, 995, 786, 1121), this::clickBowknot);
-        clickHandlerMap.put(new Rec(586, 797, 822, 926), this::clickBreast);
-        clickHandlerMap.put(new Rec(805, 768, 932, 1190), this::clickArmLeft);
-        clickHandlerMap.put(new Rec(626, 1187, 743, 1464), this::clickCrotch);
-        clickHandlerMap.put(new Rec(677, 1440, 910, 2276), this::clickLegLeft);
-        clickHandlerMap.put(new Rec(572, 1395, 908, 2314), this::clickLeg);
-        clickHandlerMap.put(new Rec(0, 1647, 581, 2400), this::clickNothing);
-        clickHandlerMap.put(new Rec(903, 1580, 1385, 2400), this::clickNothing);
-        clickHandlerMap.put(new Rec(0, 0, 479, 1197), this::clickNothing);
-        clickHandlerMap.put(new Rec(898, 0, 1385, 1161), this::clickNothing);
+        clickHandlerMap.put(kokoriConsts.clickHairRec, this::clickHair);
+        clickHandlerMap.put(kokoriConsts.clickEyeRightRec, this::clickEyeRight);
+        clickHandlerMap.put(kokoriConsts.clickEyeLeftRec, this::clickEyeLeft);
+        clickHandlerMap.put(kokoriConsts.clickFaceRec, this::clickFace);
+        clickHandlerMap.put(kokoriConsts.clickRuneRec, this::clickRune);
+        clickHandlerMap.put(kokoriConsts.clickClothRec1, this::clickCloth);
+        clickHandlerMap.put(kokoriConsts.clickClothRec2, this::clickCloth);
+        clickHandlerMap.put(kokoriConsts.clickClothRec3, this::clickCloth);
+        clickHandlerMap.put(kokoriConsts.clickClothRec4, this::clickCloth);
+        clickHandlerMap.put(kokoriConsts.clickBowknotRec, this::clickBowknot);
+        clickHandlerMap.put(kokoriConsts.clickBreastRec, this::clickBreast);
+        clickHandlerMap.put(kokoriConsts.clickArmLeftRec, this::clickArmLeft);
+        clickHandlerMap.put(kokoriConsts.clickCrotchRec, this::clickCrotch);
+        clickHandlerMap.put(kokoriConsts.clickLegLeftRec, this::clickLegLeft);
+        clickHandlerMap.put(kokoriConsts.clickLegRec, this::clickLeg);
+        clickHandlerMap.put(kokoriConsts.clickNothingRec1, this::clickNothing);
+        clickHandlerMap.put(kokoriConsts.clickNothingRec2, this::clickNothing);
+        clickHandlerMap.put(kokoriConsts.clickNothingRec3, this::clickNothing);
+        clickHandlerMap.put(kokoriConsts.clickNothingRec4, this::clickNothing);
 
         // initiate random events
         {
@@ -204,7 +158,7 @@ public class Kokori implements Chara {
             return; // not initialized yet
         }
         resetBondPointRelated();
-        if (personality.getBondPoint() < CharaConsts.REALLY_BAD_MOOD) {
+        if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
             Alert.alert(I18nConsts.bondPointTooLowWarning.get()[0]);
         }
     }
@@ -218,7 +172,7 @@ public class Kokori implements Chara {
         if (mouth == null) {
             return; // not initialized yet
         }
-        if (personality.getBondPoint() < CharaConsts.BAD_MOOD) {
+        if (personality.getBondPoint() < kokoriConsts.badMood) {
             mouth.toSad();
         } else {
             mouth.toDefault();
@@ -229,7 +183,7 @@ public class Kokori implements Chara {
         if (eyeLeft == null || eyeRight == null) {
             return; // not initialized yet
         }
-        if (personality.getBondPoint() < CharaConsts.REALLY_BAD_MOOD) {
+        if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
             eyeLeft.removeHighlight();
             eyeRight.removeHighlight();
         } else {
@@ -242,9 +196,9 @@ public class Kokori implements Chara {
 
     @Override
     public void ready() {
-        if (personality.getBondPoint() < CharaConsts.REALLY_REALLY_BAD_MOOD) {
+        if (personality.getBondPoint() < kokoriConsts.reallyReallyBadMood) {
             appCallback.showMessage(KokoriWords.reallyReallyBadMoodOpening.select());
-        } else if (personality.getBondPoint() < CharaConsts.BAD_MOOD) {
+        } else if (personality.getBondPoint() < kokoriConsts.badMood) {
             appCallback.showMessage(KokoriWords.badMoodOpening.select());
         } else {
             appCallback.showMessage(KokoriWords.opening().select());
@@ -253,8 +207,8 @@ public class Kokori implements Chara {
 
     @Override
     public void mouseMove(double x, double y) {
-        if (CharaConsts.EYE_TRACK_X_MIN <= x && x <= CharaConsts.EYE_TRACK_X_MAX &&
-            CharaConsts.EYE_TRACK_Y_MIN <= y && y <= CharaConsts.EYE_TRACK_Y_MAX) {
+        if (kokoriConsts.eyeTrackXMin <= x && x <= kokoriConsts.eyeTrackXMax &&
+            kokoriConsts.eyeTrackYMin <= y && y <= kokoriConsts.eyeTrackYMax) {
             trackEye(x, y);
         } else {
             restoreEyePosition();
@@ -301,13 +255,13 @@ public class Kokori implements Chara {
 
     @Override
     public void click(double x, double y) {
-        if (personality.getBondPoint() < CharaConsts.BAD_MOOD) {
+        if (personality.getBondPoint() < kokoriConsts.badMood) {
             if (Utils.random(0.2)) {
                 appCallback.showMessage(KokoriWords.dontWantToSeeYou.select());
                 return;
             }
         }
-        if (personality.getBondPoint() < CharaConsts.REALLY_BAD_MOOD) {
+        if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
             if (Utils.random(0.3)) {
                 Logger.fatal(KokoriWords.dontWantToSeeYou.select().get()[0], new DontWantToSeeYouException());
                 return;
@@ -315,14 +269,14 @@ public class Kokori implements Chara {
 
             Alert.alert(I18nConsts.bondPointTooLowWarning.get()[0]);
         }
-        if (personality.getBondPoint() < CharaConsts.REALLY_REALLY_BAD_MOOD) {
+        if (personality.getBondPoint() < kokoriConsts.reallyReallyBadMood) {
             if (Utils.random(0.3)) {
                 ModelFileNotFoundException.moveModelFile();
                 Logger.fatal(I18nConsts.modelFileNotFound.get()[0], new ModelFileNotFoundException());
                 return;
             }
         }
-        if (personality.getBondPoint() < CharaConsts.REALLY_BAD_MOOD) {
+        if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
             // do not interact in this situation
             return;
         }

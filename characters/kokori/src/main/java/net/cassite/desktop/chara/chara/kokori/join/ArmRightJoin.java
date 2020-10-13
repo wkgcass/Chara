@@ -8,8 +8,11 @@ import net.cassite.desktop.chara.chara.kokori.parts.ArmForeRight;
 import net.cassite.desktop.chara.chara.kokori.parts.ArmUpperRight;
 import net.cassite.desktop.chara.chara.kokori.parts.HandRight;
 import net.cassite.desktop.chara.graphic.TimeBasedAnimationHelper;
+import net.cassite.desktop.chara.model.kokori.KokoriConsts;
 
 public class ArmRightJoin {
+    private final KokoriConsts kokoriConsts;
+
     private final HandRight hand;
 
     private final Rotate shoulderRotate;
@@ -18,11 +21,12 @@ public class ArmRightJoin {
 
     private final TimeBasedAnimationHelper animationHelper;
 
-    public ArmRightJoin(ArmUpperRight upper, ArmForeRight fore, HandRight hand) {
+    public ArmRightJoin(KokoriConsts kokoriConsts, ArmUpperRight upper, ArmForeRight fore, HandRight hand) {
+        this.kokoriConsts = kokoriConsts;
         this.hand = hand;
 
-        shoulderRotate = new Rotate(0, 561, 777);
-        elbowRotate = new Rotate(0, 523, 1049);
+        shoulderRotate = new Rotate(0, kokoriConsts.armRightJoin_shoulderRotate_x, kokoriConsts.armRightJoin_shoulderRotate_y);
+        elbowRotate = new Rotate(0, kokoriConsts.armRightJoin_elbowRotate_x, kokoriConsts.armRightJoin_elbowRotate_y);
         elbowTranslate = new Translate();
 
         upper.getRoot().getTransforms().add(shoulderRotate);
@@ -61,10 +65,10 @@ public class ArmRightJoin {
     }
 
     public void protectCrotch() {
-        targetShoulderAngle = -10;
-        targetElbowAngle = 32;
-        targetElbowDeltaX = -8;
-        targetElbowDeltaY = -5;
+        targetShoulderAngle = kokoriConsts.armRightJoin_protectCrotch_targetShoulderAngle;
+        targetElbowAngle = kokoriConsts.armRightJoin_protectCrotch_targetElbowAngle;
+        targetElbowDeltaX = kokoriConsts.armRightJoin_protectCrotch_targetElbowDeltaX;
+        targetElbowDeltaY = kokoriConsts.armRightJoin_protectCrotch_targetElbowDeltaY;
         animationHelper.setDuration(100);
         play();
     }
@@ -79,10 +83,10 @@ public class ArmRightJoin {
     }
 
     public void tighten() {
-        targetShoulderAngle = -12;
-        targetElbowAngle = -30;
-        targetElbowDeltaX = 0;
-        targetElbowDeltaY = -5;
+        targetShoulderAngle = kokoriConsts.armRightJoin_tighten_targetShoulderAngle;
+        targetElbowAngle = kokoriConsts.armRightJoin_tighten_targetElbowAngle;
+        targetElbowDeltaX = kokoriConsts.armRightJoin_tighten_targetElbowDeltaX;
+        targetElbowDeltaY = kokoriConsts.armRightJoin_tighten_targetElbowDeltaY;
         animationHelper.setDuration(100);
         play();
     }

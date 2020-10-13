@@ -3,14 +3,16 @@
 package net.cassite.desktop.chara.chara.kokori.parts;
 
 import javafx.scene.Group;
-import net.cassite.desktop.chara.chara.kokori.Kokori;
 import net.cassite.desktop.chara.graphic.Static;
+import net.cassite.desktop.chara.model.kokori.KokoriConsts;
 
 public class EyeRight extends AbstractEye implements Eye {
+    private final KokoriConsts kokoriConsts;
     private boolean highlightVisible = true;
 
-    public EyeRight(Group parent) {
+    public EyeRight(KokoriConsts kokoriConsts, Group parent) {
         super(parent, new Static("static/011_eye_highlight_right.PNG"), new Static("static/012_eye_right.PNG"));
+        this.kokoriConsts = kokoriConsts;
         Static white = new Static("static/013_eye_white_right.PNG");
 
         white.addTo(root);
@@ -43,44 +45,44 @@ public class EyeRight extends AbstractEye implements Eye {
 
     @Override
     public void track(double x, double y) {
-        if (x < Kokori.CharaConsts.EYE_TRACK_X_MIN) {
-            x = Kokori.CharaConsts.EYE_TRACK_X_MIN;
+        if (x < kokoriConsts.eyeTrackXMin) {
+            x = kokoriConsts.eyeTrackXMin;
         }
-        if (x > Kokori.CharaConsts.EYE_TRACK_X_MAX) {
-            x = Kokori.CharaConsts.EYE_TRACK_X_MAX;
+        if (x > kokoriConsts.eyeTrackXMax) {
+            x = kokoriConsts.eyeTrackXMax;
         }
-        if (y < Kokori.CharaConsts.EYE_TRACK_Y_MIN) {
-            y = Kokori.CharaConsts.EYE_TRACK_Y_MIN;
+        if (y < kokoriConsts.eyeTrackYMin) {
+            y = kokoriConsts.eyeTrackYMin;
         }
-        if (y > Kokori.CharaConsts.EYE_TRACK_Y_MAX) {
-            y = Kokori.CharaConsts.EYE_TRACK_Y_MAX;
+        if (y > kokoriConsts.eyeTrackYMax) {
+            y = kokoriConsts.eyeTrackYMax;
         }
 
         double deltaX;
-        if (Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_X <= x && x <= Kokori.CharaConsts.EYE_LEFT_ORIGINAL_X) {
+        if (kokoriConsts.eyeRightOriginalX <= x && x <= kokoriConsts.eyeLeftOriginalX) {
             deltaX = 0;
         } else {
-            if (x < Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_X) {
-                double total = Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_X - Kokori.CharaConsts.EYE_TRACK_X_MIN;
-                double ratio = (Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_X - x) / total;
-                deltaX = -(ratio * (Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_X - Kokori.CharaConsts.EYE_RIGHT_X_MIN));
+            if (x < kokoriConsts.eyeRightOriginalX) {
+                double total = kokoriConsts.eyeRightOriginalX - kokoriConsts.eyeTrackXMin;
+                double ratio = (kokoriConsts.eyeRightOriginalX - x) / total;
+                deltaX = -(ratio * (kokoriConsts.eyeRightOriginalX - kokoriConsts.eyeRightXMin));
             } else {
-                assert x > Kokori.CharaConsts.EYE_LEFT_ORIGINAL_X;
-                double total = Kokori.CharaConsts.EYE_TRACK_X_MAX - Kokori.CharaConsts.EYE_LEFT_ORIGINAL_X;
-                double ratio = (x - Kokori.CharaConsts.EYE_LEFT_ORIGINAL_X) / total;
-                deltaX = ratio * (Kokori.CharaConsts.EYE_RIGHT_X_MAX - Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_X);
+                assert x > kokoriConsts.eyeLeftOriginalX;
+                double total = kokoriConsts.eyeTrackXMax - kokoriConsts.eyeLeftOriginalX;
+                double ratio = (x - kokoriConsts.eyeLeftOriginalX) / total;
+                deltaX = ratio * (kokoriConsts.eyeRightXMax - kokoriConsts.eyeRightOriginalX);
             }
         }
         double deltaY;
         {
-            if (y < Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_Y) {
-                double total = Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_Y - Kokori.CharaConsts.EYE_TRACK_Y_MIN;
-                double ratio = (Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_Y - y) / total;
-                deltaY = -(ratio * (Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_Y - Kokori.CharaConsts.EYE_RIGHT_Y_MIN));
+            if (y < kokoriConsts.eyeRightOriginalY) {
+                double total = kokoriConsts.eyeRightOriginalY - kokoriConsts.eyeTrackYMin;
+                double ratio = (kokoriConsts.eyeRightOriginalY - y) / total;
+                deltaY = -(ratio * (kokoriConsts.eyeRightOriginalY - kokoriConsts.eyeRightYMin));
             } else {
-                double total = Kokori.CharaConsts.EYE_TRACK_Y_MAX - Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_Y;
-                double ratio = (y - Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_Y) / total;
-                deltaY = ratio * (Kokori.CharaConsts.EYE_RIGHT_Y_MAX - Kokori.CharaConsts.EYE_RIGHT_ORIGINAL_Y);
+                double total = kokoriConsts.eyeTrackYMax - kokoriConsts.eyeRightOriginalY;
+                double ratio = (y - kokoriConsts.eyeRightOriginalY) / total;
+                deltaY = ratio * (kokoriConsts.eyeRightYMax - kokoriConsts.eyeRightOriginalY);
             }
         }
 

@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.zip.ZipFile;
 
 public class KokoriModel implements Model {
+    private KokoriConsts kokoriConsts;
+
     @Override
     public String name() {
         return "kokori";
@@ -23,7 +25,7 @@ public class KokoriModel implements Model {
 
     @Override
     public Chara construct(AppCallback cb, Group parent) {
-        return new Kokori(cb, parent);
+        return new Kokori(kokoriConsts, cb, parent);
     }
 
     @Override
@@ -42,6 +44,8 @@ public class KokoriModel implements Model {
         KokoriWords.setHighIntimacyConversationsFromModel(high);
         KokoriWords.setOpeningFromModel(opening);
         KokoriWords.setFlirtFromModel(flirt);
+
+        kokoriConsts = new KokoriConsts(conf);
     }
 
     @Override
