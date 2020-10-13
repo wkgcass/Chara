@@ -182,11 +182,9 @@ public class MessageStage extends Stage {
 
     private void afterAnimation() {
         // real remove
-        if (isPlaying) {
-            handlingBubble.removeFrom(root);
-            messageBubbles.remove(handlingBubble);
-            handlingBubble = null;
-        }
+        handlingBubble.removeFrom(root);
+        messageBubbles.remove(handlingBubble);
+        handlingBubble = null;
 
         isPlaying = false;
 

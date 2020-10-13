@@ -66,10 +66,10 @@ public class TimeBasedAnimationHelper implements Updatable {
         } else {
             percentage = (double) time / duration;
         }
-        if (skipped >= skip || percentage == 1) {
+        if (skipped >= skip || !playing) {
             updateFunc.update(percentage);
             skipped = 0;
-            if (percentage == 1) {
+            if (!playing) {
                 if (finishCallback != null) {
                     Platform.runLater(() -> finishCallback.run());
                 }
