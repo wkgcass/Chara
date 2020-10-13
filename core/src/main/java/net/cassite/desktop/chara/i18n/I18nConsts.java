@@ -6,6 +6,27 @@ public class I18nConsts {
     private I18nConsts() {
     }
 
+    public static final Words SELECT_EXISTING_MODEL_CONFIG = new WordsBuilder
+        ("选择已有的模型配置")
+        .setEn("Select existing model config")
+        .build();
+    public static final Words OK_BTN = new WordsBuilder
+        ("确定")
+        .setEn("OK")
+        .build();
+    public static final Words CHOOSE_FILE_BTN = new WordsBuilder
+        ("选择文件...")
+        .setEn("Choose File...")
+        .build();
+    public static final Words CHOOSE_MODEL_FILE = new WordsBuilder
+        ("选择模型文件")
+        .setEn("Choose model file")
+        .build();
+    public static final Words LOADING = new WordsBuilder
+        ("加载中...")
+        .setEn("Loading...")
+        .build();
+
     public static final Words showMessageHelper = new WordsBuilder
         ("使用组合键Ctrl+Shift+Win/Cmd+下列快捷按键:\n" +
             "+H  显示帮助信息\n" +

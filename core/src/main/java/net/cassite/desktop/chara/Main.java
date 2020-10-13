@@ -23,6 +23,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.control.NativeMouseListenerUtils;
+import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.ImageManager;
 import net.cassite.desktop.chara.manager.ModelManager;
@@ -169,11 +170,11 @@ public class Main extends Application {
                 Stage chooseModelConfigStage = new Stage();
                 chooseModelConfigStage.initStyle(StageStyle.UTILITY);
                 chooseModelConfigStage.setWidth(256);
-                chooseModelConfigStage.setHeight(290);
+                chooseModelConfigStage.setHeight(320);
                 chooseModelConfigStage.setResizable(false);
                 Utils.fixStageSize(chooseModelConfigStage, StageStyle.UTILITY);
                 chooseModelConfigStage.centerOnScreen();
-                chooseModelConfigStage.setTitle("Select existing model config");
+                chooseModelConfigStage.setTitle(I18nConsts.SELECT_EXISTING_MODEL_CONFIG.get()[0]);
 
                 Pane root = new Pane();
                 Scene scene = new Scene(root);
@@ -188,7 +189,7 @@ public class Main extends Application {
                 listView.setItems(listData);
                 root.getChildren().add(listView);
 
-                Button okBtn = new Button("OK");
+                Button okBtn = new Button(I18nConsts.OK_BTN.get()[0]);
                 okBtn.setPrefWidth(236);
                 okBtn.setPrefHeight(20);
                 okBtn.setLayoutX(10);
@@ -196,10 +197,24 @@ public class Main extends Application {
                 okBtn.setDisable(true);
                 root.getChildren().add(okBtn);
 
+                Button chooseFileBtn = new Button(I18nConsts.CHOOSE_FILE_BTN.get()[0]);
+                chooseFileBtn.setPrefWidth(236);
+                chooseFileBtn.setPrefHeight(20);
+                chooseFileBtn.setLayoutX(10);
+                chooseFileBtn.setLayoutY(280);
+                root.getChildren().add(chooseFileBtn);
+
                 listView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<String>) c -> okBtn.setDisable(false));
                 okBtn.setOnMouseClicked(e -> {
                     Global.modelName = listView.getSelectionModel().getSelectedItem();
                     assert Logger.debug("using config for model " + Global.modelName);
+                    Platform.setImplicitExit(false);
+                    chooseModelConfigStage.hide();
+                    cb.run();
+                });
+                chooseFileBtn.setOnMouseClicked(e -> {
+                    // do not select model, let the next step choose a file
+                    assert Logger.debug("clicked Other button, choose model file later");
                     Platform.setImplicitExit(false);
                     chooseModelConfigStage.hide();
                     cb.run();
@@ -239,7 +254,7 @@ public class Main extends Application {
             }
 
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Choose model file");
+            fileChooser.setTitle(I18nConsts.CHOOSE_MODEL_FILE.get()[0]);
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(
                 "model file",
                 "*.model", "*.MODEL"));
@@ -306,7 +321,7 @@ public class Main extends Application {
             loadingStage.setWidth(600);
             loadingStage.setHeight(80);
             loadingStage.setResizable(false);
-            loadingStage.setTitle("Loading...");
+            loadingStage.setTitle(I18nConsts.LOADING.get()[0]);
             Utils.fixStageSize(loadingStage, StageStyle.UTILITY);
             loadingStage.centerOnScreen();
 
@@ -318,7 +333,7 @@ public class Main extends Application {
             label.setLayoutX(10);
             label.setLayoutY(10);
             label.setPrefHeight(20);
-            label.setText("Loading ...");
+            label.setText(I18nConsts.LOADING.get()[0]);
             pane.getChildren().add(label);
 
             ProgressBar progressBar = new ProgressBar();
