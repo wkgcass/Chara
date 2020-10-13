@@ -53,12 +53,11 @@ public class App {
         this.rootScalePane = rootScalePane;
 
         this.bondBar = new ProgressBar(0);
-        this.bondBar.setLayoutX(Consts.BOND_BAR_MARGIN);
         this.bondBar.setLayoutY(Consts.BOND_BAR_MARGIN);
         this.bondBar.setPrefWidth(Consts.BOND_BAR_WIDTH);
         this.bondBar.setPrefHeight(Consts.BOND_BAR_HEIGHT);
         this.bondBar.setOpacity(0);
-        this.rootScalePane.getChildren().add(bondBar);
+        this.rootPane.getChildren().add(bondBar);
 
         root = new Group();
         this.rootScalePane.getChildren().add(root);
@@ -179,6 +178,9 @@ public class App {
         // scale config
         scale.setX(initialWidth / chara.data().imageWidth);
         scale.setY(initialHeight / chara.data().imageHeight);
+
+        // bond bar
+        calculateBondBarPosition();
 
         // input box
         calculateInputBoxPosition();
@@ -305,18 +307,6 @@ public class App {
 
         x += primaryStage.getCutLeft();
         y += primaryStage.getCutTop();
-        chara.mouseMove(x, y);
-
-        // show input box
-        if (!messageDisabled) {
-            // calculate whether to show input box
-            double realY = (y - primaryStage.getCutTop()) * primaryStage.getScaleRatio();
-            if (realY > inputBox.getLayoutY() - Consts.INPUT_SHOW_Y_DELTA) {
-                inputBox.show();
-            } else {
-                inputBox.hide();
-            }
-        }
 
         // check mouse enter/leave
         double mx = e.getX();
@@ -334,6 +324,23 @@ public class App {
         } else {
             // enters
             mouseLeaves = false;
+        }
+
+        if (mouseLeaves) {
+            return;
+        }
+
+        chara.mouseMove(x, y);
+
+        // show input box
+        if (!messageDisabled) {
+            // calculate whether to show input box
+            double realY = (y - primaryStage.getCutTop()) * primaryStage.getScaleRatio();
+            if (realY > inputBox.getLayoutY() - Consts.INPUT_SHOW_Y_DELTA) {
+                inputBox.show();
+            } else {
+                inputBox.hide();
+            }
         }
     }
 
@@ -437,8 +444,14 @@ public class App {
     }
 
     private void calculatePositions() {
+        calculateBondBarPosition();
         calculateInputBoxPosition();
         calculateMessageStagePosition();
+    }
+
+    private void calculateBondBarPosition() {
+        var middle = (chara.data().topMiddleX - primaryStage.getCutLeft()) * primaryStage.getScaleRatio();
+        bondBar.setLayoutX(middle - Consts.BOND_BAR_WIDTH / 2D);
     }
 
     private void calculateInputBoxPosition() {

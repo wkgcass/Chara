@@ -22,8 +22,8 @@ public class Consts {
     public static final String CONFIG_BASE_DIR = ".chara/config";
 
     public static final int BOND_BAR_MARGIN = 5;
-    public static final int BOND_BAR_HEIGHT = 25;
-    public static final int BOND_BAR_WIDTH = 600;
+    public static final int BOND_BAR_HEIGHT = 15;
+    public static final int BOND_BAR_WIDTH = 255;
 
     @SuppressWarnings("unused")
     public static final int CHARA_TOTAL_MARGIN_TOP = BOND_BAR_MARGIN * 2 + BOND_BAR_HEIGHT;
