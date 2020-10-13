@@ -2,7 +2,6 @@
 
 package net.cassite.desktop.chara.graphic;
 
-import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import net.cassite.desktop.chara.manager.ImageManager;
 import net.cassite.desktop.chara.util.XImage;
@@ -11,21 +10,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Anima implements Updatable {
+public class Anima {
     public static final double DEFAULT_FPS = 45;
 
     private final XImage defaultImage;
     private final List<XImage> animationImages;
-
     private final ImageView imageView;
-
-    private boolean playing;
-    private double fps;
-    private int currentFrame;
-    private int endFrame;
-    private long lastUpdateMillis;
-
-    private Runnable pauseCallbackOnce = null;
+    private final FrameBasedAnimationHelper helper;
 
     public Anima(String defaultImage, String... animationImages) {
         this.defaultImage = ImageManager.load(defaultImage);
@@ -35,8 +26,11 @@ public class Anima implements Updatable {
             images.add(ImageManager.load(name));
         }
         this.animationImages = Collections.unmodifiableList(images);
-
         this.imageView = new ImageView();
+
+        this.helper = new FrameBasedAnimationHelper(
+            animationImages.length,
+            this::update);
 
         init();
     }
@@ -49,19 +43,12 @@ public class Anima implements Updatable {
     }
 
     public Anima resetTo(int frame) {
-        pauseCallbackOnce = null;
-        pause(false);
-        this.fps = DEFAULT_FPS;
-        this.endFrame = animationImages.size() - 1;
-        this.lastUpdateMillis = -1;
+        helper.resetTo(frame);
         if (frame == -1) {
-            this.currentFrame = 0;
             setImage(defaultImage);
         } else {
-            this.currentFrame = frame;
             setImage(animationImages.get(frame));
         }
-
         return this;
     }
 
@@ -74,76 +61,32 @@ public class Anima implements Updatable {
     }
 
     public boolean isPlaying() {
-        return playing;
+        return helper.isPlaying();
     }
 
     public Anima setPauseCallbackOnce(Runnable pauseCallbackOnce) {
-        this.pauseCallbackOnce = pauseCallbackOnce;
+        helper.setPauseCallbackOnce(pauseCallbackOnce);
         return this;
     }
 
     public void play(double fps) {
-        if (this.currentFrame == this.endFrame) {
-            var endFrame = this.endFrame;
-            resetTo(0);
-            this.endFrame = endFrame;
-        }
-        this.fps = fps;
-        this.playing = true;
-        HZ.get().register(this);
+        helper.play(fps);
     }
 
     public void play() {
-        play(this.fps);
-    }
-
-    public void pause(boolean runCallback) {
-        playing = false;
-        HZ.get().deregister(this);
-
-        if (runCallback) {
-            // run callback (once)
-            var pauseCallbackLocal = this.pauseCallbackOnce;
-            this.pauseCallbackOnce = null;
-            if (pauseCallbackLocal != null) {
-                Platform.runLater(pauseCallbackLocal);
-            }
+        double fps = helper.getFps();
+        if (fps == 0) {
+            fps = DEFAULT_FPS;
         }
+        helper.play(fps);
     }
 
     public void pause() {
-        pause(true);
+        helper.pause();
     }
 
-    @Override
-    public void update(long current) {
-        if (!playing) {
-            // no need to update when it's not playing
-            return;
-        }
-        int frames = 0;
-        if (lastUpdateMillis != -1) {
-            long delta = current - lastUpdateMillis;
-            frames = (int) (delta / (1000 / fps));
-            if (frames == 0) {
-                return;
-            }
-        }
-
-        // update
-
-        lastUpdateMillis = current;
-
-        frames = currentFrame + frames;
-        if (frames > endFrame) {
-            frames = endFrame;
-        }
-        currentFrame = frames;
+    private void update(int frames) {
         setImage(animationImages.get(frames));
-
-        if (currentFrame == endFrame) {
-            pause(true);
-        }
     }
 
     public void addTo(Div div) {
@@ -155,7 +98,7 @@ public class Anima implements Updatable {
     }
 
     public Anima setEndFrame(int endFrame) {
-        this.endFrame = endFrame;
+        helper.setEndFrame(endFrame);
         return this;
     }
 }
