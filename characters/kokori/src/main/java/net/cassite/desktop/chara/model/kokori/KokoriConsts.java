@@ -167,24 +167,24 @@ public class KokoriConsts {
         eyeTrackXMax = eyeLeftOriginalX + eyeToEdgeLen;
         eyeTrackYMin = yMin - Consts.CHARA_TOTAL_MARGIN_TOP;
 
-        clickHairRec = config.getIntegerRectangle("clickHairRec");
-        clickEyeRightRec = config.getIntegerRectangle("clickEyeRightRec");
-        clickEyeLeftRec = config.getIntegerRectangle("clickEyeLeftRec");
-        clickFaceRec = config.getIntegerRectangle("clickFaceRec");
-        clickRuneRec = config.getIntegerRectangle("clickRuneRec");
-        clickClothRec1 = config.getIntegerRectangle("clickClothRec1");
-        clickClothRec2 = config.getIntegerRectangle("clickClothRec2");
-        clickClothRec3 = config.getIntegerRectangle("clickClothRec3");
-        clickClothRec4 = config.getIntegerRectangle("clickClothRec4");
-        clickBowknotRec = config.getIntegerRectangle("clickBowknotRec");
-        clickBreastRec = config.getIntegerRectangle("clickBreastRec");
-        clickArmLeftRec = config.getIntegerRectangle("clickArmLeftRec");
-        clickCrotchRec = config.getIntegerRectangle("clickCrotchRec");
-        clickLegLeftRec = config.getIntegerRectangle("clickLegLeftRec");
-        clickLegRec = config.getIntegerRectangle("clickLegRec");
-        clickNothingRec1 = config.getIntegerRectangle("clickNothingRec1");
-        clickNothingRec2 = config.getIntegerRectangle("clickNothingRec2");
-        clickNothingRec3 = config.getIntegerRectangle("clickNothingRec3");
-        clickNothingRec4 = config.getIntegerRectangle("clickNothingRec4");
+        clickHairRec = config.getIntegerRectangle("clickHairRec", scale);
+        clickEyeRightRec = config.getIntegerRectangle("clickEyeRightRec", scale);
+        clickEyeLeftRec = config.getIntegerRectangle("clickEyeLeftRec", scale);
+        clickFaceRec = config.getIntegerRectangle("clickFaceRec", scale);
+        clickRuneRec = config.getIntegerRectangle("clickRuneRec", scale);
+        clickClothRec1 = config.getIntegerRectangle("clickClothRec1", scale);
+        clickClothRec2 = config.getIntegerRectangle("clickClothRec2", scale);
+        clickClothRec3 = config.getIntegerRectangle("clickClothRec3", scale);
+        clickClothRec4 = config.getIntegerRectangle("clickClothRec4", scale);
+        clickBowknotRec = config.getIntegerRectangle("clickBowknotRec", scale);
+        clickBreastRec = config.getIntegerRectangle("clickBreastRec", scale);
+        clickArmLeftRec = config.getIntegerRectangle("clickArmLeftRec", scale);
+        clickCrotchRec = config.getIntegerRectangle("clickCrotchRec", scale);
+        clickLegLeftRec = config.getIntegerRectangle("clickLegLeftRec", scale);
+        clickLegRec = config.getIntegerRectangle("clickLegRec", scale);
+        clickNothingRec1 = config.getIntegerRectangle("clickNothingRec1", scale);
+        clickNothingRec2 = config.getIntegerRectangle("clickNothingRec2", scale);
+        clickNothingRec3 = config.getIntegerRectangle("clickNothingRec3", scale);
+        clickNothingRec4 = config.getIntegerRectangle("clickNothingRec4", scale);
     }
 }

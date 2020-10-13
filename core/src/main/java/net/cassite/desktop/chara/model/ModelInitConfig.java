@@ -55,4 +55,13 @@ public class ModelInitConfig {
         }
         return r;
     }
+
+    public Rec getIntegerRectangle(String key, double scale) {
+        Rec r = getIntegerRectangle(key);
+        return new Rec(
+            (int) (r.x1 * scale),
+            (int) (r.y1 * scale),
+            (int) (r.x2 * scale),
+            (int) (r.y2 * scale));
+    }
 }
