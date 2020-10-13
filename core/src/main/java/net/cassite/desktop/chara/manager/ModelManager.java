@@ -129,31 +129,41 @@ public class ModelManager {
         var intMap = new HashMap<String, Integer>();
         var doubleMap = new HashMap<String, Double>();
         var intRecMap = new HashMap<String, Rec>();
-        var valuesJsonEntry = zipFile.getEntry("values.json");
-        if (valuesJsonEntry != null) {
-            var valuesJsonInst = readJson(zipFile, valuesJsonEntry);
-            if (valuesJsonInst == null) {
-                return null;
-            }
-            try {
-                var o = (JSON.Object) valuesJsonInst;
-                var integers = o.getObject("integers");
-                for (String key : integers.keySet()) {
-                    intMap.put(key, integers.getInt(key));
+        entries = zipFile.entries();
+        while (entries.hasMoreElements()) {
+            var entry = entries.nextElement();
+            var prefix = "values/";
+            if (!entry.isDirectory() && entry.getName().startsWith(prefix) && entry.getName().endsWith(".json")) {
+                var valuesJsonInst = readJson(zipFile, entry);
+                if (valuesJsonInst == null) {
+                    return null;
                 }
-                var doubles = o.getObject("doubles");
-                for (String key : doubles.keySet()) {
-                    doubleMap.put(key, doubles.getDouble(key));
+                try {
+                    var o = (JSON.Object) valuesJsonInst;
+                    if (o.containsKey("integers")) {
+                        var integers = o.getObject("integers");
+                        for (String key : integers.keySet()) {
+                            intMap.put(key, integers.getInt(key));
+                        }
+                    }
+                    if (o.containsKey("doubles")) {
+                        var doubles = o.getObject("doubles");
+                        for (String key : doubles.keySet()) {
+                            doubleMap.put(key, doubles.getDouble(key));
+                        }
+                    }
+                    if (o.containsKey("integerRectangles")) {
+                        var integerRec = o.getObject("integerRectangles");
+                        for (String key : integerRec.keySet()) {
+                            var arr = integerRec.getArray(key);
+                            Rec rec = new Rec(arr.getInt(0), arr.getInt(1), arr.getInt(2), arr.getInt(3));
+                            intRecMap.put(key, rec);
+                        }
+                    }
+                } catch (Exception e) {
+                    Logger.fatal("invalid model configuration format: " + entry.getName(), e);
+                    return null;
                 }
-                var integerRec = o.getObject("integerRectangles");
-                for (String key : integerRec.keySet()) {
-                    var arr = integerRec.getArray(key);
-                    Rec rec = new Rec(arr.getInt(0), arr.getInt(1), arr.getInt(2), arr.getInt(3));
-                    intRecMap.put(key, rec);
-                }
-            } catch (Exception e) {
-                Logger.fatal("invalid model configuration format: " + valuesJsonEntry.getName(), e);
-                return null;
             }
         }
         modelInitConfig.setIntegerValuesMap(intMap);
