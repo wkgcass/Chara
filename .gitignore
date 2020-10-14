@@ -5,10 +5,3 @@ out/
 .class
 .jar
 .DS_Store
-
-# kokori
-characters/kokori/models/kokori-full
-characters/kokori/models/kokori-mini
-characters/kokori/models/shared
-characters/kokori/models/kokori-full.model
-characters/kokori/models/kokori-mini.model
