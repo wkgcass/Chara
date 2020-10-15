@@ -21,12 +21,24 @@ public class Consts {
     public static final String CACHE_DIR_NAME = ".chara/cache";
     public static final String CONFIG_BASE_DIR = ".chara/config";
 
-    public static final int BOND_BAR_MARGIN = 5;
-    public static final int BOND_BAR_HEIGHT = 15;
-    public static final int BOND_BAR_WIDTH = 255;
+    public static final int BAR_WIDTH = 255;
+    public static final int BOND_BAR_MARGIN_TOP = 5;
+    public static final int BOND_BAR_INNER_HEIGHT = 8;
+    public static final int BOND_BAR_BORDER_WIDTH = 0;
+    @SuppressWarnings("PointlessArithmeticExpression")
+    public static final int BOND_BAR_HEIGHT = BOND_BAR_INNER_HEIGHT + BOND_BAR_BORDER_WIDTH * 2;
+    public static final int BOND_BAR_MARGIN_BOTTOM = 2;
 
-    @SuppressWarnings("unused")
-    public static final int CHARA_TOTAL_MARGIN_TOP = BOND_BAR_MARGIN * 2 + BOND_BAR_HEIGHT;
+    public static final int DESIRE_BAR_MARGIN_TOP = 2;
+    public static final int DESIRE_BAR_INNER_HEIGHT = 8;
+    public static final int DESIRE_BAR_BORDER_WIDTH = 0;
+    @SuppressWarnings("PointlessArithmeticExpression")
+    public static final int DESIRE_BAR_HEIGHT = DESIRE_BAR_INNER_HEIGHT + DESIRE_BAR_BORDER_WIDTH * 2;
+    public static final int DESIRE_BAR_MARGIN_BOTTOM = 5;
+
+    public static final int CHARA_TOTAL_ABSOLUTE_MARGIN_TOP =
+        BOND_BAR_MARGIN_TOP + BOND_BAR_HEIGHT + BOND_BAR_MARGIN_BOTTOM +
+            DESIRE_BAR_MARGIN_TOP + DESIRE_BAR_HEIGHT + DESIRE_BAR_MARGIN_BOTTOM;
 
     public static final int MSG_STAGE_WIDTH = 400;
     public static final int MSG_BUBBLE_MAX_WIDTH = 392;

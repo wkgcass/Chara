@@ -4,10 +4,7 @@ package net.cassite.desktop.chara;
 
 import javafx.application.Platform;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class ThreadUtils {
     private static final ThreadUtils instance = new ThreadUtils();
@@ -33,23 +30,38 @@ public class ThreadUtils {
         return isShutdown || exec.isShutdown();
     }
 
-    public void schedule(Runnable runnable, int delay, TimeUnit unit) {
-        exec.schedule(runnable, delay, unit);
+    public ScheduledFuture<?> schedule(Runnable runnable, int delay, TimeUnit unit) {
+        if (isShutdown()) {
+            return null;
+        }
+        return exec.schedule(runnable, delay, unit);
     }
 
     public ScheduledFuture<?> scheduleFX(Runnable runnable, int delay, TimeUnit unit) {
+        if (isShutdown()) {
+            return null;
+        }
         return exec.schedule(() -> Platform.runLater(runnable), delay, unit);
     }
 
-    public void scheduleAtFixedRate(Runnable runnable, int initialDelay, int period, TimeUnit unit) {
-        exec.scheduleAtFixedRate(runnable, initialDelay, period, unit);
+    public ScheduledFuture<?> scheduleAtFixedRate(Runnable runnable, int initialDelay, int period, TimeUnit unit) {
+        if (isShutdown()) {
+            return null;
+        }
+        return exec.scheduleAtFixedRate(runnable, initialDelay, period, unit);
     }
 
-    public void scheduleAtFixedRateFX(Runnable runnable, int initialDelay, long period, TimeUnit unit) {
-        exec.scheduleAtFixedRate(() -> Platform.runLater(runnable), initialDelay, period, unit);
+    public ScheduledFuture<?> scheduleAtFixedRateFX(Runnable runnable, int initialDelay, long period, TimeUnit unit) {
+        if (isShutdown()) {
+            return null;
+        }
+        return exec.scheduleAtFixedRate(() -> Platform.runLater(runnable), initialDelay, period, unit);
     }
 
-    public void submit(Runnable runnable) {
-        exec.submit(runnable);
+    public Future<?> submit(Runnable runnable) {
+        if (isShutdown()) {
+            return null;
+        }
+        return exec.submit(runnable);
     }
 }

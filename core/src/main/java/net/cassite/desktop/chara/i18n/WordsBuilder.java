@@ -6,12 +6,19 @@ public class WordsBuilder {
     private final String[] zh;
     private String[] en;
 
-    public WordsBuilder(String... zh) {
-        this.zh = zh;
+    private String[] merge(String a, String... more) {
+        String[] arr = new String[more.length + 1];
+        arr[0] = a;
+        System.arraycopy(more, 0, arr, 1, more.length);
+        return arr;
     }
 
-    public WordsBuilder setEn(String... en) {
-        this.en = en;
+    public WordsBuilder(String zh, String... more) {
+        this.zh = merge(zh, more);
+    }
+
+    public WordsBuilder setEn(String en, String... more) {
+        this.en = merge(en, more);
         return this;
     }
 

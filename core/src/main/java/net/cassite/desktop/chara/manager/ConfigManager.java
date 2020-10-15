@@ -5,6 +5,7 @@ package net.cassite.desktop.chara.manager;
 import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.util.Consts;
+import net.cassite.desktop.chara.util.Key;
 import net.cassite.desktop.chara.util.Logger;
 import vjson.JSON;
 import vjson.util.ObjectBuilder;
@@ -12,7 +13,9 @@ import vjson.util.ObjectBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class ConfigManager {
@@ -23,9 +26,17 @@ public class ConfigManager {
         private Double stageX;
         private Double stageY;
         private Double characterRatio;
+        private Boolean chatFeatureEnabled;
+        private Boolean alwaysOnTop;
+        private Boolean activeInteractionEnabled;
         private Double bondPoint;
+        private Double desirePoint;
+        private final Map<Key<Integer>, Integer> integerRegisters = new ConcurrentHashMap<>();
+        private final Map<Key<Double>, Double> doubleRegisters = new ConcurrentHashMap<>();
+        private final Map<Key<Boolean>, Boolean> booleanRegisters = new ConcurrentHashMap<>();
 
         private String chatbot;
+        private long lastTimestamp;
 
         public String getModelFile() {
             return modelFile;
@@ -63,6 +74,33 @@ public class ConfigManager {
             save();
         }
 
+        public Boolean getChatFeatureEnabled() {
+            return chatFeatureEnabled;
+        }
+
+        public void setChatFeatureEnabled(boolean chatFeatureEnabled) {
+            this.chatFeatureEnabled = chatFeatureEnabled;
+            save();
+        }
+
+        public Boolean getAlwaysOnTop() {
+            return alwaysOnTop;
+        }
+
+        public void setAlwaysOnTop(boolean alwaysOnTop) {
+            this.alwaysOnTop = alwaysOnTop;
+            save();
+        }
+
+        public Boolean getActiveInteractionEnabled() {
+            return activeInteractionEnabled;
+        }
+
+        public void setActiveInteractionEnabled(boolean activeInteractionEnabled) {
+            this.activeInteractionEnabled = activeInteractionEnabled;
+            save();
+        }
+
         public Double getBondPoint() {
             return bondPoint;
         }
@@ -72,8 +110,77 @@ public class ConfigManager {
             save();
         }
 
+        public Double getDesirePoint() {
+            return desirePoint;
+        }
+
+        public void setDesirePoint(Double desirePoint) {
+            this.desirePoint = desirePoint;
+            save();
+        }
+
         public String getChatbot() {
             return chatbot;
+        }
+
+        public int getIntValue(Key<Integer> key) {
+            Integer n = integerRegisters.get(key);
+            if (n == null) {
+                return 0;
+            }
+            return n;
+        }
+
+        public void setIntValue(Key<Integer> key, int v) {
+            integerRegisters.put(key, v);
+            save();
+        }
+
+        public synchronized int incIntValue(Key<Integer> key, int inc) {
+            int n = getIntValue(key) + inc;
+            setIntValue(key, n);
+            return n;
+        }
+
+        public double getDoubleValue(Key<Double> key) {
+            Double n = doubleRegisters.get(key);
+            if (n == null) {
+                return 0;
+            }
+            return n;
+        }
+
+        public void setDoubleValue(Key<Double> key, double v) {
+            doubleRegisters.put(key, v);
+            save();
+        }
+
+        public synchronized double incDoubleValue(Key<Double> key, double inc) {
+            double n = getDoubleValue(key) + inc;
+            setDoubleValue(key, n);
+            return n;
+        }
+
+        public boolean getBoolValue(Key<Boolean> key) {
+            Boolean b = booleanRegisters.get(key);
+            if (b == null) {
+                return false;
+            }
+            return b;
+        }
+
+        public void setBoolValue(Key<Boolean> key, boolean v) {
+            booleanRegisters.put(key, v);
+            save();
+        }
+
+        public long getLastTimestamp() {
+            return lastTimestamp;
+        }
+
+        public void setLastTimestamp(long lastTimestamp) {
+            this.lastTimestamp = lastTimestamp;
+            save();
         }
 
         private void from(JSON.Object obj) {
@@ -101,16 +208,82 @@ public class ConfigManager {
                     this.characterRatio = ((JSON.Double) o).doubleValue();
                 }
             }
+            if (obj.containsKey("chat_feature_enabled")) {
+                var o = obj.get("chat_feature_enabled");
+                if (o instanceof JSON.Bool) {
+                    this.chatFeatureEnabled = ((JSON.Bool) o).booleanValue();
+                }
+            }
+            if (obj.containsKey("always_on_top")) {
+                var o = obj.get("always_on_top");
+                if (o instanceof JSON.Bool) {
+                    this.alwaysOnTop = ((JSON.Bool) o).booleanValue();
+                }
+            }
+            if (obj.containsKey("active_interaction_enabled")) {
+                var o = obj.get("active_interaction_enabled");
+                if (o instanceof JSON.Bool) {
+                    this.activeInteractionEnabled = ((JSON.Bool) o).booleanValue();
+                }
+            }
             if (obj.containsKey("bond_point")) {
                 var o = obj.get("bond_point");
                 if (o instanceof JSON.Double) {
                     this.bondPoint = ((JSON.Double) o).doubleValue();
                 }
             }
+            if (obj.containsKey("desire_point")) {
+                var o = obj.get("desire_point");
+                if (o instanceof JSON.Double) {
+                    this.desirePoint = ((JSON.Double) o).doubleValue();
+                }
+            }
             if (obj.containsKey("chatbot")) {
                 var o = obj.get("chatbot");
                 if (o instanceof JSON.String) {
                     this.chatbot = ((JSON.String) o).toJavaObject();
+                }
+            }
+            if (obj.containsKey("integerRegisters")) {
+                var o = obj.get("integerRegisters");
+                if (o instanceof JSON.Object) {
+                    var oo = (JSON.Object) o;
+                    for (var key : oo.keySet()) {
+                        var v = oo.get(key);
+                        if (v instanceof JSON.Integer) {
+                            this.integerRegisters.put(Key.of(key, Integer.class), ((JSON.Integer) v).intValue());
+                        }
+                    }
+                }
+            }
+            if (obj.containsKey("doubleRegisters")) {
+                var o = obj.get("doubleRegisters");
+                if (o instanceof JSON.Object) {
+                    var oo = (JSON.Object) o;
+                    for (var key : oo.keySet()) {
+                        var v = oo.get(key);
+                        if (v instanceof JSON.Double) {
+                            this.doubleRegisters.put(Key.of(key, Double.class), ((JSON.Double) v).doubleValue());
+                        }
+                    }
+                }
+            }
+            if (obj.containsKey("booleanRegisters")) {
+                var o = obj.get("booleanRegisters");
+                if (o instanceof JSON.Object) {
+                    var oo = (JSON.Object) o;
+                    for (var key : oo.keySet()) {
+                        var v = oo.get(key);
+                        if (v instanceof JSON.Bool) {
+                            this.booleanRegisters.put(Key.of(key, Boolean.class), ((JSON.Bool) v).booleanValue());
+                        }
+                    }
+                }
+            }
+            if (obj.containsKey("last_timestamp")) {
+                var o = obj.get("last_timestamp");
+                if (o instanceof JSON.Long) {
+                    this.lastTimestamp = ((JSON.Long) o).longValue();
                 }
             }
         }
@@ -132,10 +305,61 @@ public class ConfigManager {
             if (bondPoint != null) {
                 ob.put("bond_point", bondPoint);
             }
+            if (chatFeatureEnabled != null) {
+                ob.put("chat_feature_enabled", chatFeatureEnabled);
+            }
+            if (alwaysOnTop != null) {
+                ob.put("always_on_top", alwaysOnTop);
+            }
+            if (activeInteractionEnabled != null) {
+                ob.put("active_interaction_enabled", activeInteractionEnabled);
+            }
+            if (desirePoint != null) {
+                ob.put("desire_point", desirePoint);
+            }
             if (chatbot != null) {
                 ob.put("chatbot", chatbot);
             }
+            if (!integerRegisters.isEmpty()) {
+                ob.putObject("integerRegisters", o -> {
+                    for (var key : integerRegisters.keySet()) {
+                        o.put(key.getName(), integerRegisters.get(key));
+                    }
+                });
+            }
+            if (!doubleRegisters.isEmpty()) {
+                ob.putObject("doubleRegisters", o -> {
+                    for (var key : doubleRegisters.keySet()) {
+                        o.put(key.getName(), doubleRegisters.get(key));
+                    }
+                });
+            }
+            if (!booleanRegisters.isEmpty()) {
+                ob.putObject("booleanRegisters", o -> {
+                    for (var key : booleanRegisters.keySet()) {
+                        o.put(key.getName(), booleanRegisters.get(key));
+                    }
+                });
+            }
+            ob.put("last_timestamp", lastTimestamp);
             return ob.build().pretty();
+        }
+
+        @Override
+        public String toString() {
+            return "Config{" +
+                "modelFile='" + modelFile + '\'' +
+                ", stageX=" + stageX +
+                ", stageY=" + stageY +
+                ", characterRatio=" + characterRatio +
+                ", bondPoint=" + bondPoint +
+                ", desirePoint=" + desirePoint +
+                ", integerRegisters=" + integerRegisters +
+                ", doubleRegisters=" + doubleRegisters +
+                ", booleanRegisters=" + booleanRegisters +
+                ", chatbot='" + chatbot + '\'' +
+                ", lastTimestamp=" + lastTimestamp +
+                '}';
         }
     }
 
@@ -177,6 +401,11 @@ public class ConfigManager {
         }
         JSON.Object o = (JSON.Object) inst;
         config.from(o);
+
+        ThreadUtils.get().scheduleAtFixedRate(() -> {
+            config.lastTimestamp = System.currentTimeMillis();
+            save();
+        }, 10, 10, TimeUnit.MINUTES);
     }
 
     public static Config get() {
@@ -188,6 +417,14 @@ public class ConfigManager {
             }
         }
         return instance.config;
+    }
+
+    public static void saveNow() {
+        try {
+            instance.doSave();
+        } catch (Exception e) {
+            Logger.error("saving config failed", e);
+        }
     }
 
     private volatile boolean pending = false;

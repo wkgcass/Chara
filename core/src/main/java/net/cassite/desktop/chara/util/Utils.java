@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.cassite.desktop.chara.StageUtils;
 import net.cassite.desktop.chara.ThreadUtils;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
@@ -86,6 +87,10 @@ public class Utils {
     }
 
     public static void shutdownProgram() {
+        if (StageUtils.closePrimaryStage()) {
+            return;
+        }
+        // otherwise shutdown forcibly
         if (GlobalScreen.isNativeHookRegistered()) {
             try {
                 GlobalScreen.unregisterNativeHook();
@@ -117,5 +122,61 @@ public class Utils {
 
         stage.setWidth(stage.getWidth() + dW);
         stage.setHeight(stage.getHeight() + dH);
+    }
+
+    public static String verNum2Str(int ver) {
+        return (ver / 1_000_000)
+            + "." + ((ver / 1_000) % 1_000)
+            + "." + (ver % 1_000);
+    }
+
+    private static Boolean isWindows;
+    private static Boolean isMac;
+    private static Boolean isLinux;
+
+    public static boolean isWindows() {
+        determineOS();
+        return isWindows;
+    }
+
+    public static boolean isMac() {
+        determineOS();
+        return isMac;
+    }
+
+    public static boolean isLinux() {
+        determineOS();
+        return isLinux;
+    }
+
+    private static void determineOS() {
+        if (isWindows != null && isMac != null && isLinux != null) {
+            return;
+        }
+        String os = System.getProperty("os.name");
+        if (os == null) {
+            isWindows = false;
+            isMac = false;
+            isLinux = false;
+            return;
+        }
+        os = os.toLowerCase();
+        if (os.contains("mac")) {
+            isMac = true;
+            isWindows = false;
+            isLinux = false;
+        } else if (os.contains("win")) {
+            isMac = false;
+            isWindows = true;
+            isLinux = false;
+        } else if (os.contains("nux")) {
+            isMac = false;
+            isWindows = false;
+            isLinux = true;
+        } else {
+            isMac = false;
+            isWindows = false;
+            isLinux = false;
+        }
     }
 }

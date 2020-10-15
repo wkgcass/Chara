@@ -3,7 +3,6 @@
 package net.cassite.desktop.chara.model.kokori;
 
 import net.cassite.desktop.chara.model.ModelInitConfig;
-import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Rec;
 
 public class KokoriConsts {
@@ -68,6 +67,8 @@ public class KokoriConsts {
     public final double mouth_tiltToLeft_angle;
     public final double mouth_mouthOpen_yMinRatio;
     public final double mouth_mouthOpen_yMaxRatio;
+    public final double mouth_recursiveAnimateOpenAndShut_yMinRatio;
+    public final double mouth_recursiveAnimateOpenAndShut_yMaxRatio;
 
     public final int eyeTrackXMin;
     public final int eyeTrackXMax;
@@ -93,9 +94,12 @@ public class KokoriConsts {
     public final Rec clickNothingRec3;
     public final Rec clickNothingRec4;
 
+    public final double sexMoveMax;
+
     public final double badMood = 0.3;
     public final double reallyBadMood = 0.2;
     public final double reallyReallyBadMood = 0.15;
+    public final double veryHighDesirePoint = 0.9;
 
     public KokoriConsts(ModelInitConfig config) {
         var scale = config.getDouble("scale");
@@ -161,11 +165,13 @@ public class KokoriConsts {
         mouth_tiltToLeft_angle = config.getDouble("mouth.tiltToLeft.angle");
         mouth_mouthOpen_yMinRatio = config.getDouble("mouth.mouthOpen.yMinRatio");
         mouth_mouthOpen_yMaxRatio = config.getDouble("mouth.mouthOpen.yMaxRatio");
+        mouth_recursiveAnimateOpenAndShut_yMinRatio = config.getDouble("mouth.recursiveAnimateOpenAndShut.yMinRatio");
+        mouth_recursiveAnimateOpenAndShut_yMaxRatio = config.getDouble("mouth.recursiveAnimateOpenAndShut.yMaxRatio");
 
         int eyeToEdgeLen = Math.min(xMax - eyeLeftOriginalX, eyeRightOriginalX - xMin);
         eyeTrackXMin = eyeRightOriginalX - eyeToEdgeLen;
         eyeTrackXMax = eyeLeftOriginalX + eyeToEdgeLen;
-        eyeTrackYMin = yMin - Consts.CHARA_TOTAL_MARGIN_TOP;
+        eyeTrackYMin = yMin;
 
         clickHairRec = config.getIntegerRectangle("clickHairRec", scale);
         clickEyeRightRec = config.getIntegerRectangle("clickEyeRightRec", scale);
@@ -186,5 +192,7 @@ public class KokoriConsts {
         clickNothingRec2 = config.getIntegerRectangle("clickNothingRec2", scale);
         clickNothingRec3 = config.getIntegerRectangle("clickNothingRec3", scale);
         clickNothingRec4 = config.getIntegerRectangle("clickNothingRec4", scale);
+
+        sexMoveMax = config.getDouble("sexMoveMax") * scale;
     }
 }

@@ -24,4 +24,6 @@ public interface Eye {
     void restorePosition();
 
     Group getRoot();
+
+    void move(double relativeX, double relativeY);
 }

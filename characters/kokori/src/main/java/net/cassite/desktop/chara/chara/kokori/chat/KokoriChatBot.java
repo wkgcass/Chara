@@ -4,6 +4,7 @@ package net.cassite.desktop.chara.chara.kokori.chat;
 
 import javafx.application.Platform;
 import net.cassite.desktop.chara.AppCallback;
+import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.chat.Chatbot;
 import net.cassite.desktop.chara.chara.kokori.Kokori;
@@ -58,6 +59,10 @@ public class KokoriChatBot {
     }
 
     private void runCommand(String cmd0) {
+        if (!Global.debugFeatures) {
+            appCallback.showMessage(KokoriWords.idontknow.select());
+            return;
+        }
         Platform.runLater(() -> {
             String cmd = cmd0;
 
@@ -68,6 +73,9 @@ public class KokoriChatBot {
                 cmd = cmd.substring("get:".length());
                 if (cmd.equals("bond_point")) {
                     appCallback.showMessage(String.format("%.3f", personality.getBondPoint()));
+                    return;
+                } else if (cmd.equals("desire_point")) {
+                    appCallback.showMessage(String.format("%.3f", personality.getDesirePoint()));
                     return;
                 }
             } else if (cmd.startsWith("set:")) {
@@ -83,6 +91,18 @@ public class KokoriChatBot {
                     }
                     assert Logger.debug("setting bond point to " + d);
                     personality.setBondPoint(d);
+                    return;
+                } else if (cmd.startsWith("desire_point:")) {
+                    cmd = cmd.substring("desire_point:".length());
+                    double d;
+                    try {
+                        d = Double.parseDouble(cmd);
+                    } catch (NumberFormatException e) {
+                        Alert.alert("not a number");
+                        return;
+                    }
+                    assert Logger.debug("setting desire point to " + d);
+                    personality.setDesirePoint(d);
                     return;
                 }
             } else if (cmd.startsWith("animate:")) {
@@ -114,6 +134,12 @@ public class KokoriChatBot {
                 } else if ("mouth:right".equals(cmd)) {
                     kokori.mouth.tiltToRight();
                     return;
+                } else if ("mouth:start".equals(cmd)) {
+                    kokori.mouth.startAnimatingOpenAndShut();
+                    return;
+                } else if ("mouth:stop".equals(cmd)) {
+                    kokori.mouth.stopAnimatingOpenAndShut();
+                    return;
                 } else if ("highlight:show".equals(cmd)) {
                     kokori.eyeLeft.addHighlight();
                     kokori.eyeRight.addHighlight();
@@ -133,6 +159,14 @@ public class KokoriChatBot {
                     }
                     kokori.eyeLeft.zoom(d);
                     kokori.eyeRight.zoom(d);
+                    return;
+                } else if (cmd.equals("eye:close")) {
+                    kokori.eyeLeft.close();
+                    kokori.eyeRight.close();
+                    return;
+                } else if (cmd.equals("eye:open")) {
+                    kokori.eyeLeft.open();
+                    kokori.eyeRight.open();
                     return;
                 } else if ("head:right".equals(cmd)) {
                     kokori.headJoin.tiltToRight();
@@ -160,24 +194,25 @@ public class KokoriChatBot {
                     kokori.legLeft.loose();
                     return;
                 }
+            } else if (cmd.startsWith("action:")) {
+                cmd = cmd.substring("action:".length());
+                if (cmd.equals("sex")) {
+                    kokori.r18.animateSex(() -> {
+                    });
+                    return;
+                }
+            } else if (cmd.startsWith("sys:")) {
+                cmd = cmd.substring("sys:".length());
+                if (cmd.equals("love_potion:add")) {
+                    kokori.r18.addLovePotion();
+                    return;
+                }
             }
             appCallback.showMessage(KokoriWords.idontknow.select());
         });
     }
 
     private boolean handleMessage(String msg) {
-        msg = msg.replace("?", "").replace("？", "");
-        msg = msg.trim();
-        msg = msg.toLowerCase();
-        if (msg.equals("你叫什么") ||
-            msg.equals("你叫什么名字") ||
-            msg.equals("你的名字是什么") ||
-            msg.equals("你的名字叫什么") ||
-            msg.equals("what's your name") ||
-            msg.equals("what is your name")) {
-            appCallback.showMessage(KokoriWords.aboutName.select());
-            return true;
-        }
         return false;
     }
 }

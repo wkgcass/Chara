@@ -4,12 +4,15 @@ package net.cassite.desktop.chara.chara.kokori;
 
 import javafx.application.Platform;
 import javafx.scene.Group;
-import net.cassite.desktop.chara.AppCallback;
-import net.cassite.desktop.chara.AppCallbackDelegate;
-import net.cassite.desktop.chara.ThreadUtils;
-import net.cassite.desktop.chara.control.ClickHandler;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.KeyEvent;
+import net.cassite.desktop.chara.*;
 import net.cassite.desktop.chara.chara.Chara;
 import net.cassite.desktop.chara.chara.kokori.chat.KokoriChatBot;
+import net.cassite.desktop.chara.chara.kokori.i18n.KokoriI18n;
 import net.cassite.desktop.chara.chara.kokori.join.ArmRightJoin;
 import net.cassite.desktop.chara.chara.kokori.join.EyeJoin;
 import net.cassite.desktop.chara.chara.kokori.join.HeadJoin;
@@ -17,8 +20,10 @@ import net.cassite.desktop.chara.chara.kokori.parts.*;
 import net.cassite.desktop.chara.chara.kokori.personality.KokoriPersonality;
 import net.cassite.desktop.chara.chara.kokori.personality.KokoriWords;
 import net.cassite.desktop.chara.chara.kokori.special.DontWantToSeeYouException;
+import net.cassite.desktop.chara.control.ClickHandler;
 import net.cassite.desktop.chara.graphic.Alert;
 import net.cassite.desktop.chara.i18n.I18nConsts;
+import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.model.kokori.KokoriConsts;
 import net.cassite.desktop.chara.special.ModelFileNotFoundException;
 import net.cassite.desktop.chara.util.Logger;
@@ -27,15 +32,16 @@ import net.cassite.desktop.chara.util.Utils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class Kokori implements Chara {
     private final Map<Rec, ClickHandler> clickHandlerMap = new LinkedHashMap<>();
 
-    private final Group root = new Group();
-    private final AppCallback appCallback;
-    private final KokoriConsts kokoriConsts;
+    final Group root = new Group();
+    final AppCallback appCallback;
+    final KokoriConsts kokoriConsts;
     private final Data data;
 
     public final Hair hair;
@@ -58,13 +64,24 @@ public class Kokori implements Chara {
 
     public final HeadJoin headJoin;
 
-    private final KokoriPersonality personality;
+    final KokoriPersonality personality;
     private final KokoriChatBot chatBot;
+    public final KokoriR18 r18;
 
-    public Kokori(KokoriConsts kokoriConsts, AppCallback appCallback, Group parentPane) {
+    private final ScheduledFuture<?> randomEventsScheduledFuture;
+
+    final Menu characterMenu;
+    private final MenuItem aboutNameMenuItem = new MenuItem(KokoriI18n.aboutNameMenuItem.get()[0]);
+    private final MenuItem aboutCookingMenuItem = new MenuItem(KokoriI18n.aboutCookingMenuItem.get()[0]);
+    private final MenuItem thingsSheLikesMenuItem = new MenuItem(KokoriI18n.thingsSheLikesMenuItem.get()[0]);
+    private final MenuItem thingsSheHatesMenuItem = new MenuItem(KokoriI18n.thingsSheHatesMenuItem.get()[0]);
+    private final MenuItem[] bondStoriesMenuItems = new MenuItem[5];
+    private final double[] bondStoriesRequiredBondPoints = new double[5];
+
+    public Kokori(KokoriConsts kokoriConsts, AppCallback appCallback, Group parent, Menu characterMenu) {
         this.appCallback = appCallback;
         this.kokoriConsts = kokoriConsts;
-        this.data = new DataBuilder()
+        var dataBuilder = new DataBuilder()
             .setImageWidth(kokoriConsts.imageWidth)
             .setImageHeight(kokoriConsts.imageHeight)
             .setMinWidth(kokoriConsts.minWidth)
@@ -77,21 +94,44 @@ public class Kokori implements Chara {
             .setMessageAtMinY(kokoriConsts.msgMinY)
             .setMinY(kokoriConsts.yMin)
             .setMaxY(kokoriConsts.yMax)
-            .build();
+            .setMessageSupported(true);
+        this.data = dataBuilder.build();
 
         root.setLayoutX(0);
         root.setLayoutY(0);
-        parentPane.getChildren().add(root);
+        parent.getChildren().add(root);
 
         var cbDelegate = new AppCallbackDelegate(appCallback) {
             @Override
-            public void setBondPoint(double current, double previous) {
-                Platform.runLater(() -> onBondPointChange());
-                super.setBondPoint(current, previous);
+            public void setCharaPoints(CharaPoints points) {
+                Platform.runLater(() -> onCharaPointsChange());
+                super.setCharaPoints(points);
             }
         };
-        this.personality = new KokoriPersonality(cbDelegate);
+        this.personality = new KokoriPersonality(kokoriConsts, cbDelegate);
         this.chatBot = new KokoriChatBot(this, personality, cbDelegate);
+        this.r18 = new KokoriR18(this);
+
+        // menu
+        this.characterMenu = characterMenu;
+        aboutNameMenuItem.setOnAction(e -> this.menuAboutName());
+        aboutCookingMenuItem.setOnAction(e -> this.menuAboutCooking());
+        thingsSheLikesMenuItem.setOnAction(e -> this.menuThingsSheLikes());
+        thingsSheHatesMenuItem.setOnAction(e -> this.menuThingsSheHates());
+        for (int i = 0; i < 5; ++i) {
+            bondStoriesMenuItems[i] = new MenuItem(KokoriI18n.bondStoryMenuItem.get()[0] + " " + (i + 1));
+            bondStoriesRequiredBondPoints[i] = (1 - KokoriPersonality.INITIAL_BOND_POINT) / 5 * (i + 1) + KokoriPersonality.INITIAL_BOND_POINT;
+            final var ii = i;
+            bondStoriesMenuItems[i].setOnAction(e -> this.menuBondStory(ii));
+        }
+        characterMenu.getItems().addAll(
+            aboutNameMenuItem,
+            aboutCookingMenuItem,
+            thingsSheLikesMenuItem,
+            thingsSheHatesMenuItem
+        );
+        characterMenu.getItems().addAll(bondStoriesMenuItems);
+        r18.initCharacterMenu(characterMenu);
 
         hairBack = new HairBack(root);
         quiver = new Quiver(root);
@@ -146,44 +186,71 @@ public class Kokori implements Chara {
         // initiate random events
         {
             // run every 3 seconds
-            ThreadUtils.get().scheduleAtFixedRateFX(this::randomEvent,
+            randomEventsScheduledFuture = ThreadUtils.get().scheduleAtFixedRateFX(this::randomEvent,
                 5 * 1000, 3 * 1000, TimeUnit.MILLISECONDS);
         }
 
-        resetBondPointRelated();
+        resetCharaPointsRelated();
     }
 
-    private void onBondPointChange() {
+    private void onCharaPointsChange() {
         if (personality == null) {
             return; // not initialized yet
         }
-        resetBondPointRelated();
+        if (state != State.NORMAL) {
+            return;
+        }
+        resetCharaPointsRelated();
         if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
-            Alert.alert(I18nConsts.bondPointTooLowWarning.get()[0]);
+            Alert.alert(KokoriI18n.bondPointTooLowWarning.get()[0]);
         }
     }
 
-    private void resetBondPointRelated() {
+    public void resetCharaPointsRelated() {
         resetMouth();
+        resetCheek();
         resetHighlight();
+        resetMenuItems();
     }
 
-    private void resetMouth() {
+    public void resetMouth() {
         if (mouth == null) {
             return; // not initialized yet
         }
-        if (personality.getBondPoint() < kokoriConsts.badMood) {
+        if (personality.getDesirePoint() == 1 && Global.r18features) {
+            mouth.startAnimatingOpenAndShut();
+        } else if (personality.getBondPoint() < kokoriConsts.badMood) {
+            mouth.stopAnimatingOpenAndShut();
             mouth.toSad();
         } else {
+            mouth.stopAnimatingOpenAndShut();
             mouth.toDefault();
         }
     }
 
-    private void resetHighlight() {
+    public void resetCheek() {
+        if (redCheek == null) {
+            return; // not initialized yet
+        }
+        if (Global.r18features) {
+            if (personality.getDesirePoint() < kokoriConsts.veryHighDesirePoint) {
+                redCheek.hide();
+            } else {
+                redCheek.show();
+            }
+        } else {
+            redCheek.hide();
+        }
+    }
+
+    public void resetHighlight() {
         if (eyeLeft == null || eyeRight == null) {
             return; // not initialized yet
         }
-        if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
+        if (personality.getDesirePoint() == 1 && Global.r18features) {
+            eyeLeft.removeHighlight();
+            eyeRight.removeHighlight();
+        } else if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
             eyeLeft.removeHighlight();
             eyeRight.removeHighlight();
         } else {
@@ -192,10 +259,17 @@ public class Kokori implements Chara {
         }
     }
 
-    private boolean eyeTracked = false;
+    private void resetMenuItems() {
+        double bondPoint = personality.getBondPoint();
+        for (int i = 0; i < bondStoriesMenuItems.length; ++i) {
+            var menuItem = bondStoriesMenuItems[i];
+            var required = bondStoriesRequiredBondPoints[i];
+            menuItem.setDisable(bondPoint < required);
+        }
+    }
 
     @Override
-    public void ready() {
+    public void ready(ReadyParams params) {
         if (personality.getBondPoint() < kokoriConsts.reallyReallyBadMood) {
             appCallback.showMessage(KokoriWords.reallyReallyBadMoodOpening.select());
         } else if (personality.getBondPoint() < kokoriConsts.badMood) {
@@ -203,10 +277,24 @@ public class Kokori implements Chara {
         } else {
             appCallback.showMessage(KokoriWords.opening().select());
         }
+
+        r18.ready(params);
     }
+
+    enum State {
+        NORMAL,
+        R18_SEX,
+        AFTER_SEX,
+    }
+
+    State state = State.NORMAL;
 
     @Override
     public void mouseMove(double x, double y) {
+        if (state != State.NORMAL) {
+            return;
+        }
+
         if (kokoriConsts.eyeTrackXMin <= x && x <= kokoriConsts.eyeTrackXMax &&
             kokoriConsts.eyeTrackYMin <= y && y <= kokoriConsts.eyeTrackYMax) {
             trackEye(x, y);
@@ -214,6 +302,8 @@ public class Kokori implements Chara {
             restoreEyePosition();
         }
     }
+
+    private boolean eyeTracked = false;
 
     private void trackEye(double x, double y) {
         var foo = eyeTracked;
@@ -228,11 +318,19 @@ public class Kokori implements Chara {
 
     @Override
     public void mouseLeave() {
+        if (state != State.NORMAL) {
+            return;
+        }
+
         restoreEyePosition();
     }
 
     @Override
     public void dragged() {
+        if (state != State.NORMAL) {
+            return;
+        }
+
         hair.swing();
         hairSide.swing();
         hairBack.swing();
@@ -255,29 +353,15 @@ public class Kokori implements Chara {
 
     @Override
     public void click(double x, double y) {
-        if (personality.getBondPoint() < kokoriConsts.badMood) {
-            if (Utils.random(0.2)) {
-                appCallback.showMessage(KokoriWords.dontWantToSeeYou.select());
-                return;
-            }
+        if (state == State.R18_SEX) {
+            r18.clickStateSex(x, y);
+            return;
         }
-        if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
-            if (Utils.random(0.3)) {
-                Logger.fatal(KokoriWords.dontWantToSeeYou.select().get()[0], new DontWantToSeeYouException());
-                return;
-            }
+        if (state != State.NORMAL) {
+            return;
+        }
 
-            Alert.alert(I18nConsts.bondPointTooLowWarning.get()[0]);
-        }
-        if (personality.getBondPoint() < kokoriConsts.reallyReallyBadMood) {
-            if (Utils.random(0.3)) {
-                ModelFileNotFoundException.moveModelFile();
-                Logger.fatal(I18nConsts.modelFileNotFound.get()[0], new ModelFileNotFoundException());
-                return;
-            }
-        }
-        if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
-            // do not interact in this situation
+        if (preInteractionCheckFail()) {
             return;
         }
 
@@ -285,12 +369,52 @@ public class Kokori implements Chara {
         for (var entry : clickHandlerMap.entrySet()) {
             var rec = entry.getKey();
             var handler = entry.getValue();
-            if (rec.x1 <= x && x <= rec.x2 && rec.y1 <= y && y <= rec.y2) {
+            if (rec.contains(x, y)) {
                 handler.click(x, y);
                 return;
             }
         }
         clickOther(x, y);
+    }
+
+    public boolean preInteractionCheckFail() {
+        if (personality.getBondPoint() < kokoriConsts.badMood) {
+            if (Utils.random(0.2)) {
+                appCallback.showMessage(KokoriWords.dontWantToSeeYou.select());
+                return true;
+            }
+        }
+        if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
+            if (Utils.random(0.3)) {
+                Logger.fatal(KokoriWords.dontWantToSeeYou.select().get()[0], new DontWantToSeeYouException());
+                return true;
+            }
+
+            Alert.alert(KokoriI18n.bondPointTooLowWarning.get()[0]);
+        }
+        if (personality.getBondPoint() < kokoriConsts.reallyReallyBadMood) {
+            if (Utils.random(0.3)) {
+                ModelFileNotFoundException.moveModelFile();
+                Logger.fatal(I18nConsts.modelFileNotFound.get()[0], new ModelFileNotFoundException());
+                return true;
+            }
+        }
+        //noinspection RedundantIfStatement
+        if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
+            // do not interact in this situation
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void keyPressed(KeyEvent keyEvent) {
+        // do nothing
+    }
+
+    @Override
+    public void keyReleased(KeyEvent keyEvent) {
+        // do nothing
     }
 
     @Override
@@ -315,6 +439,7 @@ public class Kokori implements Chara {
 
     private int eyeRightState = 0; // 0: normal, 1: changing color, 2: color selected
 
+    @SuppressWarnings("DuplicatedCode")
     private void clickEyeRight(double x, double y) {
         assert Logger.debug("click eye right");
         eyeRight.blink();
@@ -334,6 +459,7 @@ public class Kokori implements Chara {
 
     private int eyeLeftState = 0; // 0: normal, 1: changing color, 2: color selected
 
+    @SuppressWarnings("DuplicatedCode")
     private void clickEyeLeft(double x, double y) {
         assert Logger.debug("click eye left");
         eyeLeft.blink();
@@ -355,8 +481,8 @@ public class Kokori implements Chara {
         assert Logger.debug("click face");
         boolean redCheck = false;
         if (Utils.random(0.5)) {
-            redCheek.show();
-            Utils.delay("touch-face", 1500, redCheek::hide);
+            Utils.shortDelay(redCheek::show);
+            Utils.delay("touch-face", 1500, this::resetCheek);
 
             redCheck = true;
 
@@ -412,13 +538,13 @@ public class Kokori implements Chara {
     private void clickBreast(double x, double y) {
         assert Logger.debug("click breast");
         Utils.shortDelay(mouth::toSad);
-        redCheek.show();
+        Utils.shortDelay(redCheek::show);
         armRight.tighten();
         armRight.hideRune();
         armRight.hideArrow();
         Utils.delay("touch-breast", 1500, () -> {
             resetMouth();
-            redCheek.hide();
+            resetCheek();
             armRight.moveToDefaultPosition();
         });
 
@@ -451,25 +577,29 @@ public class Kokori implements Chara {
         int level = personality.touchCrotch();
         if (level >= 1) {
             Utils.shortDelay(mouth::toHappy);
-            redCheek.show();
+            Utils.shortDelay(redCheek::show);
             legLeft.tighten(legLeft::loose);
             dressFront.flutter();
             dressBack.flutter();
-            Utils.delay("click-crotch-happy", 1500, () -> {
-                resetMouth();
-                redCheek.hide();
-            });
+            if (Global.r18features) {
+                Utils.delay("click-crotch-happy", 1500, r18::startHavingSex);
+            } else {
+                Utils.delay("click-crotch-happy", 1500, () -> {
+                    resetMouth();
+                    redCheek.hide();
+                });
+            }
         } else {
             Utils.shortDelay(mouth::toSad);
             if (level > -1) {
-                redCheek.show();
+                Utils.shortDelay(redCheek::show);
             }
             if (level <= -1) {
                 if (Utils.random(0.3)) {
                     Utils.shortDelay(eyeLeft::removeHighlight);
                     Utils.shortDelay(eyeRight::removeHighlight);
                 } else {
-                    redCheek.show();
+                    Utils.shortDelay(redCheek::show);
                 }
             }
             legLeft.tighten(legLeft::loose);
@@ -479,7 +609,7 @@ public class Kokori implements Chara {
             dressFront.flutter();
             dressBack.flutter();
             Utils.delay("click-crotch", 1500, () -> {
-                redCheek.hide();
+                resetCheek();
                 resetMouth();
                 resetHighlight();
                 armRight.moveToDefaultPosition();
@@ -492,7 +622,7 @@ public class Kokori implements Chara {
         legLeft.tighten(legLeft::loose);
         dressFront.flutter();
         dressBack.flutter();
-        redCheek.show();
+        Utils.shortDelay(redCheek::show);
 
         int result = personality.touchLeg();
         if (result != 1) {
@@ -500,7 +630,7 @@ public class Kokori implements Chara {
         }
 
         Utils.delay("click-leg-left", 1500, () -> {
-            redCheek.hide();
+            resetCheek();
             if (result != 1) {
                 resetMouth();
             }
@@ -509,7 +639,7 @@ public class Kokori implements Chara {
 
     private void clickLeg(double x, double y) {
         assert Logger.debug("click leg");
-        redCheek.show();
+        Utils.shortDelay(redCheek::show);
 
         int result = personality.touchLeg();
         if (result != 1) {
@@ -517,7 +647,7 @@ public class Kokori implements Chara {
         }
 
         Utils.delay("click-leg", 1500, () -> {
-            redCheek.hide();
+            resetCheek();
             if (result != 1) {
                 resetMouth();
             }
@@ -544,6 +674,10 @@ public class Kokori implements Chara {
     }
 
     private void randomEvent() {
+        if (state != State.NORMAL) {
+            return;
+        }
+
         if (Utils.random(0.7)) {
             Utils.randomDelay(() -> {
                 hair.swing();
@@ -582,15 +716,78 @@ public class Kokori implements Chara {
                 }
             });
         }
+        if (Utils.random(0.001)) {
+            r18.addLovePotion();
+        }
     }
 
     @Override
     public void release() {
-        // nothing to do
+        randomEventsScheduledFuture.cancel(true);
     }
 
     @Override
     public void takeMessage(String msg) {
+        if (state != State.NORMAL) {
+            if (!Global.debugFeatures || !msg.startsWith("::")) {
+                return;
+            }
+        }
+
         chatBot.takeMessage(msg);
+    }
+
+    @Override
+    public boolean getDebugInfo(ClipboardContent content) {
+        Logger.info("getting debug info");
+        content.putString("Kokori: " +
+            "state=" + state +
+            ", bond=" + personality.getBondPoint() +
+            ", desire=" + personality.getDesirePoint() +
+            ", config=" + ConfigManager.get() +
+            ", current=" + System.currentTimeMillis());
+        return true;
+    }
+
+    @Override
+    public void takeDebugMessage(Clipboard clipboard) {
+        if (clipboard.hasString()) {
+            String s = clipboard.getString();
+            if (s != null && !s.isBlank()) {
+                appCallback.showMessage(s);
+            }
+        }
+    }
+
+    private void menuAboutName() {
+        appCallback.showMessage(KokoriWords.aboutName.select());
+    }
+
+    private void menuAboutCooking() {
+        if (preInteractionCheckFail()) {
+            return;
+        }
+        appCallback.showMessage(KokoriWords.aboutCooking.select());
+    }
+
+    private void menuThingsSheLikes() {
+        if (preInteractionCheckFail()) {
+            return;
+        }
+        appCallback.showMessage(KokoriWords.thingsLikes.select());
+    }
+
+    private void menuThingsSheHates() {
+        appCallback.showMessage(KokoriWords.thingsHates.select());
+    }
+
+    private void menuBondStory(int lvl) {
+        if (personality.getBondPoint() < KokoriPersonality.INITIAL_BOND_POINT) {
+            return;
+        }
+        if (personality.getBondPoint() < bondStoriesRequiredBondPoints[lvl]) {
+            return;
+        }
+        appCallback.showMessage(KokoriWords.bondStories[lvl].select());
     }
 }

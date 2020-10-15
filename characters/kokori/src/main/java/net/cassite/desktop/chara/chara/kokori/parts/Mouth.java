@@ -67,6 +67,7 @@ public class Mouth extends AbstractPart {
         if (state == 0) {
             return;
         }
+        stopAnimatingOpenAndShut();
         if (state == 1) {
             removeAll();
             animaHappyToDefault.addTo(root);
@@ -89,6 +90,7 @@ public class Mouth extends AbstractPart {
         if (state == 1) {
             return;
         }
+        stopAnimatingOpenAndShut();
         if (state == 0) {
             removeAll();
             animaDefaultToHappy.addTo(root);
@@ -112,6 +114,7 @@ public class Mouth extends AbstractPart {
         if (state == 2) {
             return;
         }
+        stopAnimatingOpenAndShut();
         if (state == 0) {
             removeAll();
             animaDefaultToSad.addTo(root);
@@ -135,6 +138,7 @@ public class Mouth extends AbstractPart {
         if (state == 3) {
             return;
         }
+        stopAnimatingOpenAndShut();
         if (state == 0) {
             removeAll();
             mouthOpen.addTo(root);
@@ -160,6 +164,46 @@ public class Mouth extends AbstractPart {
         }
         resetRotate();
         state = 3;
+    }
+
+    private boolean shouldAnimateOpenAndShut = false;
+
+    public void startAnimatingOpenAndShut() {
+        if (shouldAnimateOpenAndShut) {
+            return;
+        }
+        shouldAnimateOpenAndShut = true;
+        removeAll();
+        mouthOpen.resizeY(kokoriConsts.mouth_mouthOpen_yMinRatio);
+        mouthOpen.addTo(root);
+        recursiveAnimateOpenAndShut();
+    }
+
+    public void stopAnimatingOpenAndShut() {
+        shouldAnimateOpenAndShut = false;
+    }
+
+    private void recursiveAnimateOpenAndShut() {
+        if (!shouldAnimateOpenAndShut) {
+            removeAll();
+            mouthLine.addTo(root);
+            state = 0;
+            return;
+        }
+        final double maxYRatio = kokoriConsts.mouth_recursiveAnimateOpenAndShut_yMaxRatio;
+        final double minYRatio = kokoriConsts.mouth_recursiveAnimateOpenAndShut_yMinRatio;
+        new TimeBasedAnimationHelper(1000, p ->
+            mouthOpen.resizeY((maxYRatio - minYRatio) * p + minYRatio)
+        ).setFinishCallback(() ->
+            Utils.delay("animate-open-and-shut-delay-when-open", 200,
+                () -> new TimeBasedAnimationHelper(1000, p ->
+                    mouthOpen.resizeY((minYRatio - maxYRatio) * p + maxYRatio)
+                ).setFinishCallback(() ->
+                    Utils.delay("animate-open-and-shut-delay-when-shut", 500,
+                        this::recursiveAnimateOpenAndShut)
+                ).play()
+            )
+        ).play();
     }
 
     private final TimeBasedAnimationHelper mouthOpenAnimationHelper =

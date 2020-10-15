@@ -74,6 +74,7 @@ public class Main extends Application {
             // enable implicit exit
             Platform.setImplicitExit(true);
 
+            StageUtils.primaryStage = primaryStage;
             app.ready();
         }));
     }
@@ -168,11 +169,11 @@ public class Main extends Application {
             final var finalConfigs = configs;
             Platform.runLater(() -> {
                 Stage chooseModelConfigStage = new Stage();
-                chooseModelConfigStage.initStyle(StageStyle.UTILITY);
+                chooseModelConfigStage.initStyle(StageStyle.UNIFIED);
                 chooseModelConfigStage.setWidth(256);
                 chooseModelConfigStage.setHeight(320);
                 chooseModelConfigStage.setResizable(false);
-                Utils.fixStageSize(chooseModelConfigStage, StageStyle.UTILITY);
+                Utils.fixStageSize(chooseModelConfigStage, StageStyle.UNIFIED);
                 chooseModelConfigStage.centerOnScreen();
                 chooseModelConfigStage.setTitle(I18nConsts.SELECT_EXISTING_MODEL_CONFIG.get()[0]);
 
@@ -317,12 +318,12 @@ public class Main extends Application {
             // should run from UI thread
 
             Stage loadingStage = new Stage();
-            loadingStage.initStyle(StageStyle.UTILITY);
+            loadingStage.initStyle(StageStyle.UNIFIED);
             loadingStage.setWidth(600);
             loadingStage.setHeight(80);
             loadingStage.setResizable(false);
             loadingStage.setTitle(I18nConsts.LOADING.get()[0]);
-            Utils.fixStageSize(loadingStage, StageStyle.UTILITY);
+            Utils.fixStageSize(loadingStage, StageStyle.UNIFIED);
             loadingStage.centerOnScreen();
 
             Pane pane = new Pane();

@@ -18,7 +18,7 @@ public class EyeJoin {
     }
 
     public void blink() {
-        eyeSocket.blink();
+        eyeSocket.close(eyeSocket::open);
     }
 
     public boolean hasHighlight() {
@@ -55,5 +55,18 @@ public class EyeJoin {
 
     public void zoom(double ratio) {
         eye.zoom(ratio);
+    }
+
+    public void move(double x, double y) {
+        eye.move(x, y);
+    }
+
+    public void close() {
+        eyeSocket.close(() -> {
+        });
+    }
+
+    public void open() {
+        eyeSocket.open();
     }
 }

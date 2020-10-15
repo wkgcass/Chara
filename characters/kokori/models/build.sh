@@ -6,6 +6,8 @@ ls ./kokori-full
 ls ./kokori-mini
 ls ./shared
 
+find . -name '.DS_Store' -type f -delete
+
 function clean_shared() {
   rm -rf shared/code
   mkdir shared/code
@@ -23,6 +25,7 @@ function clean_model() {
   rm -rf "$model/code/"
   rm -rf "$model/words/"
   rm -f "$model/values/values.json"
+  rm -f "$model/values/r18values.json"
 }
 
 function compile() {
@@ -39,6 +42,7 @@ function copy_shared() {
   cp -r shared/code/ "$model/code/"
   cp -r shared/words/ "$model/words/"
   cp shared/values/values.json "$model/values/values.json"
+  cp shared/values/r18values.json "$model/values/r18values.json"
 }
 
 function build_model() {

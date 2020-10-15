@@ -12,6 +12,9 @@ public class Global {
     public static Image modelIcon;
     public static int modelVersion;
 
+    public static final boolean r18features = System.getProperty("r18Features", "false").equals("true");
+    public static final boolean debugFeatures = System.getProperty("ebugFeatures", "false").equals("true"); // -DebugFeatures=...
+
     private Global() {
     }
 }

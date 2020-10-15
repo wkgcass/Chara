@@ -2,10 +2,14 @@
 
 package net.cassite.desktop.chara.chara;
 
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.KeyEvent;
+
 import java.util.Objects;
 
 public interface Chara {
-    void ready();
+    void ready(ReadyParams params);
 
     void mouseMove(double x, double y);
 
@@ -15,11 +19,24 @@ public interface Chara {
 
     void click(double x, double y);
 
+    void keyPressed(KeyEvent e);
+
+    void keyReleased(KeyEvent e);
+
     Data data();
 
     void release();
 
     void takeMessage(String msg);
+
+    boolean getDebugInfo(ClipboardContent content);
+
+    void takeDebugMessage(Clipboard clipboard);
+
+    class ReadyParams {
+        public ReadyParams() {
+        }
+    }
 
     class Data {
         public final int imageWidth;
@@ -35,6 +52,9 @@ public interface Chara {
         public final int minY;
         public final int maxY;
 
+        public final boolean messageSupported;
+        public final boolean activeInteractionSupported;
+
         private Data(int imageWidth,
                      int imageHeight,
                      int minWidth,
@@ -46,7 +66,9 @@ public interface Chara {
                      int messageOffsetX,
                      int messageAtMinY,
                      int minY,
-                     int maxY) {
+                     int maxY,
+                     boolean messageSupported,
+                     boolean activeInteractionSupported) {
             this.imageWidth = imageWidth;
             this.imageHeight = imageHeight;
             this.minWidth = minWidth;
@@ -59,6 +81,8 @@ public interface Chara {
             this.messageAtMinY = messageAtMinY;
             this.minY = minY;
             this.maxY = maxY;
+            this.messageSupported = messageSupported;
+            this.activeInteractionSupported = activeInteractionSupported;
         }
     }
 
@@ -75,6 +99,8 @@ public interface Chara {
         private Integer messageAtMinY;
         private Integer minY;
         private Integer maxY;
+        private boolean messageSupported = false;
+        private boolean activeInteractionSupported = false;
 
         public Data build() {
             Objects.requireNonNull(imageWidth, "imageWidth");
@@ -99,7 +125,9 @@ public interface Chara {
                 messageOffsetX,
                 messageAtMinY,
                 minY,
-                maxY
+                maxY,
+                messageSupported,
+                activeInteractionSupported
             );
         }
 
@@ -160,6 +188,16 @@ public interface Chara {
 
         public DataBuilder setMaxY(int maxY) {
             this.maxY = maxY;
+            return this;
+        }
+
+        public DataBuilder setMessageSupported(boolean messageSupported) {
+            this.messageSupported = messageSupported;
+            return this;
+        }
+
+        public DataBuilder setActiveInteractionSupported(boolean activeInteractionSupported) {
+            this.activeInteractionSupported = activeInteractionSupported;
             return this;
         }
     }

@@ -3,16 +3,27 @@
 package net.cassite.desktop.chara;
 
 import net.cassite.desktop.chara.i18n.Words;
-import net.cassite.desktop.chara.i18n.WordsBuilder;
 
 public interface AppCallback {
-    void setBondPoint(double current, double previous);
+    void setCharaPoints(CharaPoints points);
 
     void showMessage(Words words);
 
     default void showMessage(String... msg) {
-        showMessage(new WordsBuilder(msg).build());
+        showMessage(new Words(msg, null));
     }
 
+    void clearAllMessages();
+
+    void activeInteraction(Runnable cb);
+
     void clickNothing(double x, double y);
+
+    void moveWindow(double deltaX, double deltaY);
+
+    void setDraggable(boolean draggable);
+
+    void setGlobalScreen(boolean globalScreen);
+
+    void setAlwaysShowBar(boolean alwaysShowBar);
 }

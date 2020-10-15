@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.Global;
+import net.cassite.desktop.chara.StageUtils;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageStage extends Stage {
     private final StageTransformer primaryStage;
+    private final Stage tmpStage;
     private final LinkedList<MessageBubble> messageBubbles = new LinkedList<>();
     private final LinkedList<InputMessage> messageBubblesToBeAdded = new LinkedList<>();
     private final LinkedList<MessageBubble> messageBubblesToBePopped = new LinkedList<>();
@@ -27,7 +29,9 @@ public class MessageStage extends Stage {
 
     public MessageStage(StageTransformer primaryStage) {
         this.primaryStage = primaryStage;
+        this.tmpStage = StageUtils.createTransparentTemporaryUtilityStage();
         initStyle(StageStyle.TRANSPARENT);
+        initOwner(this.tmpStage);
         setResizable(false);
         setAlwaysOnTop(true);
         root.setBackground(Background.EMPTY);
@@ -66,7 +70,7 @@ public class MessageStage extends Stage {
         setHeight(ySum);
         msg.addTo(root);
         if (!isShowing()) {
-            show();
+            showAll();
             assert Logger.debug("message stage show()");
             // focus the primary stage to make pushMessage behavior consistent
             primaryStage.getStage().requestFocus();
@@ -97,6 +101,17 @@ public class MessageStage extends Stage {
         messageBubblesToBePopped.clear();
         root.getChildren().clear();
         ySum = 0;
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        tmpStage.hide();
+    }
+
+    public void showAll() {
+        show();
+        tmpStage.show();
     }
 
     private static final int REMOVING_ANIMATION_DURATION = 100;
@@ -292,5 +307,12 @@ public class MessageStage extends Stage {
         }
         requestFocus();
         popMessage(messageBubble);
+    }
+
+    public void clearAllMessages() {
+        messageBubblesToBeAdded.clear();
+        for (var msg : messageBubbles) {
+            popMessage(msg);
+        }
     }
 }

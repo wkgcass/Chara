@@ -12,7 +12,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.cassite.desktop.chara.Global;
+import net.cassite.desktop.chara.StageUtils;
+import net.cassite.desktop.chara.manager.FontManager;
 import net.cassite.desktop.chara.util.Utils;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,17 +36,20 @@ public class Alert {
             return;
         }
         Text foo = new Text(msg);
-        foo.setFont(new Font(FONT_SIZE));
+        foo.setFont(Font.font(FontManager.getFontFamily(), FONT_SIZE));
         var w = foo.getLayoutBounds().getWidth();
         var h = foo.getLayoutBounds().getHeight();
 
         Label label = new Label(msg);
-        label.setFont(new Font(FONT_SIZE));
+        label.setFont(Font.font(FontManager.getFontFamily(), FONT_SIZE));
         label.setLayoutX(MARGIN_HORIZONTAL);
         label.setLayoutY(MARGIN_VERTICAL);
         label.setTextFill(new Color(1, 1, 1, 1));
 
+        Stage tmpStage = StageUtils.createTransparentTemporaryUtilityStage();
+
         Stage stage = new Stage();
+        stage.initOwner(tmpStage);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setWidth(w + MARGIN_HORIZONTAL * 2);
         stage.setHeight(h + MARGIN_VERTICAL * 2);
@@ -53,9 +57,6 @@ public class Alert {
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.setOpacity(0);
-        if (Global.modelIcon != null) {
-            stage.getIcons().add(Global.modelIcon);
-        }
 
         Pane pane = new Pane();
         pane.setBackground(Background.EMPTY);
@@ -74,26 +75,30 @@ public class Alert {
         final int fDuration = duration;
 
         showingStages.put(stage, _VALUE_);
+        showingStages.put(tmpStage, _VALUE_);
+        tmpStage.show();
         stage.show();
+
+        Runnable hideFunc = () -> {
+            showingStages.remove(stage);
+            showingStages.remove(tmpStage);
+            stage.hide();
+            tmpStage.hide();
+        };
+
         new TimeBasedAnimationHelper(500, 50 / HZ.UNIT,
             p -> stage.setOpacity(p * MAX_OPACITY))
             .setFinishCallback(() ->
                 Utils.delayNoRecord(fDuration, () ->
                     new TimeBasedAnimationHelper(500, 50 / HZ.UNIT,
                         p -> stage.setOpacity(MAX_OPACITY - p * MAX_OPACITY))
-                        .setFinishCallback(() -> {
-                            showingStages.remove(stage);
-                            stage.hide();
-                        })
+                        .setFinishCallback(hideFunc)
                         .play()
                 )
             )
             .play();
 
-        pane.setOnMouseClicked(e -> {
-            showingStages.remove(stage);
-            stage.hide();
-        });
+        pane.setOnMouseClicked(e -> hideFunc.run());
     }
 
     public static void shutdown() {

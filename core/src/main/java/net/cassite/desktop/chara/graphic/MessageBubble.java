@@ -8,6 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import net.cassite.desktop.chara.manager.FontManager;
 import net.cassite.desktop.chara.util.Consts;
 
 public class MessageBubble {
@@ -30,7 +31,7 @@ public class MessageBubble {
 
         {
             Text foo = new Text(message);
-            foo.setFont(new Font(Consts.MSG_FONT_SIZE));
+            foo.setFont(Font.font(FontManager.getFontFamily(), Consts.MSG_FONT_SIZE));
             double w = foo.getLayoutBounds().getWidth();
             if (w > Consts.MSG_BUBBLE_MAX_WIDTH - Consts.MSG_BUBBLE_PADDING_HORIZONTAL * 2) {
                 w = Consts.MSG_BUBBLE_MAX_WIDTH - Consts.MSG_BUBBLE_PADDING_HORIZONTAL * 2;
@@ -41,7 +42,7 @@ public class MessageBubble {
             this.textHeight = h;
         }
         text = new Label(message);
-        text.setFont(new Font(Consts.MSG_FONT_SIZE));
+        text.setFont(Font.font(FontManager.getFontFamily(), Consts.MSG_FONT_SIZE));
         text.setTextFill(color.text);
         text.setWrapText(true);
         text.setPrefWidth(textWidth);

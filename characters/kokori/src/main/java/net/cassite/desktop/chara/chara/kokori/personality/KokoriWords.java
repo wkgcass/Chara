@@ -4,7 +4,6 @@ package net.cassite.desktop.chara.chara.kokori.personality;
 
 import net.cassite.desktop.chara.i18n.WordsBuilder;
 import net.cassite.desktop.chara.i18n.WordsSelector;
-import net.cassite.desktop.chara.util.Utils;
 
 public class KokoriWords {
     private KokoriWords() {
@@ -13,28 +12,26 @@ public class KokoriWords {
     public static final WordsSelector aboutName = new WordsBuilder
         ("你好",
             "我叫心璃",
-            "内心的心，琉璃的璃")
+            "内心的心，琉璃的璃",
+            "今后也请多指教了！")
         .setEn("Hi",
-            "My name is XinLi (Kokori)",
-            "It stands for heart and glass")
+            "My name is Kokori",
+            "It stands for heart and glass",
+            "I hope we can get along well in the future!")
+        .build();
+    public static final WordsSelector aboutCooking = new WordsBuilder
+        ("我在这里一个人生活了挺长时间了，烹饪是没什么问题啦",
+            "以前师父和伙伴们还在的时候，我也是经常下厨的哦～",
+            "啊，不过我平时做的都只是家常菜，山珍海味什么的不是很拿手")
+        .setEn("I have lived here alone for quite a long time, cooking is no problem",
+            "I also used to cook very often when my mentor and friends were still around",
+            "Ah, but I usually only do some home cooking, not good at handling rare food")
         .build();
 
-    private static final WordsSelector flirt = new WordsSelector(
-        new WordsBuilder
-            ("这...",
-                "好吧...")
-            .setEn("Ah, this is a little bit...",
-                "Fine then...")
-            .build(),
-        new WordsBuilder
-            ("我会害羞的...")
-            .setEn("I may become so shy...")
-            .build()
-    );
     private static WordsSelector flirtFromModel = null;
 
     public static WordsSelector flirt() {
-        return chooseSelector(flirt, flirtFromModel);
+        return flirtFromModel;
     }
 
     public static final WordsSelector doNotTouchThere = new WordsSelector(
@@ -59,28 +56,14 @@ public class KokoriWords {
         new WordsBuilder
             ("平时射箭的训练一天也没有耽搁呢。",
                 "你也想看看吗？")
-            .setEn("I always keep the daily archery training.",
+            .setEn("I've always kept the daily archery training.",
                 "Do you want to see?")
             .build()
     );
-    public static final WordsSelector wantSex = new WordsSelector(
-        new WordsBuilder
-            ("如果你也想要的话...",
-                "可以哦～♡")
-            .setEn("If that's what you want...",
-                "I'm all yours~♡")
-            .build(),
-        new WordsBuilder
-            ("在这里就要...吗？",
-                "呵呵呵呵，你还真是急不可耐呢～")
-            .setEn("You want to ... here?",
-                "Hehehehe, you are really impatient~")
-            .build(),
-        new WordsBuilder
-            ("你把我弄得有点奇怪了...")
-            .setEn("You made me a little weird...")
-            .build()
-    );
+    public static final WordsSelector happyWords = new WordsBuilder
+        ("你这么喜欢我，我很开心哦～\u2665")
+        .setEn("I'm glad that you like me so much~\u2665")
+        .build();
     public static final WordsSelector doNotTouchLeg = new WordsSelector(
         new WordsBuilder
             ("女孩子的腿不可以随便摸哦...")
@@ -99,9 +82,9 @@ public class KokoriWords {
         .build();
     public static final WordsSelector aboutRune = new WordsBuilder
         ("这是除妖用的符咒。如果被妖怪靠近了，可以找机会贴上去。",
-            "不过我更喜欢在远处用弓箭解决它们。")
+            "不过我更擅长在远处用弓箭解决它们。")
         .setEn("This is a spell used to eliminate monsters. You will need it if you are approached by a monster.",
-            "But I prefer to use my arrow to do the work from a distance.")
+            "But I'm better at killing them with my arrows from a distance.")
         .build();
     public static final WordsSelector dontWantToSeeYou = new WordsSelector(
         new WordsBuilder
@@ -117,16 +100,11 @@ public class KokoriWords {
             .setEn("Don't touch me!")
             .build()
     );
-    private static final WordsSelector opening = new WordsSelector(
-        new WordsBuilder
-            ("嗨，又见面啦")
-            .setEn("Hey, how are you")
-            .build()
-    );
+
     private static WordsSelector openingFromModel = null;
 
     public static WordsSelector opening() {
-        return chooseSelector(opening, openingFromModel);
+        return openingFromModel;
     }
 
     public static final WordsSelector badMoodOpening = new WordsBuilder
@@ -137,53 +115,55 @@ public class KokoriWords {
         ("哎，怎么还是你")
         .setEn("Ah, why you again")
         .build();
+
     public static final WordsSelector idontknow = new WordsBuilder
         ("抱歉，不太明白是什么意思呢")
         .setEn("Sorry, I don't understand what you wanted")
         .build();
 
-    private static final WordsSelector normalConversations = new WordsBuilder
-        ("这件衣服...啊，会不会有点太暴露了",
-            "本来应该是普通的巫女服的，不知道为什么变成了现在这个样子",
-            "诶？你说很合适？",
-            "这...哈哈，稍微有点开心呢")
-        .setEn("This cloth... Ah, Is it a bit too exposed",
-            "It was supposed to be a standard mikofuku, I don't know why it becomes like this",
-            "Eh? You said it looks pretty on me?",
-            "Hah, you are sweet")
+    public static final WordsSelector thingsLikes = new WordsBuilder
+        ("我最喜欢吃青团子",
+            "这是江南地区的特色小吃",
+            "用艾草的汁拌进糯米粉里，再包裹进豆沙馅儿或者莲蓉，不甜不腻，带有清淡却悠长的青草香气",
+            "怎么样？你有没有尝过？")
         .build();
+    public static final WordsSelector thingsHates = new WordsBuilder
+        ("我最讨厌蛊惑人心的妖魔",
+            "它们只为了自己的一点点利益，就可以断章取义，捏造是非，颠倒黑白",
+            "它们能够加深人们相互之间的隔阂，扭曲人心，甚至让他人为自己所支配",
+            "让我更加害怕的是，这样的妖魔无处不在，也难以侦辨",
+            "这样的妖魔往往会利用人的欲望来蛊惑人心，但即使我可以控制自己的欲望，我也没办法让身边的人也控制住",
+            "呐，你见到过这样的妖魔吗？或者说，你会成为这样的妖魔吗？")
+        .build();
+
+    public static final WordsSelector[] bondStories = new WordsSelector[]{
+        new WordsBuilder
+            ("bond story 1")
+            .build(),
+        new WordsBuilder
+            ("bond story 2")
+            .build(),
+        new WordsBuilder
+            ("bond story 3")
+            .build(),
+        new WordsBuilder
+            ("bond story 4")
+            .build(),
+        new WordsBuilder
+            ("bond story 5")
+            .build()
+    };
+
     private static WordsSelector normalConversationsFromModel;
 
     public static WordsSelector normalConversations() {
-        return chooseSelector(normalConversations, normalConversationsFromModel);
+        return normalConversationsFromModel;
     }
 
-    private static final WordsSelector highIntimacyConversations = new WordsBuilder
-        ("诶？你-你说...接...接吻？有点...太突然了...我还没准备好",
-            "但...如果是你的话...可...可以哦...")
-        .setEn("Eh? D-Did you say...k...kiss? This suddenly...it's a little embarrassing... ",
-            "But...if it's with you...I-I might be okay with it...")
-        .build();
     private static WordsSelector highIntimacyConversationsFromModel;
 
     public static WordsSelector highIntimacyConversations() {
-        return chooseSelector(highIntimacyConversations, highIntimacyConversationsFromModel);
-    }
-
-    private static WordsSelector chooseSelector(WordsSelector a, WordsSelector nullableB) {
-        if (nullableB == null) {
-            return a;
-        }
-        //noinspection UnnecessaryLocalVariable
-        final var b = nullableB;
-
-        double countA = a.count();
-        double countB = b.count();
-        if (Utils.random(countA / (countA + countB))) {
-            return a;
-        } else {
-            return b;
-        }
+        return highIntimacyConversationsFromModel;
     }
 
     public static void setNormalConversationsFromModel(WordsSelector normalConversationsFromModel) {

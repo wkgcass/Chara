@@ -35,7 +35,7 @@ jlink {
     options = ['--compress', '2', '--no-header-files', '--no-man-pages']
     launcher {
         name = 'chara'
-        jvmArgs = ['-Xmx450M', '-verbose:gc']
+        jvmArgs = ['-Xmx450M', '-verbose:gc', '-Dr18Features=true', '-DebugFeatures=true']
     }
 }
 

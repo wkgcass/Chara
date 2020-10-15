@@ -16,6 +16,7 @@ import vjson.JSON;
 import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -201,7 +202,7 @@ public class ModelManager {
             Logger.fatal("get input stream from model configuration failed: " + entry.getName(), e);
             return null;
         }
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         StringBuilder sb = new StringBuilder();
         String line;
         try {
@@ -286,7 +287,7 @@ public class ModelManager {
 
     private static WordsSelector getWords(ZipFile zipFile, ZipEntry wordsEntry) throws Exception {
         var inputStream = zipFile.getInputStream(wordsEntry);
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
         List<Words> wordsList = new LinkedList<>();
         StringBuilder sb = new StringBuilder();

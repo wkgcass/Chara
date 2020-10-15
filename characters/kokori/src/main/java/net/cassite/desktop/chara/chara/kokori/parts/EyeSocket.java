@@ -5,7 +5,9 @@ package net.cassite.desktop.chara.chara.kokori.parts;
 import net.cassite.desktop.chara.graphic.Div;
 
 public interface EyeSocket {
-    void blink();
-
     Div getRoot();
+
+    void close(Runnable cb);
+
+    void open();
 }

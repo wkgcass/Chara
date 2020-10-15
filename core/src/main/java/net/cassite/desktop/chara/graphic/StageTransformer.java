@@ -15,6 +15,7 @@ public class StageTransformer {
     private final double cutRight;
     private final double cutTop;
     private final double cutBottom;
+    private final double addAbsoluteTop;
 
     private double scaleRatio = 1;
 
@@ -24,7 +25,8 @@ public class StageTransformer {
                             double cutLeft,
                             double cutRight,
                             double cutTop,
-                            double cutBottom) {
+                            double cutBottom,
+                            double addAbsoluteTop) {
         this.stage = stage;
         this.originalWidth = originalWidth;
         this.originalHeight = originalHeight;
@@ -32,6 +34,7 @@ public class StageTransformer {
         this.cutRight = cutRight;
         this.cutTop = cutTop;
         this.cutBottom = cutBottom;
+        this.addAbsoluteTop = addAbsoluteTop;
 
         stage.setX(0);
         stage.setY(0);
@@ -62,7 +65,7 @@ public class StageTransformer {
         double w = (originalWidth - cutLeft - cutRight) * ratio;
         double h = (originalHeight - cutBottom - cutTop) * ratio;
         stage.setWidth(w);
-        stage.setHeight(h);
+        stage.setHeight(h + addAbsoluteTop);
 
         double actualOldScaleAtX = (originalOldScaleAtX - cutLeft) * this.scaleRatio;
         double actualOldScaleAtY = (originalOldScaleAtY - cutTop) * this.scaleRatio;
@@ -146,15 +149,20 @@ public class StageTransformer {
         return cutBottom;
     }
 
-    public double calculateX(double x) {
-        x -= getCutLeft();
-        x *= getScaleRatio();
+    public double getAddAbsoluteTop() {
+        return addAbsoluteTop;
+    }
+
+    public double getImageXBySceneX(double x) {
+        x /= getScaleRatio();
+        x += getCutLeft();
         return x;
     }
 
-    public double calculateY(double y) {
-        y -= getCutTop();
-        y *= getScaleRatio();
+    public double getImageYBySceneY(double y) {
+        y -= getAddAbsoluteTop();
+        y /= getScaleRatio();
+        y += getCutTop();
         return y;
     }
 }

@@ -2,8 +2,6 @@
 
 package net.cassite.desktop.chara.model.kokori;
 
-import javafx.scene.Group;
-import net.cassite.desktop.chara.AppCallback;
 import net.cassite.desktop.chara.chara.Chara;
 import net.cassite.desktop.chara.chara.kokori.Kokori;
 import net.cassite.desktop.chara.chara.kokori.personality.KokoriWords;
@@ -24,8 +22,8 @@ public class KokoriModel implements Model {
     }
 
     @Override
-    public Chara construct(AppCallback cb, Group parent) {
-        return new Kokori(kokoriConsts, cb, parent);
+    public Chara construct(ConstructParams params) {
+        return new Kokori(kokoriConsts, params.cb, params.parent, params.characterMenu);
     }
 
     @Override

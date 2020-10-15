@@ -27,18 +27,39 @@ public class I18nConsts {
         .setEn("Loading...")
         .build();
 
-    public static final Words showMessageHelper = new WordsBuilder
-        ("使用组合键Ctrl+Shift+Win/Cmd+下列快捷按键:\n" +
-            "+H  显示帮助信息\n" +
-            "+C  开启或关闭对话功能\n" +
-            "+T  窗口是否放置在最前\n" +
-            "+V  显示模型版本")
-        .setEn("Use combination of Ctrl+Shift+Win/Cmd+ following hot keys:\n" +
-            "+H  show help message\n" +
-            "+C  enable or disable chat feature\n" +
-            "+T  enable or disable window always on top\n" +
-            "+V  show model version")
+    public static final Words enableChatFeatureItem = new WordsBuilder
+        ("启用对话功能")
+        .setEn("Enable chat feature")
         .build();
+    public static final Words alwaysOnTopItem = new WordsBuilder
+        ("窗口放置在最前")
+        .setEn("Window always on top")
+        .build();
+    public static final Words activeInteractionItem = new WordsBuilder
+        ("允许主动互动")
+        .setEn("Allow active interaction")
+        .build();
+    public static final Words screenshotItem = new WordsBuilder
+        ("截图")
+        .setEn("Screenshot")
+        .build();
+    public static final Words characterMenu = new WordsBuilder
+        ("角色")
+        .setEn("Character")
+        .build();
+    public static final Words systemMenu = new WordsBuilder
+        ("系统")
+        .setEn("System")
+        .build();
+    public static final Words showVersionsItem = new WordsBuilder
+        ("显示版本号")
+        .setEn("Show versions")
+        .build();
+    public static final Words exitMenuItem = new WordsBuilder
+        ("退出")
+        .setEn("Exit")
+        .build();
+
     public static final Words messageEnabled = new WordsBuilder
         ("对话功能已启用")
         .setEn("Chat feature enabled")
@@ -55,10 +76,19 @@ public class I18nConsts {
         ("放置在最前")
         .setEn("Always on top enabled")
         .build();
-    public static final Words bondPointTooLowWarning = new WordsBuilder
-        ("当前羁绊值过低，继续互动可能引发灾难性后果")
-        .setEn("The current bond point is too low, continuing to interact may cause catastrophic consequences")
+    public static final Words screenshotSavedInClipboard = new WordsBuilder
+        ("截图已保存至剪贴板中")
+        .setEn("Screenshot saved into clipboard")
         .build();
+    public static final Words activeInteractionEnabled = new WordsBuilder
+        ("主动互动已开启")
+        .setEn("Active interaction enabled")
+        .build();
+    public static final Words activeInteractionDisabled = new WordsBuilder
+        ("主动互动已禁用")
+        .setEn("Active interaction disabled")
+        .build();
+
     public static final Words chatbotNotConfigured = new WordsBuilder
         ("聊天机器人尚未配置")
         .setEn("Chatbot is not configured yet")
