@@ -1,0 +1,12 @@
+{
+  "name": "kokori",
+  "version": 1000000,
+  "compatibleMinCodeVersion": 1000000,
+  "compatibleMaxCodeVersion": -1,
+  "modelClass": "net.cassite.desktop.chara.model.kokori.KokoriModel",
+  "extra": {
+    "author": "wkgcass",
+    "git": "https://github.com/wkgcass/Chara",
+    "license": "GPLv2 with classpath exception"
+  }
+}

@@ -19,14 +19,6 @@ public class KokoriWords {
             "It stands for heart and glass",
             "I hope we can get along well in the future!")
         .build();
-    public static final WordsSelector aboutCooking = new WordsBuilder
-        ("我在这里一个人生活了挺长时间了，烹饪是没什么问题啦",
-            "以前师父和伙伴们还在的时候，我也是经常下厨的哦～",
-            "啊，不过我平时做的都只是家常菜，山珍海味什么的不是很拿手")
-        .setEn("I have lived here alone for quite a long time, cooking is no problem",
-            "I also used to cook very often when my mentor and friends were still around",
-            "Ah, but I usually only do some home cooking, not good at handling rare food")
-        .build();
 
     private static WordsSelector flirtFromModel = null;
 
@@ -138,19 +130,45 @@ public class KokoriWords {
 
     public static final WordsSelector[] bondStories = new WordsSelector[]{
         new WordsBuilder
-            ("bond story 1")
+            ("诶？小心一点哦。有什么事我们到神社外面说吧。",
+                "你身上的「灵」不太一样呢。你是从其他的世界来的吧？",
+                "的确听说过一些传闻，上次「冲击」时有其他世界的人也被送来了这里。",
+                "你来这里有什么请求吗？这可不是普通的用来求签的神社哦～")
             .build(),
         new WordsBuilder
-            ("bond story 2")
+            ("十年前的「冲击」，你应该也知道把？",
+                "那次「冲击」中产生的怪物在我左臂上留下了一道可怕的伤口。",
+                "即使早已愈合，却也留下了丑陋的印记",
+                "现在习惯性得用绷带绑住藏起来，也能稍微好看一点吧，嘿嘿～")
             .build(),
         new WordsBuilder
-            ("bond story 3")
+            ("别看这座神社外表普普通通，甚至有些破旧，但在它内部却有着世界上最重要的灵脉中枢哦～",
+                "但也正因为如此，在十年前的那次「冲击」中，这里成为了模因侵蚀最严重的区域。",
+                "模因产生了各类难以理解的生物，光是看一眼就令人头晕目眩。击退它们不但是力量上的困难，更是精神上的折磨。",
+                "即使在击退那些怪物后，模因的影响也在这块土地上不断持续。「无法生存」便是最显著的影响。",
+                "无论是人，妖怪，动物，还是植物，进入这座神社后便会以数十倍的速度老化凋零。",
+                "但不知为何，这个效果对我没有起作用。这也让我成为唯一能够守护这片神社的人。")
             .build(),
         new WordsBuilder
-            ("bond story 4")
+            ("与其说是“守护”，不如说我是在“监视”这座神社和灵脉。",
+                "许多模因无法用设备捕捉，无论是物理侧的设备还是精神侧的设备。肉眼观察才是最准确的。",
+                "不过不用担心，除非是下一次「冲击」到来，否则模因效果一般是不会加剧的。而「冲击」最少也得几百年才会出现一次吧。",
+                "所以我平时的生活，除了“周围没有其他人”之外，和普通人也没有太大区别。",
+                "因为只有我自己在嘛，所以也只能自己做东西吃啦",
+                "以前老师和伙伴们还在的时候，我也是经常下厨的哦～",
+                "呐，如果有机会的话，你愿意尝一尝我的手艺吗？")
             .build(),
         new WordsBuilder
-            ("bond story 5")
+            ("似乎神社的模因对你也没有产生影响呢。",
+                "好神奇，这样的人不多见呢。",
+                "真怀念啊。我已经好久...好久...好久没能和其他人这样长时间的接触了。",
+                "每周只能用几个小时外出采购生活必需品，平时目光所能触及的活物只有草木飞鸟和几个游荡的幽灵。简直像被软禁了一样。",
+                "可能是不想脱离那次「冲击」的影响吧，在那之后活下来的曾经的熟人也渐渐失去了联系。",
+                "有时候我会想，自己到底是为了什么还在继续这种生活。",
+                "我有个任性的请求，你能...能多来陪陪我吗？最好能一直...一直陪在我身边。",
+                "呐，你会认真考虑的吧？会的吧？",
+                "呐？",
+                "呐？")
             .build()
     };
 

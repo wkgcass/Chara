@@ -1,0 +1,11 @@
+{
+  "integers": {
+    "imageWidth": 1385,
+    "imageHeight": 2400,
+    "minWidth": 350,
+    "initialWidth": 415
+  },
+  "doubles": {
+    "scale": 1.0
+  }
+}

@@ -72,7 +72,6 @@ public class Kokori implements Chara {
 
     final Menu characterMenu;
     private final MenuItem aboutNameMenuItem = new MenuItem(KokoriI18n.aboutNameMenuItem.get()[0]);
-    private final MenuItem aboutCookingMenuItem = new MenuItem(KokoriI18n.aboutCookingMenuItem.get()[0]);
     private final MenuItem thingsSheLikesMenuItem = new MenuItem(KokoriI18n.thingsSheLikesMenuItem.get()[0]);
     private final MenuItem thingsSheHatesMenuItem = new MenuItem(KokoriI18n.thingsSheHatesMenuItem.get()[0]);
     private final MenuItem[] bondStoriesMenuItems = new MenuItem[5];
@@ -115,7 +114,6 @@ public class Kokori implements Chara {
         // menu
         this.characterMenu = characterMenu;
         aboutNameMenuItem.setOnAction(e -> this.menuAboutName());
-        aboutCookingMenuItem.setOnAction(e -> this.menuAboutCooking());
         thingsSheLikesMenuItem.setOnAction(e -> this.menuThingsSheLikes());
         thingsSheHatesMenuItem.setOnAction(e -> this.menuThingsSheHates());
         for (int i = 0; i < 5; ++i) {
@@ -126,7 +124,6 @@ public class Kokori implements Chara {
         }
         characterMenu.getItems().addAll(
             aboutNameMenuItem,
-            aboutCookingMenuItem,
             thingsSheLikesMenuItem,
             thingsSheHatesMenuItem
         );
@@ -429,7 +426,11 @@ public class Kokori implements Chara {
         hairBack.swing();
 
         if (personality.touchHair()) {
-            appCallback.showMessage(KokoriWords.happy.select());
+            if (Utils.random(0.5)) {
+                appCallback.showMessage(KokoriWords.happy.select());
+            } else {
+                appCallback.showMessage(KokoriWords.normalConversations().select());
+            }
             if (Utils.random(0.2)) {
                 Utils.shortDelay(mouth::toHappy);
                 Utils.delay("touch-hair-happy", 3000, this::resetMouth);
@@ -761,13 +762,6 @@ public class Kokori implements Chara {
 
     private void menuAboutName() {
         appCallback.showMessage(KokoriWords.aboutName.select());
-    }
-
-    private void menuAboutCooking() {
-        if (preInteractionCheckFail()) {
-            return;
-        }
-        appCallback.showMessage(KokoriWords.aboutCooking.select());
     }
 
     private void menuThingsSheLikes() {
