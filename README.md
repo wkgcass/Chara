@@ -245,10 +245,13 @@ kokori.model +
 
 ### 4. 基础依赖
 
-在`build.gradle`配置的`dependencies`中，需要确保有如下配置：
+首先从release页面下载最新版的[vproxy.jar](https://github.com/wkgcass/vproxy)，放置在仓库根目录，命名为`vproxy.jar`。
+
+在模型工程的`build.gradle`配置的`dependencies`中，需要确保有如下配置：
 
 1. `compile files('../../core/build/libs/chara.jar')`，用于加载基础框架依赖。
-2. `compile group: 'com.1stleg', name: 'jnativehook', version: '2.1.0'`，这是基础框架依赖的一部分，为了调试方便可以添加，打包时忽略即可
+2. `compile files('../../vproxy.jar')`，这是基础框架的依赖项，为了调试方便可以添加，打包时忽略即可
+3. `compile group: 'com.1stleg', name: 'jnativehook', version: '2.1.0'`，这是基础框架依赖的一部分，为了调试方便可以添加，打包时忽略即可
 
 在`build.gradle`配置的`javafx`中，需要确保有如下配置：
 

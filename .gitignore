@@ -5,3 +5,4 @@ out/
 .class
 .jar
 .DS_Store
+vproxy.jar

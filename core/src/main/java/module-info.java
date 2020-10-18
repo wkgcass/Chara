@@ -7,7 +7,7 @@ module net.cassite.desktop.chara {
     requires java.desktop;
     requires java.logging;
     requires jnativehook;
-    exports vjson;
+    requires vproxy;
     exports net.cassite.desktop.chara;
     exports net.cassite.desktop.chara.chara;
     exports net.cassite.desktop.chara.chat;

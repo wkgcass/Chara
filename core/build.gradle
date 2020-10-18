@@ -45,6 +45,7 @@ application {
 
 dependencies {
     compile group: 'com.1stleg', name: 'jnativehook', version: '2.1.0'
+    compile files('../vproxy.jar')
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
