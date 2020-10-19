@@ -59,7 +59,7 @@
     "mouth.tiltToLeft.angle": -10.0,
     "mouth.mouthOpen.yMinRatio": 0.15,
     "mouth.mouthOpen.yMaxRatio": 1.0,
-    "mouth.recursiveAnimateOpenAndShut.yMinRatio": 0.9,
+    "mouth.recursiveAnimateOpenAndShut.yMinRatio": 0.8,
     "mouth.recursiveAnimateOpenAndShut.yMaxRatio": 0.5
   },
   "integerRectangles": {

@@ -245,8 +245,8 @@ public class App {
             activeInteractionEnableOrDisable();
             activeInteractionItem.setSelected(allowActiveInteraction);
         });
-        MenuItem screenshotItem = new MenuItem(I18nConsts.screenshotItem.get()[0]);
-        screenshotItem.setOnAction(e -> {
+        MenuItem snapshotItem = new MenuItem(I18nConsts.snapshotItem.get()[0]);
+        snapshotItem.setOnAction(e -> {
             var img = root.snapshot(new SnapshotParameters(),
                 new WritableImage(
                     chara.data().maxX - chara.data().minX,
@@ -256,7 +256,7 @@ public class App {
             content.putImage(img);
             content.putString(Global.model.name() + "-" + System.currentTimeMillis() + ".png");
             clipboard.setContent(content);
-            Alert.alert(I18nConsts.screenshotSavedInClipboard.get()[0]);
+            Alert.alert(I18nConsts.snapshotSavedInClipboard.get()[0]);
         });
         Menu systemMenu = new Menu(I18nConsts.systemMenu.get()[0]);
         MenuItem showVersionsItem = new MenuItem(I18nConsts.showVersionsItem.get()[0]);
@@ -268,7 +268,7 @@ public class App {
             messageEnableItem,
             alwaysOnTopItem,
             activeInteractionItem,
-            screenshotItem,
+            snapshotItem,
             characterMenu,
             systemMenu);
         scene.setOnContextMenuRequested(e -> contextMenu.show(rootPane, e.getScreenX(), e.getScreenY()));

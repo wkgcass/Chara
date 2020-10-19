@@ -256,16 +256,6 @@ public class KokoriR18 {
     }
 
     private void doAnimateSex(Runnable cb) {
-        kokori.hair.swing();
-        kokori.hairSide.swing();
-        kokori.hairBack.swing();
-        kokori.dressFront.flutter();
-        kokori.dressBack.flutter();
-        kokori.quiver.shake();
-        kokori.armRight.hideRune();
-        kokori.armRight.hideArrow();
-        kokori.armLeft.hideBow();
-
         kokori.redCheek.show();
         var p = personality.getDesirePoint();
         // high light
@@ -327,29 +317,27 @@ public class KokoriR18 {
         final int durationMax = 800;
         final int durationMin = 400;
         int duration = (int) (durationMax - (durationMax - durationMin) * personality.getDesirePoint());
-        new TimeBasedAnimationHelper(duration, percentage -> {
-            if (percentage < 0.5) {
-                // move up
-                double targetPosition = moveMax * percentage * 2;
-                double shouldMove = targetPosition - alreadyMoved[0];
-                alreadyMoved[0] = targetPosition;
-                appCallback.moveWindow(0, -shouldMove);
-            } else {
-                // move down
-                double targetPosition = moveMax * (1 - (percentage - 0.5) * 2);
+        new TimeBasedAnimationHelper(duration / 2, percentage -> {
+            double targetPosition = moveMax * percentage;
+            double shouldMove = targetPosition - alreadyMoved[0];
+            alreadyMoved[0] = targetPosition;
+            appCallback.moveWindow(0, -shouldMove);
+        }).setFinishCallback(() ->
+            new TimeBasedAnimationHelper(duration / 2, percentage -> {
+                double targetPosition = moveMax * (1 - percentage);
                 double shouldMove = alreadyMoved[0] - targetPosition;
                 alreadyMoved[0] = targetPosition;
                 appCallback.moveWindow(0, shouldMove);
-            }
-        }).setFinishCallback(() -> {
-            if (needAnimateSexLater) {
-                needAnimateSexLater = false;
-                doAnimateSex(cb);
-            } else {
-                isAnimatingSex = false;
-                cb.run();
-            }
-        }).play();
+            }).setFinishCallback(() -> {
+                if (needAnimateSexLater) {
+                    needAnimateSexLater = false;
+                    doAnimateSex(cb);
+                } else {
+                    isAnimatingSex = false;
+                    cb.run();
+                }
+            }).play()
+        ).play();
     }
 
     private final RateLimiter stateSexIncDesirePointRateLimiter = new RateLimiter(
@@ -384,6 +372,17 @@ public class KokoriR18 {
             sexScream();
         }
         startHavingSex();
+
+        // animate
+        kokori.hair.swing();
+        kokori.hairSide.swing();
+        kokori.hairBack.swing();
+        kokori.dressFront.flutter();
+        kokori.dressBack.flutter();
+        kokori.quiver.shake();
+        kokori.armRight.hideRune();
+        kokori.armRight.hideArrow();
+        kokori.armLeft.hideBow();
     }
 
     private void sexScream() {

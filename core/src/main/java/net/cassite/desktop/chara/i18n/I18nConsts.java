@@ -39,9 +39,9 @@ public class I18nConsts {
         ("允许主动互动")
         .setEn("Allow active interaction")
         .build();
-    public static final Words screenshotItem = new WordsBuilder
+    public static final Words snapshotItem = new WordsBuilder
         ("截图")
-        .setEn("Screenshot")
+        .setEn("Snapshot")
         .build();
     public static final Words characterMenu = new WordsBuilder
         ("角色")
@@ -76,9 +76,9 @@ public class I18nConsts {
         ("放置在最前")
         .setEn("Always on top enabled")
         .build();
-    public static final Words screenshotSavedInClipboard = new WordsBuilder
+    public static final Words snapshotSavedInClipboard = new WordsBuilder
         ("截图已保存至剪贴板中")
-        .setEn("Screenshot saved into clipboard")
+        .setEn("Snapshot saved into clipboard")
         .build();
     public static final Words activeInteractionEnabled = new WordsBuilder
         ("主动互动已开启")

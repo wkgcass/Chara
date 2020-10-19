@@ -208,6 +208,7 @@ public class Kokori implements Chara {
         resetCheek();
         resetHighlight();
         resetMenuItems();
+        restoreEyePosition();
     }
 
     public void resetMouth() {
@@ -342,8 +343,28 @@ public class Kokori implements Chara {
         if (!foo) {
             return;
         }
-        eyeLeft.restorePosition();
-        eyeRight.restorePosition();
+        if (Global.r18features && personality.getDesirePoint() == 1) {
+            lookAtLeftOrRight();
+        } else {
+            eyeLeft.restorePosition();
+            eyeRight.restorePosition();
+            eyeLeft.blink();
+            eyeRight.blink();
+        }
+    }
+
+    private void lookAtLeftOrRight() {
+        if (Utils.random(0.5)) {
+            double leftDelta = kokoriConsts.eyeLeftOriginalX - kokoriConsts.eyeLeftXMin;
+            eyeLeft.move(kokoriConsts.eyeLeftOriginalX - leftDelta * 0.8, kokoriConsts.eyeLeftOriginalY);
+            double rightDelta = kokoriConsts.eyeRightOriginalX - kokoriConsts.eyeRightXMin;
+            eyeRight.move(kokoriConsts.eyeRightOriginalX - rightDelta * 0.8, kokoriConsts.eyeRightOriginalY);
+        } else {
+            double leftDelta = kokoriConsts.eyeLeftXMax - kokoriConsts.eyeLeftOriginalX;
+            eyeLeft.move(kokoriConsts.eyeLeftOriginalX + leftDelta * 0.8, kokoriConsts.eyeLeftOriginalY);
+            double rightDelta = kokoriConsts.eyeRightXMax - kokoriConsts.eyeRightOriginalX;
+            eyeRight.move(kokoriConsts.eyeRightOriginalX + rightDelta * 0.8, kokoriConsts.eyeRightOriginalY);
+        }
         eyeLeft.blink();
         eyeRight.blink();
     }
@@ -719,6 +740,11 @@ public class Kokori implements Chara {
         }
         if (Utils.random(0.001)) {
             r18.addLovePotion();
+        }
+        if (Global.r18features && personality.getDesirePoint() == 1) {
+            if (Utils.random(0.5)) {
+                lookAtLeftOrRight();
+            }
         }
     }
 
