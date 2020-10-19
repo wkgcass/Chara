@@ -32,6 +32,7 @@ import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.Utils;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
+import vproxybase.dns.Resolver;
 
 import java.awt.*;
 import java.io.File;
@@ -107,6 +108,7 @@ public class Main extends Application {
     }
 
     private void preWork(Runnable cb) {
+        launchDnsResolver();
         registerNativeHook();
         chooseModel(() ->
             chooseModelFile(() ->
@@ -117,6 +119,10 @@ public class Main extends Application {
                 )
             )
         );
+    }
+
+    private void launchDnsResolver() {
+        Resolver.getDefault();
     }
 
     private void registerNativeHook() {

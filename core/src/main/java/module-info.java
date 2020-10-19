@@ -12,6 +12,7 @@ module net.cassite.desktop.chara {
     exports net.cassite.desktop.chara.chara;
     exports net.cassite.desktop.chara.chat;
     exports net.cassite.desktop.chara.control;
+    exports net.cassite.desktop.chara.css;
     exports net.cassite.desktop.chara.graphic;
     exports net.cassite.desktop.chara.i18n;
     exports net.cassite.desktop.chara.manager;

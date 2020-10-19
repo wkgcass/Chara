@@ -7,7 +7,10 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
@@ -21,7 +24,6 @@ import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.chara.Chara;
 import net.cassite.desktop.chara.control.NativeMouseListenerUtils;
 import net.cassite.desktop.chara.graphic.*;
-import net.cassite.desktop.chara.graphic.Alert;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.i18n.Words;
 import net.cassite.desktop.chara.manager.ConfigManager;
@@ -29,12 +31,14 @@ import net.cassite.desktop.chara.manager.FontManager;
 import net.cassite.desktop.chara.model.Model;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
+import net.cassite.desktop.chara.util.Scheduled;
 import net.cassite.desktop.chara.util.Utils;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.mouse.NativeMouseEvent;
+import vproxybase.dns.Resolver;
 
-import java.util.concurrent.ScheduledFuture;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class App {
@@ -123,6 +127,10 @@ public class App {
             setGlobalScreen(false);
             ConfigManager.get().setLastTimestamp(System.currentTimeMillis());
             ConfigManager.saveNow();
+            try {
+                Resolver.getDefault().stop();
+            } catch (IOException ignore) {
+            }
         });
 
         // calculate MAX_WIDTH and MAX_HEIGHT
@@ -444,7 +452,7 @@ public class App {
         chara.click(x, y);
     }
 
-    private ScheduledFuture<?> deregisterGlobalScreenAfterMouseLeaveScheduledFuture;
+    private Scheduled deregisterGlobalScreenAfterMouseLeaveScheduledFuture;
     private boolean setGlobalScreenFromChara = true;
 
     private boolean mouseCircleIsShown = false;
@@ -482,7 +490,7 @@ public class App {
         var foo = deregisterGlobalScreenAfterMouseLeaveScheduledFuture;
         deregisterGlobalScreenAfterMouseLeaveScheduledFuture = null;
         if (foo != null) {
-            foo.cancel(true);
+            foo.cancel();
         }
 
         if (setGlobalScreenFromChara) {
@@ -573,7 +581,7 @@ public class App {
         var foo = deregisterGlobalScreenAfterMouseLeaveScheduledFuture;
         if (foo != null) {
             // this should not happen, but if happens, cancel the old one
-            foo.cancel(true);
+            foo.cancel();
         }
         deregisterGlobalScreenAfterMouseLeaveScheduledFuture =
             ThreadUtils.get().scheduleFX(() -> setGlobalScreen(false), 10, TimeUnit.SECONDS);

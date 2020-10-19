@@ -28,11 +28,11 @@ import net.cassite.desktop.chara.model.kokori.KokoriConsts;
 import net.cassite.desktop.chara.special.ModelFileNotFoundException;
 import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.Rec;
+import net.cassite.desktop.chara.util.Scheduled;
 import net.cassite.desktop.chara.util.Utils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -68,7 +68,7 @@ public class Kokori implements Chara {
     private final KokoriChatBot chatBot;
     public final KokoriR18 r18;
 
-    private final ScheduledFuture<?> randomEventsScheduledFuture;
+    private final Scheduled randomEventsScheduledFuture;
 
     final Menu characterMenu;
     private final MenuItem aboutNameMenuItem = new MenuItem(KokoriI18n.aboutNameMenuItem.get()[0]);
@@ -724,7 +724,7 @@ public class Kokori implements Chara {
 
     @Override
     public void release() {
-        randomEventsScheduledFuture.cancel(true);
+        randomEventsScheduledFuture.cancel();
     }
 
     @Override

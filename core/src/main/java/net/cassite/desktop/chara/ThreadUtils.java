@@ -3,16 +3,32 @@
 package net.cassite.desktop.chara;
 
 import javafx.application.Platform;
+import net.cassite.desktop.chara.util.Scheduled;
+import vproxybase.component.elgroup.EventLoopGroup;
+import vproxybase.connection.NetEventLoop;
+import vproxybase.util.Logger;
+import vproxybase.util.exception.AlreadyExistException;
+import vproxybase.util.exception.ClosedException;
 
-import java.util.concurrent.*;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class ThreadUtils {
     private static final ThreadUtils instance = new ThreadUtils();
 
-    private final ScheduledExecutorService exec;
+    private final EventLoopGroup nonblockingThreads;
 
     private ThreadUtils() {
-        exec = Executors.newScheduledThreadPool(4);
+        int cores = Runtime.getRuntime().availableProcessors();
+        nonblockingThreads = new EventLoopGroup("nonblocking-threads");
+        for (int i = 0; i < cores; ++i) {
+            try {
+                nonblockingThreads.add("nonblocking-thread-" + i);
+            } catch (AlreadyExistException | IOException | ClosedException e) {
+                Logger.shouldNotHappen("adding nonblocking thread failed", e);
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public static ThreadUtils get() {
@@ -23,45 +39,56 @@ public class ThreadUtils {
 
     public void shutdownNow() {
         isShutdown = true;
-        exec.shutdownNow();
+        nonblockingThreads.close();
     }
 
     public boolean isShutdown() {
-        return isShutdown || exec.isShutdown();
+        return isShutdown;
     }
 
-    public ScheduledFuture<?> schedule(Runnable runnable, int delay, TimeUnit unit) {
+    public NetEventLoop getLoop() {
+        return nonblockingThreads.next();
+    }
+
+    public Scheduled schedule(Runnable runnable, int delay, TimeUnit unit) {
         if (isShutdown()) {
             return null;
         }
-        return exec.schedule(runnable, delay, unit);
+        int millis = (int) TimeUnit.MILLISECONDS.convert(delay, unit);
+        return new Scheduled(
+            nonblockingThreads.next().getSelectorEventLoop(),
+            millis,
+            -1,
+            runnable
+        );
     }
 
-    public ScheduledFuture<?> scheduleFX(Runnable runnable, int delay, TimeUnit unit) {
+    public Scheduled scheduleFX(Runnable runnable, int delay, TimeUnit unit) {
+        return schedule(() -> Platform.runLater(runnable), delay, unit);
+    }
+
+    public Scheduled scheduleAtFixedRate(Runnable runnable, int initialDelay, int period, TimeUnit unit) {
         if (isShutdown()) {
             return null;
         }
-        return exec.schedule(() -> Platform.runLater(runnable), delay, unit);
+        int initialMillis = (int) TimeUnit.MILLISECONDS.convert(initialDelay, unit);
+        int periodMillis = (int) TimeUnit.MILLISECONDS.convert(period, unit);
+        return new Scheduled(
+            nonblockingThreads.next().getSelectorEventLoop(),
+            initialMillis,
+            periodMillis,
+            runnable
+        );
     }
 
-    public ScheduledFuture<?> scheduleAtFixedRate(Runnable runnable, int initialDelay, int period, TimeUnit unit) {
-        if (isShutdown()) {
-            return null;
-        }
-        return exec.scheduleAtFixedRate(runnable, initialDelay, period, unit);
+    public Scheduled scheduleAtFixedRateFX(Runnable runnable, int initialDelay, int period, TimeUnit unit) {
+        return scheduleAtFixedRate(() -> Platform.runLater(runnable), initialDelay, period, unit);
     }
 
-    public ScheduledFuture<?> scheduleAtFixedRateFX(Runnable runnable, int initialDelay, long period, TimeUnit unit) {
+    public void submit(Runnable runnable) {
         if (isShutdown()) {
-            return null;
+            return;
         }
-        return exec.scheduleAtFixedRate(() -> Platform.runLater(runnable), initialDelay, period, unit);
-    }
-
-    public Future<?> submit(Runnable runnable) {
-        if (isShutdown()) {
-            return null;
-        }
-        return exec.submit(runnable);
+        nonblockingThreads.next().getSelectorEventLoop().runOnLoop(runnable);
     }
 }

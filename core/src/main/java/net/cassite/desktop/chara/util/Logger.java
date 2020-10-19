@@ -8,6 +8,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import net.cassite.desktop.chara.ThreadUtils;
+import vproxybase.util.LogType;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -18,25 +19,24 @@ public class Logger {
     }
 
     public static boolean debug(String msg) {
-        System.out.println(msg);
+        vproxybase.util.Logger.lowLevelDebug(msg);
         return true;
     }
 
     public static void info(String msg) {
-        System.out.println(msg);
+        vproxybase.util.Logger.info(LogType.ALERT, msg);
     }
 
     public static void warn(String msg) {
-        System.out.println(msg);
+        vproxybase.util.Logger.warn(LogType.ALERT, msg);
     }
 
     public static void warn(String msg, Throwable t) {
-        System.out.println(msg + " " + t);
-        t.printStackTrace(System.out);
+        vproxybase.util.Logger.warn(LogType.ALERT, msg, t);
     }
 
     public static void error(String msg) {
-        System.out.println(msg);
+        vproxybase.util.Logger.error(LogType.ALERT, msg);
 
         if (ThreadUtils.get().isShutdown()) {
             return;
@@ -59,8 +59,7 @@ public class Logger {
     }
 
     public static void error(String msg, Throwable t) {
-        System.out.println(msg + " " + t);
-        t.printStackTrace(System.out);
+        vproxybase.util.Logger.error(LogType.ALERT, msg, t);
 
         if (ThreadUtils.get().isShutdown()) {
             return;

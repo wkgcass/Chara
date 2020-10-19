@@ -10,9 +10,9 @@ import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.model.kokori.KokoriConsts;
 import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.RateLimiter;
+import net.cassite.desktop.chara.util.Scheduled;
 import net.cassite.desktop.chara.util.Utils;
 
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class KokoriPersonality {
@@ -43,7 +43,7 @@ public class KokoriPersonality {
     private final AppCallback appCallback;
     private double bondPoint = INITIAL_BOND_POINT;
     private double desirePoint = 0;
-    private ScheduledFuture<?> autoBondIncreasingFuture = null;
+    private Scheduled autoBondIncreasingFuture = null;
 
     public KokoriPersonality(KokoriConsts kokoriConsts, AppCallback appCallback) {
         this.kokoriConsts = kokoriConsts;
@@ -85,7 +85,7 @@ public class KokoriPersonality {
 
     private void rescheduleAutoCharaPointsIncreasingDecreasing() {
         if (autoBondIncreasingFuture != null) {
-            autoBondIncreasingFuture.cancel(true);
+            autoBondIncreasingFuture.cancel();
         }
         autoBondIncreasingFuture = ThreadUtils.get().scheduleFX(() -> {
             autoBondIncreasingFuture = null;

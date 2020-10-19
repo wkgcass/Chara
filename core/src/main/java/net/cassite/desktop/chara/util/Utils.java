@@ -9,12 +9,14 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.StageUtils;
 import net.cassite.desktop.chara.ThreadUtils;
+import net.cassite.desktop.chara.manager.ConfigManager;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
+import vproxybase.dns.Resolver;
 
+import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
@@ -62,12 +64,12 @@ public class Utils {
         return rnd.nextDouble() <= probability;
     }
 
-    private static final ConcurrentHashMap<String, ScheduledFuture<?>> delayedTasks = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Scheduled> delayedTasks = new ConcurrentHashMap<>();
 
     public static void delay(String reason, int delay, Runnable r) {
-        ScheduledFuture<?> old = delayedTasks.remove(reason);
+        Scheduled old = delayedTasks.remove(reason);
         if (old != null) {
-            old.cancel(true);
+            old.cancel();
         }
         var now = ThreadUtils.get().scheduleFX(r, delay, TimeUnit.MILLISECONDS);
         delayedTasks.put(reason, now);
@@ -82,7 +84,7 @@ public class Utils {
     }
 
     public static void cancelAllTimers() {
-        delayedTasks.values().forEach(f -> f.cancel(true));
+        delayedTasks.values().forEach(Scheduled::cancel);
         delayedTasks.clear();
     }
 
@@ -97,7 +99,12 @@ public class Utils {
             } catch (NativeHookException ignore) {
             }
         }
+        ConfigManager.saveNow();
         ThreadUtils.get().shutdownNow();
+        try {
+            Resolver.getDefault().stop();
+        } catch (IOException ignore) {
+        }
         Platform.runLater(Platform::exit);
     }
 

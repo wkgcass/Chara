@@ -2,20 +2,26 @@
 
 package net.cassite.desktop.chara.chat;
 
+import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.util.Logger;
+import vclient.HttpClient;
+import vclient.impl.Http1ClientImpl;
+import vfd.IP;
+import vfd.IPPort;
 import vjson.JSON;
+import vproxybase.dns.Resolver;
+import vproxybase.util.Callback;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 public class TianxingTuling implements Chatbot {
+    private static final String HOSTNAME = "api.tianapi.com";
+
     private String apiKey;
+    private HttpClient httpClient;
 
     @Override
     public String name() {
@@ -30,68 +36,64 @@ public class TianxingTuling implements Chatbot {
         apiKey = config;
     }
 
-    public String[] takeMessage(String msg) {
-        String httpUrl = "http://api.tianapi.com/txapi/tuling/index?key=" + apiKey + "&question=" +
-            URLEncoder.encode(msg, StandardCharsets.UTF_8);
-        String jsonResult = request(httpUrl);
-        //noinspection rawtypes
-        JSON.Instance inst;
-        try {
-            inst = JSON.parse(jsonResult);
-        } catch (Exception e) {
-            Logger.error("TianxingTuling response is not json: " + jsonResult, e);
-            return null;
-        }
-        Logger.info("TianxingTuling return " + inst.stringify());
-        try {
-            JSON.Object o = (JSON.Object) inst;
-            if (o.getInt("code") != 200) {
-                Logger.error("TianxingTuling response code is not 200");
-                return null;
+    @Override
+    public void takeMessage(String msg, Consumer<String[]> cb) {
+        if (httpClient == null) {
+            synchronized (this) {
+                if (httpClient == null) {
+                    Resolver.getDefault().resolve(HOSTNAME, new Callback<>() {
+                        @Override
+                        protected void onSucceeded(IP ip) {
+                            httpClient = new Http1ClientImpl(new IPPort(ip, 80), ThreadUtils.get().getLoop(), 5000);
+                            sendRequest(msg, cb);
+                        }
+
+                        @Override
+                        protected void onFailed(UnknownHostException err) {
+                            Logger.error("cannot resolve " + HOSTNAME, err);
+                        }
+                    });
+                    return;
+                }
             }
-            var arr = o.getArray("newslist");
-            String[] ret = new String[arr.length()];
-            for (int i = 0; i < ret.length; ++i) {
-                ret[i] = arr.getObject(i).getString("reply");
-            }
-            return ret;
-        } catch (RuntimeException e) {
-            Logger.error("TianxingTuling response is not valid: " + jsonResult, e);
-            return null;
         }
+        sendRequest(msg, cb);
     }
 
-    private static String request(String httpUrl) {
-        HttpURLConnection connection = null;
-        InputStream inputStream = null;
-        String result = null;
-
-        try {
-            URL url = new URL(httpUrl);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            inputStream = connection.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            String strRead;
-            while ((strRead = reader.readLine()) != null) {
-                sb.append(strRead);
-                sb.append("\r\n");
-            }
-            reader.close();
-            result = sb.toString();
-        } catch (Exception e) {
-            Logger.error("request TianxingTuling failed", e);
-        }
-        if (connection != null) {
-            connection.disconnect();
-        }
-        if (inputStream != null) {
-            try {
-                inputStream.close();
-            } catch (IOException ignore) {
-            }
-        }
-        return result;
+    private void sendRequest(String msg, Consumer<String[]> cb) {
+        httpClient.get("/txapi/tuling/index?key=" + apiKey + "&question=" + URLEncoder.encode(msg, StandardCharsets.UTF_8))
+            .header("Host", HOSTNAME)
+            .send((err, resp) -> {
+                if (err != null) {
+                    Logger.error("request TianxingTuling failed", err);
+                    return;
+                }
+                //noinspection rawtypes
+                JSON.Instance inst;
+                try {
+                    inst = JSON.parse(new String(resp.body().toJavaArray(), StandardCharsets.UTF_8));
+                } catch (Exception e) {
+                    Logger.error("TianxingTuling response is not json: " + resp.bodyAsString(), e);
+                    return;
+                }
+                Logger.info("TianxingTuling return " + inst.stringify());
+                try {
+                    JSON.Object o = (JSON.Object) inst;
+                    if (o.getInt("code") != 200) {
+                        Logger.error("TianxingTuling response code is not 200");
+                        return;
+                    }
+                    var arr = o.getArray("newslist");
+                    String[] ret = new String[arr.length()];
+                    for (int i = 0; i < ret.length; ++i) {
+                        ret[i] = arr.getObject(i).getString("reply");
+                    }
+                    cb.accept(ret);
+                } catch (RuntimeException e) {
+                    Logger.error("TianxingTuling response is not valid: " + resp.bodyAsString(), e);
+                    //noinspection UnnecessaryReturnStatement
+                    return;
+                }
+            });
     }
 }

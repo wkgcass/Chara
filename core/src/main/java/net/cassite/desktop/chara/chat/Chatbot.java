@@ -2,10 +2,12 @@
 
 package net.cassite.desktop.chara.chat;
 
+import java.util.function.Consumer;
+
 public interface Chatbot {
     String name();
 
     void init(String config) throws Exception;
 
-    String[] takeMessage(String msg);
+    void takeMessage(String msg, Consumer<String[]> cb);
 }

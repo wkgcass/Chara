@@ -50,12 +50,13 @@ public class KokoriChatBot {
         }
 
         appCallback.showMessage("...");
-        String[] resp = chatbot.takeMessage(msg);
-        if (resp == null || resp.length == 0) {
-            assert Logger.debug("response of " + msg + " is empty");
-            return;
-        }
-        appCallback.showMessage(resp);
+        chatbot.takeMessage(msg, resp -> {
+            if (resp == null || resp.length == 0) {
+                assert Logger.debug("response of " + msg + " is empty");
+                return;
+            }
+            appCallback.showMessage(resp);
+        });
     }
 
     private void runCommand(String cmd0) {
