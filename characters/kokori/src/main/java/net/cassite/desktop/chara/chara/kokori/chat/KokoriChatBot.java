@@ -135,10 +135,10 @@ public class KokoriChatBot {
                 } else if ("mouth:right".equals(cmd)) {
                     kokori.mouth.tiltToRight();
                     return;
-                } else if ("mouth:start".equals(cmd)) {
+                } else if ("breathe:start".equals(cmd)) {
                     kokori.mouth.startAnimatingOpenAndShut();
                     return;
-                } else if ("mouth:stop".equals(cmd)) {
+                } else if ("breathe:stop".equals(cmd)) {
                     kokori.mouth.stopAnimatingOpenAndShut();
                     return;
                 } else if ("highlight:show".equals(cmd)) {
