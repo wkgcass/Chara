@@ -110,8 +110,8 @@ public class MessageStage extends Stage {
     }
 
     public void showAll() {
-        show();
         tmpStage.show();
+        show();
     }
 
     private static final int REMOVING_ANIMATION_DURATION = 100;
