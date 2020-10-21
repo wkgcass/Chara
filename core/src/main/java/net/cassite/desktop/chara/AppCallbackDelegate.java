@@ -4,9 +4,17 @@ package net.cassite.desktop.chara;
 
 import net.cassite.desktop.chara.i18n.Words;
 
+/**
+ * The delegate for {@link AppCallback} interface
+ */
 public class AppCallbackDelegate implements AppCallback {
     private final AppCallback target;
 
+    /**
+     * Construct the delegate with the target
+     *
+     * @param target target
+     */
     public AppCallbackDelegate(AppCallback target) {
         this.target = target;
     }

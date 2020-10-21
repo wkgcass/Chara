@@ -3,5 +3,10 @@
 package net.cassite.desktop.chara.graphic;
 
 public interface Updatable {
+    /**
+     * The updating function for {@link HZ} to call
+     *
+     * @param current current time millis
+     */
     void update(long current);
 }

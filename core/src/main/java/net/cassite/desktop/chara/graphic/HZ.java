@@ -38,14 +38,29 @@ public class HZ {
         }, 0, UNIT, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Get <code>HZ</code> instance
+     *
+     * @return <code>HZ</code> instance
+     */
     public static HZ get() {
         return instance;
     }
 
+    /**
+     * Register a callback function
+     *
+     * @param up callback function
+     */
     public void register(Updatable up) {
         registered.put(up, _VALUE_);
     }
 
+    /**
+     * Deregister a callback function
+     *
+     * @param up callback function
+     */
     public void deregister(Updatable up) {
         registered.remove(up);
     }

@@ -4,6 +4,10 @@ package net.cassite.desktop.chara.graphic;
 
 import javafx.application.Platform;
 
+/**
+ * A helper for framed based animation.<br>
+ * You may set the fps and the callback function will tell you which frame you need to show.
+ */
 public class FrameBasedAnimationHelper implements Updatable {
     public interface Update {
         void update(int frame);
@@ -19,24 +23,52 @@ public class FrameBasedAnimationHelper implements Updatable {
 
     private Runnable pauseCallbackOnce;
 
+    /**
+     * Constructor
+     *
+     * @param totalFrameCount how many frames the animation has
+     * @param updateFunc      the callback function
+     */
     public FrameBasedAnimationHelper(int totalFrameCount, Update updateFunc) {
         this.totalFrameCount = totalFrameCount;
         this.updateFunc = updateFunc;
         resetTo(-1);
     }
 
+    /**
+     * Check whether it's animating
+     *
+     * @return true if playing, false otherwise
+     */
     public boolean isPlaying() {
         return playing;
     }
 
+    /**
+     * Get current playing fps
+     *
+     * @return fps
+     */
     public double getFps() {
         return fps;
     }
 
+    /**
+     * Retrieve the total frame count
+     *
+     * @return total frame count
+     */
     public int getTotalFrameCount() {
         return totalFrameCount;
     }
 
+    /**
+     * Pause and reset current frame to specified frame.<br>
+     * Note that the <code>pauseCallbackOnce</code> will be cleared and will NOT be called when calling the method.
+     *
+     * @param frame the frame index to be set, starting at 0, if specified as -1, it will be set to 0 instead
+     * @return <code>this</code>
+     */
     public FrameBasedAnimationHelper resetTo(int frame) {
         pauseCallbackOnce = null;
         pause();
@@ -51,16 +83,34 @@ public class FrameBasedAnimationHelper implements Updatable {
         return this;
     }
 
+    /**
+     * Set the callback function which will be called when the animation is paused.<br>
+     * When the callback is called, it will be cleared from this helper instance
+     *
+     * @param pauseCallbackOnce the callback function
+     * @return <code>this</code>
+     */
     public FrameBasedAnimationHelper setPauseCallbackOnce(Runnable pauseCallbackOnce) {
         this.pauseCallbackOnce = pauseCallbackOnce;
         return this;
     }
 
+    /**
+     * Set the animation terminating frame
+     *
+     * @param endFrame frame index starting at 0
+     * @return <code>this</code>
+     */
     public FrameBasedAnimationHelper setEndFrame(int endFrame) {
         this.endFrame = endFrame;
         return this;
     }
 
+    /**
+     * Start to play with specified fps. If it's already started, the fps will be reset to the specified value.
+     *
+     * @param fps fps
+     */
     public void play(double fps) {
         if (this.currentFrame == this.endFrame) {
             var endFrame = this.endFrame;
@@ -74,7 +124,12 @@ public class FrameBasedAnimationHelper implements Updatable {
         HZ.get().register(this);
     }
 
-    public void pause() {
+    /**
+     * Pause the animation, and call <code>pauseCallbackOnce</code> if exists, then it will be cleared.
+     *
+     * @return <code>this</code>
+     */
+    public FrameBasedAnimationHelper pause() {
         playing = false;
         HZ.get().deregister(this);
 
@@ -84,6 +139,7 @@ public class FrameBasedAnimationHelper implements Updatable {
         if (pauseCallbackLocal != null) {
             Platform.runLater(pauseCallbackLocal);
         }
+        return this;
     }
 
     @Override

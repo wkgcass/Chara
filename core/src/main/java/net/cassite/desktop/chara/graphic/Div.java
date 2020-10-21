@@ -4,5 +4,8 @@ package net.cassite.desktop.chara.graphic;
 
 import javafx.scene.Group;
 
+/**
+ * Same as JavaFX {@link Group}
+ */
 public class Div extends Group {
 }

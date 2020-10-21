@@ -6,6 +6,9 @@ import net.cassite.desktop.chara.chat.Chatbot;
 import net.cassite.desktop.chara.chat.TianxingTuling;
 import net.cassite.desktop.chara.util.Logger;
 
+/**
+ * The chatbot manager
+ */
 public class ChatbotManager {
     private static volatile Chatbot selected = null;
 
@@ -13,6 +16,11 @@ public class ChatbotManager {
         new TianxingTuling(),
     };
 
+    /**
+     * Retrieve the chatbot as defined in the config
+     *
+     * @return <code>Chatbot</code> instance
+     */
     public static Chatbot get() {
         if (selected != null) {
             return selected;

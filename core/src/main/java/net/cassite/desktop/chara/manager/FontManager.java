@@ -6,12 +6,20 @@ import javafx.scene.text.Font;
 import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.Utils;
 
+/**
+ * The font manager
+ */
 public class FontManager {
     private FontManager() {
     }
 
     private static String fontFamily;
 
+    /**
+     * Get font family based on the current platform
+     *
+     * @return the font family corresponding to current platform, or empty string
+     */
     public static String getFontFamily() {
         if (fontFamily != null) {
             return fontFamily;

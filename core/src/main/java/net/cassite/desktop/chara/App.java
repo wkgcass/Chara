@@ -29,10 +29,7 @@ import net.cassite.desktop.chara.i18n.Words;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.FontManager;
 import net.cassite.desktop.chara.model.Model;
-import net.cassite.desktop.chara.util.Consts;
-import net.cassite.desktop.chara.util.Logger;
-import net.cassite.desktop.chara.util.Scheduled;
-import net.cassite.desktop.chara.util.Utils;
+import net.cassite.desktop.chara.util.*;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.mouse.NativeMouseEvent;
@@ -115,7 +112,6 @@ public class App {
 
         // register terminating hook
         primaryStage.setOnCloseRequest(e -> {
-            Utils.cancelAllTimers();
             chara.release();
             ThreadUtils.get().shutdownNow();
             if (messageStage != null) {

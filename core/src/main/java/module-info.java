@@ -17,6 +17,5 @@ module net.cassite.desktop.chara {
     exports net.cassite.desktop.chara.i18n;
     exports net.cassite.desktop.chara.manager;
     exports net.cassite.desktop.chara.model;
-    exports net.cassite.desktop.chara.special;
     exports net.cassite.desktop.chara.util;
 }

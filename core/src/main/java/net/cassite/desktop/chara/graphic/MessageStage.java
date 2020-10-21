@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.Global;
-import net.cassite.desktop.chara.StageUtils;
+import net.cassite.desktop.chara.util.StageUtils;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;

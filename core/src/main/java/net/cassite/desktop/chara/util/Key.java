@@ -4,6 +4,11 @@ package net.cassite.desktop.chara.util;
 
 import java.util.Objects;
 
+/**
+ * The key with type bond to it
+ *
+ * @param <T> type of the key
+ */
 @SuppressWarnings("unused")
 public class Key<T> {
     private final String name;
@@ -12,10 +17,23 @@ public class Key<T> {
         this.name = name;
     }
 
+    /**
+     * Retrieve the key of a name and a type
+     *
+     * @param name name of the key
+     * @param type type of the key
+     * @param <TT> type of the key
+     * @return a <code>Key</code> object
+     */
     public static <TT> Key<TT> of(String name, Class<TT> type) {
         return new Key<>(name);
     }
 
+    /**
+     * Get name of the key
+     *
+     * @return name
+     */
     public String getName() {
         return name;
     }

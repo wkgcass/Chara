@@ -8,8 +8,17 @@ import net.cassite.desktop.chara.util.Rec;
 
 import java.util.Map;
 
+/**
+ * The config for model initialization
+ */
 public class ModelInitConfig {
+    /**
+     * version number defined in model file
+     */
     public int version;
+    /**
+     * a map containing words selector loaded from model <code>/words</code> directory
+     */
     public Map<String, WordsSelector> interactionWordsSelectors;
     private Map<String, Integer> integerValuesMap;
     private Map<String, Double> doubleValuesMap;
@@ -30,6 +39,12 @@ public class ModelInitConfig {
         this.integerRectanglesMap = integerRectanglesMap;
     }
 
+    /**
+     * Get an integer value from model <code>/values</code> directory
+     *
+     * @param key key
+     * @return the loaded value
+     */
     public int getInt(String key) {
         Integer n = integerValuesMap.get(key);
         if (n == null) {
@@ -39,6 +54,12 @@ public class ModelInitConfig {
         return n;
     }
 
+    /**
+     * Get a double value from model <code>/values</code> directory
+     *
+     * @param key key
+     * @return the loaded value
+     */
     public double getDouble(String key) {
         Double n = doubleValuesMap.get(key);
         if (n == null) {
@@ -48,6 +69,12 @@ public class ModelInitConfig {
         return n;
     }
 
+    /**
+     * Get an integer rectangle from model <code>/values</code> directory
+     *
+     * @param key key
+     * @return the loaded value
+     */
     public Rec getIntegerRectangle(String key) {
         Rec r = integerRectanglesMap.get(key);
         if (r == null) {
@@ -57,6 +84,13 @@ public class ModelInitConfig {
         return r;
     }
 
+    /**
+     * Get an integer rectangle from model <code>/values</code> directory and scale it
+     *
+     * @param key   key
+     * @param scale scale ratio
+     * @return the loaded and scaled value
+     */
     public Rec getIntegerRectangle(String key, double scale) {
         Rec r = getIntegerRectangle(key);
         return new Rec(

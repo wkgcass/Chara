@@ -9,11 +9,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+/**
+ * JavaFX CSS option<br>
+ * It's a helper class when you find it hard to use {@link Class#getResourceAsStream(String)} in a modular environment.<br>
+ * This helper class will generate css and dump it into a temporary file, then you may let the JavaFX nodes to load the css.<br>
+ * <pre>
+ * node.getStylesheets().add(
+ *   new XxxCss(...).toURLString()
+ * )
+ * </pre>
+ */
 public abstract class Css {
     abstract protected String name();
 
     abstract protected String text();
 
+    /**
+     * Dump the CSS content to a temporary file, and retrieve its URL
+     *
+     * @return the retrieved URL string
+     */
     public String toURLString() {
         String name = name();
         String text = text();

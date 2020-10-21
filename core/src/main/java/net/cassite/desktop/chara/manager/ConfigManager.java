@@ -18,9 +18,15 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The config manager
+ */
 public class ConfigManager {
     private static ConfigManager instance = null;
 
+    /**
+     * The config instance
+     */
     public class Config {
         private String modelFile;
         private Double stageX;
@@ -408,6 +414,11 @@ public class ConfigManager {
         }, 10, 10, TimeUnit.MINUTES);
     }
 
+    /**
+     * Get the <code>Config</code> instance
+     *
+     * @return <code>Config</code> instance
+     */
     public static Config get() {
         if (instance == null) {
             synchronized (ConfigManager.class) {
@@ -419,6 +430,12 @@ public class ConfigManager {
         return instance.config;
     }
 
+    /**
+     * Save config NOW<br>
+     * The IO operation will take place on the current thread.<br>
+     * Note that you do NOT have to call this method every time you modify a value,
+     * the config object will save config in a gentle way when you called the setters of the config object.
+     */
     public static void saveNow() {
         try {
             instance.doSave();

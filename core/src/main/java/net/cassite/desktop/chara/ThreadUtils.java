@@ -31,25 +31,52 @@ public class ThreadUtils {
         }
     }
 
+    /**
+     * Retrieve the <code>ThreadUtils</code> instance.
+     *
+     * @return <code>ThreadUtils</code> instance
+     */
     public static ThreadUtils get() {
         return instance;
     }
 
     private volatile boolean isShutdown = false;
 
+    /**
+     * Stop all running threads
+     */
     public void shutdownNow() {
         isShutdown = true;
         nonblockingThreads.close();
     }
 
+    /**
+     * Check whether the instance is shutdown
+     *
+     * @return true if shutdown, false otherwise
+     */
     public boolean isShutdown() {
         return isShutdown;
     }
 
+    /**
+     * Retrieve an event loop<br>
+     * There might be multiple event loops in the instance, so the retrieved loop may be different between different calls.
+     *
+     * @return event loop
+     */
     public NetEventLoop getLoop() {
         return nonblockingThreads.next();
     }
 
+    /**
+     * Execute the runnable after specific delay
+     *
+     * @param runnable task to run
+     * @param delay    time to delay
+     * @param unit     the unit of <code>delay</code>
+     * @return an object for you to manage the task
+     */
     public Scheduled schedule(Runnable runnable, int delay, TimeUnit unit) {
         if (isShutdown()) {
             return null;
@@ -63,10 +90,27 @@ public class ThreadUtils {
         );
     }
 
+    /**
+     * Execute the runnable on <code>JavaFX</code> thread after specific delay
+     *
+     * @param runnable task to run
+     * @param delay    time to delay
+     * @param unit     the unit of <code>delay</code>
+     * @return an object for you to manage the task
+     */
     public Scheduled scheduleFX(Runnable runnable, int delay, TimeUnit unit) {
         return schedule(() -> Platform.runLater(runnable), delay, unit);
     }
 
+    /**
+     * Periodically execute the runnable
+     *
+     * @param runnable     task to run
+     * @param initialDelay delay time before the task is ran for the first time
+     * @param period       interval between two tasks
+     * @param unit         the unit of <code>initialDelay</code> and <code>period</code>
+     * @return an object for you to manage the task
+     */
     public Scheduled scheduleAtFixedRate(Runnable runnable, int initialDelay, int period, TimeUnit unit) {
         if (isShutdown()) {
             return null;
@@ -81,10 +125,24 @@ public class ThreadUtils {
         );
     }
 
+    /**
+     * Periodically execute the runnable on <code>JavaFX</code> thread
+     *
+     * @param runnable     task to run
+     * @param initialDelay delay time before the task is ran for the first time
+     * @param period       interval between two tasks
+     * @param unit         the unit of <code>initialDelay</code> and <code>period</code>
+     * @return an object for you to manage the task
+     */
     public Scheduled scheduleAtFixedRateFX(Runnable runnable, int initialDelay, int period, TimeUnit unit) {
         return scheduleAtFixedRate(() -> Platform.runLater(runnable), initialDelay, period, unit);
     }
 
+    /**
+     * Execute the runnable on event loop thread
+     *
+     * @param runnable task to run
+     */
     public void submit(Runnable runnable) {
         if (isShutdown()) {
             return;

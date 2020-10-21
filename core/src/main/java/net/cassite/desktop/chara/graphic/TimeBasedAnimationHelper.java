@@ -4,6 +4,10 @@ package net.cassite.desktop.chara.graphic;
 
 import javafx.application.Platform;
 
+/**
+ * A helper for time based animation.<br>
+ * You may set the animation duration. The callback function will tell you the current percentage.
+ */
 public class TimeBasedAnimationHelper implements Updatable {
     public interface Update {
         void update(double percentage);
@@ -16,10 +20,23 @@ public class TimeBasedAnimationHelper implements Updatable {
     private long startTimestamp;
     private Runnable finishCallback;
 
+    /**
+     * Constructor
+     *
+     * @param duration   duration in millis
+     * @param updateFunc callback function
+     */
     public TimeBasedAnimationHelper(int duration, Update updateFunc) {
         this(duration, 0, updateFunc);
     }
 
+    /**
+     * Constructor
+     *
+     * @param duration   duration in millis
+     * @param skip       how many events alerted by {@link HZ} can be skipped
+     * @param updateFunc callback function
+     */
     public TimeBasedAnimationHelper(int duration, int skip, Update updateFunc) {
         this.duration = duration;
         this.updateFunc = updateFunc;
@@ -27,11 +44,22 @@ public class TimeBasedAnimationHelper implements Updatable {
         reset();
     }
 
+    /**
+     * Set the finish callback, which will be called when animation finishes
+     *
+     * @param finishCallback the callback function
+     * @return <code>this</code>
+     */
     public TimeBasedAnimationHelper setFinishCallback(Runnable finishCallback) {
         this.finishCallback = finishCallback;
         return this;
     }
 
+    /**
+     * Reset the duration
+     *
+     * @param duration duration in millis
+     */
     public void setDuration(int duration) {
         this.duration = duration;
     }
@@ -42,6 +70,9 @@ public class TimeBasedAnimationHelper implements Updatable {
         HZ.get().deregister(this);
     }
 
+    /**
+     * Begin to animate
+     */
     public void play() {
         playing = true;
         startTimestamp = -1;
@@ -79,6 +110,11 @@ public class TimeBasedAnimationHelper implements Updatable {
         }
     }
 
+    /**
+     * Check whether it's animating
+     *
+     * @return true if is playing, false otherwise
+     */
     public boolean isPlaying() {
         return playing;
     }

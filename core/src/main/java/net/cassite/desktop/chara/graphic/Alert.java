@@ -12,7 +12,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.cassite.desktop.chara.StageUtils;
+import net.cassite.desktop.chara.util.StageUtils;
 import net.cassite.desktop.chara.manager.FontManager;
 import net.cassite.desktop.chara.util.Utils;
 
@@ -30,6 +30,11 @@ public class Alert {
     private static final Object _VALUE_ = new Object();
     private static final ConcurrentHashMap<Stage, Object> showingStages = new ConcurrentHashMap<>();
 
+    /**
+     * Show alert message
+     *
+     * @param msg msg
+     */
     public static void alert(String msg) {
         if (!Platform.isFxApplicationThread()) {
             Platform.runLater(() -> alert(msg));
@@ -86,11 +91,11 @@ public class Alert {
             tmpStage.hide();
         };
 
-        new TimeBasedAnimationHelper(500, 50 / HZ.UNIT,
+        new TimeBasedAnimationHelper(500,
             p -> stage.setOpacity(p * MAX_OPACITY))
             .setFinishCallback(() ->
                 Utils.delayNoRecord(fDuration, () ->
-                    new TimeBasedAnimationHelper(500, 50 / HZ.UNIT,
+                    new TimeBasedAnimationHelper(500,
                         p -> stage.setOpacity(MAX_OPACITY - p * MAX_OPACITY))
                         .setFinishCallback(hideFunc)
                         .play()

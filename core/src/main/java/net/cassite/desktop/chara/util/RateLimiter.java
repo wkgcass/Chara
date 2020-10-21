@@ -7,10 +7,28 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Utility: RateLimiter
+ */
 public class RateLimiter {
     private final List<Rule> rules;
     private final LinkedList<Event> events = new LinkedList<>();
 
+    /**
+     * Construct the rate limiter with a series of configurations.<br>
+     * Each two integers form a pair:<br>
+     * <ul>
+     *     <li>The first is <code>samplingDuration</code></li>
+     *     <li>The second is <code>maxCount</code></li>
+     * </ul><br>
+     * Each successful {@link #request()} will be recorded, and during the <code>samplingDuration</code>,
+     * the successful count cannot exceed the <code>maxCount</code> value, otherwise the {@link #request()}
+     * will return false, indicating that the <code>request</code> fails.<br>
+     * You may set multiple <code>samplingDuration, maxCount</code> pairs. The {@link #request()} can only
+     * succeed when all rules are satisfied.
+     *
+     * @param n configuration: <code>samplingDuration, maxCount, [samplingDuration, maxCount, [...]]</code>
+     */
     public RateLimiter(int... n) { // samplingDuration, maxCount
         if (n.length % 2 != 0) {
             throw new IllegalArgumentException();
@@ -23,6 +41,11 @@ public class RateLimiter {
         this.rules = Arrays.asList(rules);
     }
 
+    /**
+     * Request
+     *
+     * @return true if all rules satisfied, false otherwise
+     */
     public boolean request() {
         long current = System.currentTimeMillis();
         removeOutdatedEvents(current);

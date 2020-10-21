@@ -28,6 +28,12 @@ public class ImageManager {
 
     private static final Map<String, XImage> cache = new HashMap<>();
 
+    /**
+     * Get image from cache or load image from model.
+     *
+     * @param name entry name of the image, it is automatically prepended with the model name
+     * @return the minified image and corresponding offset coordinates
+     */
     public static XImage load(String name) {
         if (cache.containsKey(name)) {
             return cache.get(name);

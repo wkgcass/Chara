@@ -15,17 +15,15 @@ import vproxybase.util.Callback;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.function.Consumer;
 
-public class TianxingTuling implements Chatbot {
+public class TianxingTuling extends AbstractChatbot implements Chatbot {
     private static final String HOSTNAME = "api.tianapi.com";
 
     private String apiKey;
     private HttpClient httpClient;
 
-    @Override
-    public String name() {
-        return "tianxing";
+    public TianxingTuling() {
+        super("tianxing");
     }
 
     @Override
@@ -37,7 +35,7 @@ public class TianxingTuling implements Chatbot {
     }
 
     @Override
-    public void takeMessage(String msg, Consumer<String[]> cb) {
+    public void takeMessage(String msg) {
         if (httpClient == null) {
             synchronized (this) {
                 if (httpClient == null) {
@@ -45,7 +43,7 @@ public class TianxingTuling implements Chatbot {
                         @Override
                         protected void onSucceeded(IP ip) {
                             httpClient = new Http1ClientImpl(new IPPort(ip, 80), ThreadUtils.get().getLoop(), 5000);
-                            sendRequest(msg, cb);
+                            sendRequest(msg);
                         }
 
                         @Override
@@ -57,10 +55,10 @@ public class TianxingTuling implements Chatbot {
                 }
             }
         }
-        sendRequest(msg, cb);
+        sendRequest(msg);
     }
 
-    private void sendRequest(String msg, Consumer<String[]> cb) {
+    private void sendRequest(String msg) {
         httpClient.get("/txapi/tuling/index?key=" + apiKey + "&question=" + URLEncoder.encode(msg, StandardCharsets.UTF_8))
             .header("Host", HOSTNAME)
             .send((err, resp) -> {
@@ -88,7 +86,7 @@ public class TianxingTuling implements Chatbot {
                     for (int i = 0; i < ret.length; ++i) {
                         ret[i] = arr.getObject(i).getString("reply");
                     }
-                    cb.accept(ret);
+                    sendMessage(ret);
                 } catch (RuntimeException e) {
                     Logger.error("TianxingTuling response is not valid: " + resp.bodyAsString(), e);
                     //noinspection UnnecessaryReturnStatement

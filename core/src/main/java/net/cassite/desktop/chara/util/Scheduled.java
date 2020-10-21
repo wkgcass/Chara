@@ -6,6 +6,9 @@ import vproxybase.selector.PeriodicEvent;
 import vproxybase.selector.SelectorEventLoop;
 import vproxybase.selector.TimerEvent;
 
+/**
+ * The scheduled time event
+ */
 public class Scheduled {
     private TimerEvent initialDelayEvent;
     private PeriodicEvent periodicEvent;
@@ -21,6 +24,9 @@ public class Scheduled {
         });
     }
 
+    /**
+     * cancel the event
+     */
     public void cancel() {
         if (initialDelayEvent != null) {
             initialDelayEvent.cancel();

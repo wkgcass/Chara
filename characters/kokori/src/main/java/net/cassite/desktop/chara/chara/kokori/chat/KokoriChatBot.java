@@ -15,15 +15,19 @@ import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.manager.ChatbotManager;
 import net.cassite.desktop.chara.util.Logger;
 
+import java.util.function.Consumer;
+
 public class KokoriChatBot {
     private final Kokori kokori;
     private final KokoriPersonality personality;
     private final AppCallback appCallback;
+    private final Consumer<String[]> messageHandler;
 
     public KokoriChatBot(Kokori kokori, KokoriPersonality personality, AppCallback appCallback) {
         this.kokori = kokori;
         this.personality = personality;
         this.appCallback = appCallback;
+        this.messageHandler = this::handleMessageFromBot;
     }
 
     public void takeMessage(String msg) {
@@ -38,7 +42,7 @@ public class KokoriChatBot {
         }
 
         // check pre-built questions
-        if (handleMessage(msg)) {
+        if (handleSpecialMessage(msg)) {
             return;
         }
 
@@ -48,15 +52,18 @@ public class KokoriChatBot {
             Alert.alert(I18nConsts.chatbotNotConfigured.get()[0]);
             return;
         }
+        chatbot.registerMessageCallback(messageHandler);
 
         appCallback.showMessage("...");
-        chatbot.takeMessage(msg, resp -> {
-            if (resp == null || resp.length == 0) {
-                assert Logger.debug("response of " + msg + " is empty");
-                return;
-            }
-            appCallback.showMessage(resp);
-        });
+        chatbot.takeMessage(msg);
+    }
+
+    private void handleMessageFromBot(String[] msgs) {
+        if (msgs == null || msgs.length == 0) {
+            assert Logger.debug("message from bot is empty");
+            return;
+        }
+        appCallback.showMessage(msgs);
     }
 
     private void runCommand(String cmd0) {
@@ -213,7 +220,7 @@ public class KokoriChatBot {
         });
     }
 
-    private boolean handleMessage(String msg) {
+    private boolean handleSpecialMessage(String msg) {
         return false;
     }
 }

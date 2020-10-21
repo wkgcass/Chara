@@ -29,6 +29,7 @@ import net.cassite.desktop.chara.manager.ImageManager;
 import net.cassite.desktop.chara.manager.ModelManager;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
+import net.cassite.desktop.chara.util.StageUtils;
 import net.cassite.desktop.chara.util.Utils;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;

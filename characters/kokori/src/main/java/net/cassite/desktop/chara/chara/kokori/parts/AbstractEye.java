@@ -4,12 +4,13 @@ package net.cassite.desktop.chara.chara.kokori.parts;
 
 import javafx.scene.Group;
 import javafx.scene.effect.ColorAdjust;
+import net.cassite.desktop.chara.graphic.Div;
 import net.cassite.desktop.chara.graphic.Static;
 import net.cassite.desktop.chara.graphic.TimeBasedAnimationHelper;
 
 public abstract class AbstractEye extends AbstractPart implements Eye {
     private final ColorAdjust colorAdjust;
-    protected final Group eyeGroup = new Group();
+    protected final Div eyeGroup = new Div();
     protected final Static highlight;
     protected final Static eye;
 
