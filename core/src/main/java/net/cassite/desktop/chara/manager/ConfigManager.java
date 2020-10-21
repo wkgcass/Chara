@@ -437,6 +437,9 @@ public class ConfigManager {
      * the config object will save config in a gentle way when you called the setters of the config object.
      */
     public static void saveNow() {
+        if (instance == null) {
+            return;
+        }
         try {
             instance.doSave();
         } catch (Exception e) {
