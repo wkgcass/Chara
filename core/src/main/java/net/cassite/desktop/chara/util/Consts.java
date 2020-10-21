@@ -20,6 +20,7 @@ public class Consts {
 
     public static final String CACHE_DIR_NAME = ".chara/cache";
     public static final String CONFIG_BASE_DIR = ".chara/config";
+    public static final String PLUGIN_BASE_DIR = ".chara/plugin";
 
     public static final int BAR_WIDTH = 255;
     public static final int BOND_BAR_MARGIN_TOP = 5;

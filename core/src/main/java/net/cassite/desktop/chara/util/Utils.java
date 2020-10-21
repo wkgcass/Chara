@@ -9,15 +9,24 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.manager.ConfigManager;
+import net.cassite.desktop.chara.manager.PluginManager;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import vproxybase.dns.Resolver;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipFile;
 
 public class Utils {
     private Utils() {
@@ -157,6 +166,7 @@ public class Utils {
             }
         }
         ConfigManager.saveNow();
+        PluginManager.get().release();
         ThreadUtils.get().shutdownNow();
         try {
             Resolver.getDefault().stop();
@@ -265,5 +275,59 @@ public class Utils {
             isWindows = false;
             isLinux = false;
         }
+    }
+
+    public static Class<?> loadClassFromZipFile(ZipFile zipFile, String prefix, String classname) throws Exception {
+        // try to directly load class
+        try {
+            Class<?> ret = Class.forName(classname);
+            assert Logger.debug("using classpath class, no need to load jar from zip file");
+            return ret; // return if init succeeded
+        } catch (ClassNotFoundException ignore) {
+            // only catch ClassNotFound here
+            // other exception will be thrown
+        }
+        // try to load jar file
+        var entries = zipFile.entries();
+        List<URL> tempFileUrls = new LinkedList<>();
+        int tempFileCount = 0;
+        while (entries.hasMoreElements()) {
+            var entry = entries.nextElement();
+            if (entry.getName().startsWith("code/") && entry.getName().endsWith(".jar") && !entry.isDirectory()) {
+                Logger.info("releasing jar: " + entry.getName());
+
+                InputStream inputStream = zipFile.getInputStream(entry);
+                File tempFile = File.createTempFile("release-" + prefix + "-" + (tempFileCount++), ".jar");
+                tempFile.deleteOnExit();
+
+                FileOutputStream fos = new FileOutputStream(tempFile);
+
+                byte[] buf = new byte[1024 * 1024];
+                int n;
+                while ((n = inputStream.read(buf)) >= 0) {
+                    fos.write(buf, 0, n);
+                }
+                fos.flush();
+                try {
+                    fos.close();
+                } catch (Exception ignore) {
+                }
+                try {
+                    inputStream.close();
+                } catch (Exception ignore) {
+                }
+
+                tempFileUrls.add(tempFile.toURI().toURL());
+            }
+        }
+        if (tempFileUrls.isEmpty()) {
+            throw new Exception("no code found in zip file");
+        }
+        URL[] urlArray = new URL[tempFileUrls.size()];
+        tempFileUrls.toArray(urlArray);
+
+        // do load
+        URLClassLoader urlClassLoader = new URLClassLoader(urlArray);
+        return urlClassLoader.loadClass(classname);
     }
 }

@@ -1,8 +1,10 @@
 // ***LICENSE*** This file is licensed under GPLv2 with Classpath Exception. See LICENSE file under project root for more info
 
-package net.cassite.desktop.chara.chat;
+package net.cassite.desktop.chara.chat.tianxing;
 
 import net.cassite.desktop.chara.ThreadUtils;
+import net.cassite.desktop.chara.chat.AbstractChatbot;
+import net.cassite.desktop.chara.chat.Chatbot;
 import net.cassite.desktop.chara.util.Logger;
 import vclient.HttpClient;
 import vclient.impl.Http1ClientImpl;

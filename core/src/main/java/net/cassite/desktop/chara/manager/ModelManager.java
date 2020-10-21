@@ -7,15 +7,10 @@ import net.cassite.desktop.chara.i18n.Words;
 import net.cassite.desktop.chara.i18n.WordsSelector;
 import net.cassite.desktop.chara.model.Model;
 import net.cassite.desktop.chara.model.ModelInitConfig;
-import net.cassite.desktop.chara.util.Consts;
-import net.cassite.desktop.chara.util.Logger;
-import net.cassite.desktop.chara.util.Rec;
-import net.cassite.desktop.chara.util.ZipFileInputStreamDelegate;
+import net.cassite.desktop.chara.util.*;
 import vjson.JSON;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -227,60 +222,7 @@ public class ModelManager {
     }
 
     private static void initCode(ZipFile zipFile, String modelName, String modelClass) throws Exception {
-        // try to directly load class
-        try {
-            Model model = (Model) Class.forName(modelClass).getConstructor().newInstance();
-            register(model);
-            assert Logger.debug("using classpath model class, no need to load jar from model file");
-            return; // return if init succeeded
-        } catch (ClassNotFoundException ignore) {
-            // only catch ClassNotFound here
-            // other exception will be thrown
-        }
-        // try to load jar file
-        var entries = zipFile.entries();
-        List<URL> tempFileUrls = new LinkedList<>();
-        int tempFileCount = 0;
-        while (entries.hasMoreElements()) {
-            var entry = entries.nextElement();
-            if (entry.getName().startsWith("code/") && entry.getName().endsWith(".jar") && !entry.isDirectory()) {
-                assert Logger.debug("releasing jar: " + entry.getName());
-
-                InputStream inputStream = zipFile.getInputStream(entry);
-                File tempFile = File.createTempFile("release-" + modelName + "-" + (tempFileCount++), ".jar");
-                tempFile.deleteOnExit();
-
-                FileOutputStream fos = new FileOutputStream(tempFile);
-
-                byte[] buf = new byte[1024 * 1024];
-                int n;
-                while ((n = inputStream.read(buf)) >= 0) {
-                    fos.write(buf, 0, n);
-                }
-                fos.flush();
-                try {
-                    fos.close();
-                } catch (Exception ignore) {
-                }
-                try {
-                    inputStream.close();
-                } catch (Exception ignore) {
-                }
-
-                tempFileUrls.add(tempFile.toURI().toURL());
-            }
-        }
-        if (tempFileUrls.isEmpty()) {
-            throw new Exception("no code found in model file");
-        }
-        URL[] urlArray = new URL[tempFileUrls.size()];
-        tempFileUrls.toArray(urlArray);
-
-        // do load
-        URLClassLoader urlClassLoader = new URLClassLoader(urlArray);
-        Class<?> cls = urlClassLoader.loadClass(modelClass);
-
-        // call this to ensure it's loaded
+        Class<?> cls = Utils.loadClassFromZipFile(zipFile, "model-" + modelName, modelClass);
         Model model = (Model) cls.getConstructor().newInstance();
         register(model);
     }

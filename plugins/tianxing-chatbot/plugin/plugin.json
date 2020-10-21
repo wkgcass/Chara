@@ -1,0 +1,6 @@
+{
+  "name": "TianxingChatbot",
+  "compatibleMinCodeVersion": 1000000,
+  "compatibleMaxCodeVersion": -1,
+  "pluginClass": "net.cassite.desktop.chara.plugin.tianxingchatbot.TianxingChatbotPlugin"
+}

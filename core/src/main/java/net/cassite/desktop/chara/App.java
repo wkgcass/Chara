@@ -28,6 +28,7 @@ import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.i18n.Words;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.FontManager;
+import net.cassite.desktop.chara.manager.PluginManager;
 import net.cassite.desktop.chara.model.Model;
 import net.cassite.desktop.chara.util.*;
 import org.jnativehook.GlobalScreen;
@@ -113,6 +114,7 @@ public class App {
         // register terminating hook
         primaryStage.setOnCloseRequest(e -> {
             chara.release();
+            PluginManager.get().release();
             ThreadUtils.get().shutdownNow();
             if (messageStage != null) {
                 if (messageStage.isShowing()) {

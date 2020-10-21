@@ -27,6 +27,7 @@ import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.ImageManager;
 import net.cassite.desktop.chara.manager.ModelManager;
+import net.cassite.desktop.chara.manager.PluginManager;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.StageUtils;
@@ -111,6 +112,7 @@ public class Main extends Application {
     private void preWork(Runnable cb) {
         launchDnsResolver();
         registerNativeHook();
+        loadPlugins();
         chooseModel(() ->
             chooseModelFile(() ->
                 loadModel(() ->
@@ -140,6 +142,10 @@ public class Main extends Application {
             Logger.error("register native hook failed\n" +
                 "it's necessary for detecting the mouse movements", e);
         }
+    }
+
+    private void loadPlugins() {
+        PluginManager.get().load();
     }
 
     private void chooseModel(Runnable cb) {

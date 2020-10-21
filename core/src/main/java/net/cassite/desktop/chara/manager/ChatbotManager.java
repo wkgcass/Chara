@@ -3,8 +3,10 @@
 package net.cassite.desktop.chara.manager;
 
 import net.cassite.desktop.chara.chat.Chatbot;
-import net.cassite.desktop.chara.chat.TianxingTuling;
 import net.cassite.desktop.chara.util.Logger;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The chatbot manager
@@ -12,9 +14,21 @@ import net.cassite.desktop.chara.util.Logger;
 public class ChatbotManager {
     private static volatile Chatbot selected = null;
 
-    private static final Chatbot[] impls = new Chatbot[]{
-        new TianxingTuling(),
-    };
+    private static final List<Chatbot> chatbots = new LinkedList<>();
+
+    /**
+     * Register chatbot to the manager
+     *
+     * @param chatbot the chatbot instance to register
+     */
+    public static void register(Chatbot chatbot) {
+        for (Chatbot c : chatbots) {
+            if (c.name().equals(chatbot.name())) {
+                throw new IllegalStateException("chatbot with name " + c.name() + " already registered");
+            }
+        }
+        chatbots.add(chatbot);
+    }
 
     /**
      * Retrieve the chatbot as defined in the config
@@ -40,14 +54,14 @@ public class ChatbotManager {
                 args = chatbotConf.substring(name.length() + 1);
             }
             Chatbot chatbot = null;
-            for (var impl : impls) {
+            for (var impl : chatbots) {
                 if (impl.name().equals(name)) {
                     chatbot = impl;
                     break;
                 }
             }
             if (chatbot == null) {
-                Logger.fatal("no chatbot implementation called " + name);
+                Logger.fatal("chatbot " + name + " is not registered");
                 return null;
             }
             try {
