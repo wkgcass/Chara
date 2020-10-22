@@ -33,7 +33,7 @@ public class Alert {
     /**
      * Show alert message
      *
-     * @param msg msg
+     * @param msg msg to show
      */
     public static void alert(String msg) {
         if (!Platform.isFxApplicationThread()) {

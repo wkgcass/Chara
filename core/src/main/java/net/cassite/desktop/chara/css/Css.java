@@ -20,8 +20,18 @@ import java.net.MalformedURLException;
  * </pre>
  */
 public abstract class Css {
+    /**
+     * Name of the css, which will be used as part of temporary file
+     *
+     * @return name
+     */
     abstract protected String name();
 
+    /**
+     * Content of the css file
+     *
+     * @return content of the css file
+     */
     abstract protected String text();
 
     /**

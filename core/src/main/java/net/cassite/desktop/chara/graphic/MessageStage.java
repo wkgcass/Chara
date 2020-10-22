@@ -15,6 +15,9 @@ import net.cassite.desktop.chara.ThreadUtils;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The stage for showing messages
+ */
 public class MessageStage extends Stage {
     private final StageTransformer primaryStage;
     private final Stage tmpStage;
@@ -42,6 +45,11 @@ public class MessageStage extends Stage {
         ThreadUtils.get().scheduleAtFixedRateFX(this::checkPopBubble, 0, 500, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Show message. The message may delay showing until current animation finishes
+     *
+     * @param inputMessage the message to show
+     */
     public void pushMessage(InputMessage inputMessage) {
         if (isPlaying) {
             messageBubblesToBeAdded.add(inputMessage);
@@ -102,6 +110,9 @@ public class MessageStage extends Stage {
         ySum = 0;
     }
 
+    /**
+     * Hide the stage
+     */
     @Override
     public void hide() {
         super.hide();
@@ -110,6 +121,10 @@ public class MessageStage extends Stage {
         EventBus.publish(Events.MessageStageHidden, null);
     }
 
+    /**
+     * Show the stage.<br>
+     * Do not call {@link #show()} on this stage.
+     */
     public void showAll() {
         tmpStage.show();
         show();
@@ -251,6 +266,9 @@ public class MessageStage extends Stage {
         return duration;
     }
 
+    /**
+     * Make all message bubbles point to left.
+     */
     public void pointToLeft() {
         if (!pointToRight) {
             return;
@@ -259,6 +277,9 @@ public class MessageStage extends Stage {
         changeDirection();
     }
 
+    /**
+     * Make all message bubbles point to right
+     */
     public void pointToRight() {
         if (pointToRight) {
             return;
@@ -274,10 +295,21 @@ public class MessageStage extends Stage {
         });
     }
 
+    /**
+     * Check whether the message bubble is pointing to right
+     *
+     * @return true if pointing to right, false otherwise
+     */
     public boolean isPointingToRight() {
         return pointToRight;
     }
 
+    /**
+     * Simulate a click on the stage, message bubbles may be removed.
+     *
+     * @param x screen x
+     * @param y screen y
+     */
     public void click(double x, double y) {
         var stageX = getX();
         var stageY = getY();
@@ -312,6 +344,9 @@ public class MessageStage extends Stage {
         popMessage(messageBubble);
     }
 
+    /**
+     * Remove all messages
+     */
     public void clearAllMessages() {
         messageBubblesToBeAdded.clear();
         for (var msg : messageBubbles) {
