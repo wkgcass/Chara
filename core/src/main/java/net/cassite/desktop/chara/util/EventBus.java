@@ -2,6 +2,8 @@
 
 package net.cassite.desktop.chara.util;
 
+import javafx.application.Platform;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Consumer;
@@ -29,12 +31,14 @@ public class EventBus {
             return;
         }
         for (var consumer : consumers) {
-            try {
-                //noinspection unchecked
-                consumer.accept(message);
-            } catch (Throwable t) {
-                Logger.error("consumer thrown exception when handling event " + event + " with message " + message, t);
-            }
+            Platform.runLater(() -> {
+                try {
+                    //noinspection unchecked
+                    consumer.accept(message);
+                } catch (Throwable t) {
+                    Logger.error("consumer thrown exception when handling event " + event + " with message " + message, t);
+                }
+            });
         }
     }
 

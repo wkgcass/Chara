@@ -6,3 +6,4 @@ out/
 .jar
 .DS_Store
 vproxy.jar
+.log

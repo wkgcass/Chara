@@ -238,7 +238,7 @@ public class StageTransformer {
     /**
      * Get image x by real x relative to the scene
      *
-     * @param x x
+     * @param x real x
      * @return calculated image x
      */
     public double getImageXBySceneX(double x) {
@@ -250,13 +250,38 @@ public class StageTransformer {
     /**
      * Get image y by real y relative to the scene
      *
-     * @param y y
+     * @param y real y
      * @return calculated image y
      */
     public double getImageYBySceneY(double y) {
         y -= getAddAbsoluteTop();
         y /= getScaleRatio();
         y += getCutTop();
+        return y;
+    }
+
+    /**
+     * Get real x relative to the scene by image x
+     *
+     * @param x image x
+     * @return calculated real x
+     */
+    public double getSceneXByImageX(double x) {
+        x -= getCutLeft();
+        x *= getScaleRatio();
+        return x;
+    }
+
+    /**
+     * Get real y relative to the scene by image y
+     *
+     * @param y image y
+     * @return calculated real y
+     */
+    public double getSceneYByImageY(double y) {
+        y -= getCutTop();
+        y *= getScaleRatio();
+        y += getAddAbsoluteTop();
         return y;
     }
 }

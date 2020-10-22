@@ -313,7 +313,7 @@ public class App {
     }
 
     private AppCallback getAppCallback() {
-        return new AppCallback() {
+        var appCallback = new AppCallback() {
             @Override
             public void setCharaPoints(CharaPoints points) {
                 Platform.runLater(() -> bars.setCharaPoints(points));
@@ -367,6 +367,8 @@ public class App {
                 Platform.runLater(() -> bars.setAlwaysShowBar(alwaysShowBar));
             }
         };
+        EventBus.publish(Events.AppCallbackReady, appCallback);
+        return appCallback;
     }
 
     private void resize(ScrollEvent e) {
@@ -404,6 +406,7 @@ public class App {
         primaryStage.saveConfig();
 
         calculatePositions();
+        mouseCircleHide();
     }
 
     private boolean windowIsDraggable = true;
@@ -451,6 +454,8 @@ public class App {
         }
     }
 
+    private static final double[] MOUSE_CLICK_EVENT_UTIL_OBJECT = new double[2];
+
     private void click(MouseEvent e) {
         if (e.getButton() != MouseButton.PRIMARY) {
             return;
@@ -468,6 +473,9 @@ public class App {
         assert Logger.debug("clicked at (" + x + "," + y + ") <= (" + e.getSceneX() + "," + e.getSceneY() + ")");
 
         chara.click(x, y);
+        MOUSE_CLICK_EVENT_UTIL_OBJECT[0] = x;
+        MOUSE_CLICK_EVENT_UTIL_OBJECT[1] = y;
+        EventBus.publish(Events.MouseClickedImagePosition, MOUSE_CLICK_EVENT_UTIL_OBJECT);
     }
 
     private Scheduled deregisterGlobalScreenAfterMouseLeaveScheduledFuture;
@@ -571,7 +579,7 @@ public class App {
         chara.mouseMove(x, y);
 
         // show somethings
-        double realY = (y - primaryStage.getCutTop()) * primaryStage.getScaleRatio() + primaryStage.getAddAbsoluteTop();
+        double realY = primaryStage.getSceneYByImageY(y);
         // show bar
         {
             if (realY < Consts.CHARA_TOTAL_ABSOLUTE_MARGIN_TOP) {
@@ -637,8 +645,8 @@ public class App {
         messageStage.clearAllMessages();
     }
 
-    private double getMiddleXOfScreen() {
-        return primaryStage.getAbsoluteX() + (chara.data().topMiddleX - primaryStage.getCutLeft()) * primaryStage.getScaleRatio();
+    private double getTopMiddleXOfScreen() {
+        return primaryStage.getAbsoluteX() + primaryStage.getSceneXByImageX(chara.data().topMiddleX);
     }
 
     private void calculatePositions() {
@@ -648,12 +656,12 @@ public class App {
     }
 
     private void calculateBarPosition() {
-        var middle = (chara.data().topMiddleX - primaryStage.getCutLeft()) * primaryStage.getScaleRatio();
+        var middle = primaryStage.getSceneXByImageX(chara.data().topMiddleX);
         bars.barGroup.setLayoutX(middle - Consts.BAR_WIDTH / 2D);
     }
 
     private void calculateInputBoxPosition() {
-        var middle = (chara.data().bottomMiddleX - primaryStage.getCutLeft()) * primaryStage.getScaleRatio();
+        var middle = primaryStage.getSceneXByImageX(chara.data().bottomMiddleX);
         inputBox.setLayoutX(middle - Consts.INPUT_WIDTH / 2D);
         var stageH = primaryStage.getStage().getHeight();
         inputBox.setLayoutY(stageH - Consts.INPUT_MARGIN_BOTTOM - Consts.INPUT_HEIGHT);
@@ -664,7 +672,7 @@ public class App {
             return;
         }
 
-        var middleXOfScreen = getMiddleXOfScreen();
+        var middleXOfScreen = getTopMiddleXOfScreen();
         var screen = primaryStage.getScreen();
         var screenBounds = screen.getBounds();
         var screenMid = screenBounds.getWidth() / 2;
@@ -682,7 +690,7 @@ public class App {
             messageStage.setX(middleXOfScreen + offsetX);
         }
 
-        var y = primaryStage.getAbsoluteY() + ((chara.data().messageAtMinY - primaryStage.getCutTop()) * primaryStage.getScaleRatio());
+        var y = primaryStage.getAbsoluteY() + primaryStage.getSceneYByImageY(chara.data().messageAtMinY);
         messageStage.setY(y);
     }
 
@@ -694,12 +702,8 @@ public class App {
             return;
         }
 
-        x -= primaryStage.getCutLeft();
-        x *= primaryStage.getScaleRatio();
-
-        y -= primaryStage.getCutTop();
-        y *= primaryStage.getScaleRatio();
-        y += primaryStage.getAddAbsoluteTop();
+        x = primaryStage.getSceneXByImageX(x);
+        y = primaryStage.getSceneYByImageY(y);
 
         x += primaryStage.getAbsoluteX();
         y += primaryStage.getAbsoluteY();
