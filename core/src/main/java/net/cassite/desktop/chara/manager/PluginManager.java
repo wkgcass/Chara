@@ -71,6 +71,8 @@ public class PluginManager {
         while ((line = br.readLine()) != null) {
             sb.append(line);
         }
+        inputStream.close();
+
         JSON.Object pluginJson = (JSON.Object) JSON.parse(sb.toString());
         String name = pluginJson.getString("name");
         int version = pluginJson.getInt("version");
@@ -104,12 +106,13 @@ public class PluginManager {
             return;
         }
 
+        // init
+        plugin.init(zipFile);
         // launch
         plugin.launch();
         // register
         plugins.put(name, plugin);
 
-        br.close();
         zipFile.close();
 
         Logger.info("plugin " + name + " loaded");

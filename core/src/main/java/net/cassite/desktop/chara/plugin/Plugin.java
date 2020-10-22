@@ -2,6 +2,8 @@
 
 package net.cassite.desktop.chara.plugin;
 
+import java.util.zip.ZipFile;
+
 public interface Plugin {
     /**
      * Get name of the plugin
@@ -18,11 +20,21 @@ public interface Plugin {
     int version();
 
     /**
-     * Launch the plugin
+     * Initiate the plugin.<br>
+     * You should put irrecoverable operations into this function.
+     * Recoverable operations should be put into <code>launch()</code> method.
      *
-     * @throws Exception any exception when launching
+     * @param zipFile zip file of the plugin
+     * @throws Exception any exception when initiating
      */
-    void launch() throws Exception;
+    void init(ZipFile zipFile) throws Exception;
+
+    /**
+     * Launch the plugin.<br>
+     * You should put recoverable operations into this function,
+     * and these operations should be reverted in <code>release</code> function.
+     */
+    void launch();
 
     /**
      * The plugin menu item is clicked
@@ -30,7 +42,7 @@ public interface Plugin {
     void clicked();
 
     /**
-     * Release any resource the plugin is holding and shutdown the plugin
+     * Revert operation in <code>launch()</code>.<br>
      */
     void release();
 }

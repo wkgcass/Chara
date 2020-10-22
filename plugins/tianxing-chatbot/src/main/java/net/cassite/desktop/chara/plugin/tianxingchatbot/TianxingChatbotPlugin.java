@@ -6,6 +6,8 @@ import net.cassite.desktop.chara.chat.tianxing.TianxingTuling;
 import net.cassite.desktop.chara.manager.ChatbotManager;
 import net.cassite.desktop.chara.plugin.Plugin;
 
+import java.util.zip.ZipFile;
+
 public class TianxingChatbotPlugin implements Plugin {
     @Override
     public String name() {
@@ -18,8 +20,13 @@ public class TianxingChatbotPlugin implements Plugin {
     }
 
     @Override
-    public void launch() {
+    public void init(ZipFile zipFile) {
         ChatbotManager.register(new TianxingTuling());
+    }
+
+    @Override
+    public void launch() {
+        // do nothing
     }
 
     @Override

@@ -2,6 +2,7 @@
 
 package net.cassite.desktop.chara.plugin.dev;
 
+import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import net.cassite.desktop.chara.graphic.Alert;
 import net.cassite.desktop.chara.graphic.Div;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipFile;
 
 public class DevPlugin implements Plugin {
     private boolean enabled;
@@ -39,11 +41,20 @@ public class DevPlugin implements Plugin {
     }
 
     @Override
+    public void init(ZipFile zipFile) {
+        // do nothing
+    }
+
+    @Override
     public void launch() {
         registrations.add(EventBus.watch(Events.PrimaryStageReady, this::primaryStageReady));
         registrations.add(EventBus.watch(Events.PrimaryStageResized, this::resized));
         registrations.add(EventBus.watch(Events.MessageTaken, this::messageTaken));
         registrations.add(EventBus.watch(Events.MouseClickedImagePosition, e -> click(e[0], e[1])));
+
+        if (primaryStage != null) {
+            ((Group) primaryStage.getStage().getScene().getRoot()).getChildren().add(root);
+        }
 
         enabled = true;
     }
@@ -138,8 +149,10 @@ public class DevPlugin implements Plugin {
         for (var registration : registrations) {
             registration.cancel();
         }
+        registrations.clear();
         if (primaryStage != null) {
             ((Pane) primaryStage.getStage().getScene().getRoot()).getChildren().remove(root);
         }
+        enabled = false;
     }
 }
