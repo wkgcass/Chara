@@ -6,9 +6,23 @@
 
 插件可以同时存在多个，并且可以同时工作。
 
-当插件加载时，插件的`launch()`函数会被调用，你可以在插件中实现任何代码逻辑，比方说向`ChatbotManager`注册一个`Chatbot`实现，或者开启一个额外的窗口，甚至可以实现一个毫不相关的应用。
+## 插件常见实现方式
+
+当插件加载时，插件的`launch()`函数会被调用，你可以在插件中实现任何代码逻辑，比方说在角色模型上添加一些额外元素，或者向`ChatbotManager`注册一个`Chatbot`实现，或者开启一个额外的窗口，甚至可以实现一个毫不相关的应用。
 
 在程序即将退出时，会调用所有已加载插件的`release()`函数，释放插件依赖的资源。
+
+已加载的插件会在右键菜单中展示，并且可以通过点击进行交互。当菜单中的插件对象被点击时，`clicked(...)`函数会被调用，一般来说可以用于“启用/禁用”插件，或者展示插件提供的额外窗口等。
+
+插件接口本身非常简单，但是可以通过`EventBus`功能watch各类事件。
+
+```java
+var registration = EventBus.watch(event, v -> { });
+```
+
+watch函数会返回一个`registration`，你需要在插件中保存这些registration，并且在release函数中释放这些registration。
+
+core模块公开提供的事件，可以在`Events`类中找到。
 
 ## .plugin文件结构
 
@@ -27,7 +41,7 @@
 
 ```js
 {
-  "name": "插件的名字",
+  "name": "插件的名字，例如dev",
   "version": 1000000, // 插件的版本号。格式是这样：比方说版本号是x.y.z，那么这里填 x * 1_000_000 + y * 1000 + z
   "compatibleMinCodeVersion": 1000000, // 基础代码的最低版本号
   "compatibleMaxCodeVersion": -1, // 基础代码的最高版本号，写-1表示没有要求
@@ -42,10 +56,27 @@ code目录中存放插件代码的`.jar`文件。需要将所有依赖的jar也�
 
 注意，这里的`.jar`文件需要包含`plugin.json`中配置的`pluginClass`，并且`module-info.java`中需要将对应的包export出来。
 
+### 其他
+
+在插件文件中还可以放置一些其他文件，例如LICENSE、README等。
+
+### 参考目录
+
+dev插件的目录结构的结构是这样的：
+
+```
+dev.plugin +
+           |
+           +-- plugin.json
+           +-- code +
+                    |
+                    +-- dev.jar
+```
+
 ## 开发流程
 
 开发过程中因为需要经常调试和修改源码，不适合将代码打包入插件文件。  
-这里给出一套开发流程供参考。描述比较简略，具体可以看`plugins/`目录下各插件工程的代码。此外推荐使用IDEA开发，可以使用免费的社区版。
+这里给出一套开发流程供参考。描述比较简略，具体可以看`dev`插件工程的代码。此外推荐使用IDEA开发，可以使用免费的社区版。
 
 ### 1. clone
 
@@ -53,12 +84,14 @@ code目录中存放插件代码的`.jar`文件。需要将所有依赖的jar也�
 
 ### 2. 创建工程根目录
 
-在`plugins/`目录下创建一个你的插件的子目录，作为工程根目录，比方说`plugins/your-new-plugin/`。
+在`plugins/`目录下创建一个你的插件的子目录，作为工程根目录，例如`plugins/dev/`。
+
+后文会多次出现“插件名字”，这里统一用变量符号`${name}`代替。
 
 ### 3. 使用gradle初始化
 
 推荐使用`gradle wrapper`
-可以直接从任意一个正常工作的插件工程目录中，将这几个文件拷贝到你的目录里，然后做一些修改。
+可以直接从`dev`插件工程目录中，将这几个文件拷贝到你的目录里，然后做一些修改。
 
 * `gradle`: gradle wrapper相关文件
 * `gradlew`: linux/macos通过这个脚本使用gradlew
@@ -89,15 +122,15 @@ code目录中存放插件代码的`.jar`文件。需要将所有依赖的jar也�
 
 ### 6. 开发
 
-在你的新工程中创建一个类，实现`Plugin`接口，并实现这个类。
+在你的新工程中创建一个类，命名为`${Name}Plugin`，并`implements Plugin`（实现Plugin接口）。你需要实现这个类。
 
-在`launch()`函数中添加插件需要运行的代码。如果插件有额外资源分配的话，记得务必在`release()`中将资源释放。
+在`launch()`函数中添加插件初始化时需要运行的代码。如果插件有额外资源分配的话，记得务必在`release()`中将资源释放。
 
 在源代码根目录（一般来说是`src/main/java`）中，创建一个`module-info.java`，在其中`exports`你的插件所在的包。
 
 ### 7. 运行和调试
 
-在你的新工程中创建一个包：`run.plugin.${name}`。  
+在你的新工程中创建一个包：`run.plugin.${name}`（例如`run.plugin.dev`）。  
 创建一个类`Run`。写入如下内容：
 
 ```java
@@ -114,6 +147,10 @@ public class Run extends Application {
     }
 }
 ```
+
+然后在`module-info.java`中，把这个包也`exports`出来：`exports run.plugin.${name}`
+
+通过`Run`类，即可对整个App进行调试。
 
 ### 8. 打包
 
