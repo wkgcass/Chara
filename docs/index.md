@@ -48,9 +48,9 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 <details><summary>别点我</summary>
 
-## R18特性
+<h2 id="R18特性">R18特性</h2>
 
-![](readme-bundle/kokori-r18.gif)
+<img src="readme-bundle/kokori-r18.gif">
 
 </details>
 
