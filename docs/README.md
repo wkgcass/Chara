@@ -18,21 +18,21 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 ## 眼睛跟踪鼠标
 
-![](docs/readme-bundle/kokori-eye-track.gif)
+![](readme-bundle/kokori-eye-track.gif)
 
 ## 触摸反馈
 
-![](docs/readme-bundle/kokori-touch.gif)
+![](readme-bundle/kokori-touch.gif)
 
 触摸后的反应会根据羁绊值的高低而不同哦～
 
 ## 菜单交互
 
-![](docs/readme-bundle/kokori-menu.gif)
+![](readme-bundle/kokori-menu.gif)
 
 ## 羁绊值
 
-![](docs/readme-bundle/kokori-bond-bar.gif)
+![](readme-bundle/kokori-bond-bar.gif)
 
 通过增加羁绊值和▇▇值解锁更多新交互吧～
 
@@ -42,7 +42,7 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 ## 聊天交互
 
-![](docs/readme-bundle/kokori-chat-feature.gif)
+![](readme-bundle/kokori-chat-feature.gif)
 
 聊天交互需要事先配置chatbot
 
@@ -50,7 +50,7 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 ## R18特性
 
-![](docs/readme-bundle/kokori-r18.gif)
+![](readme-bundle/kokori-r18.gif)
 
 </details>
 
@@ -58,7 +58,7 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 ## 心璃
 
-[<img src="docs/readme-bundle/kokori.png" width="128px" height="128px">](https://github.com/wkgcass/Chara/tree/master/characters/kokori)
+[<img src="readme-bundle/kokori.png" width="128px" height="128px">](https://github.com/wkgcass/Chara/tree/master/characters/kokori)
 
 中文名：心璃  
 英文名：Kokori  
@@ -73,5 +73,5 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 # 开发文档
 
-* [如何开发一个新角色](docs/how-to-develop-a-new-character.md)
-* [如何开发一个插件](docs/how-to-develop-a-new-plugin.md)
+* [如何开发一个新角色](how-to-develop-a-new-character.md)
+* [如何开发一个插件](how-to-develop-a-new-plugin.md)
