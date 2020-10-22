@@ -30,6 +30,7 @@ import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.FontManager;
 import net.cassite.desktop.chara.manager.PluginManager;
 import net.cassite.desktop.chara.model.Model;
+import net.cassite.desktop.chara.plugin.Plugin;
 import net.cassite.desktop.chara.util.*;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
@@ -259,9 +260,15 @@ public class App {
         Menu systemMenu = new Menu(I18nConsts.systemMenu.get()[0]);
         MenuItem showVersionsItem = new MenuItem(I18nConsts.showVersionsItem.get()[0]);
         showVersionsItem.setOnAction(e -> showVersions());
+        Menu pluginMenu = new Menu(I18nConsts.pluginMenu.get()[0]);
+        for (Plugin plugin : PluginManager.get().getPlugins()) {
+            MenuItem pluginItem = new MenuItem(plugin.name() + ": " + Utils.verNum2Str(plugin.version()));
+            pluginItem.setOnAction(e -> plugin.clicked());
+            pluginMenu.getItems().add(pluginItem);
+        }
         MenuItem exitItem = new MenuItem(I18nConsts.exitMenuItem.get()[0]);
         exitItem.setOnAction(e -> StageUtils.closePrimaryStage());
-        systemMenu.getItems().addAll(showVersionsItem, exitItem);
+        systemMenu.getItems().addAll(showVersionsItem, pluginMenu, exitItem);
         contextMenu.getItems().addAll(
             messageEnableItem,
             alwaysOnTopItem,
@@ -291,7 +298,18 @@ public class App {
     }
 
     public void ready() {
+        // construct message stage
+        messageStage = new MessageStage(primaryStage);
+        messageStage.setAlwaysOnTop(primaryStage.getStage().isAlwaysOnTop());
+        calculateMessageStagePosition();
+        EventBus.publish(Events.MessageStageReady, messageStage);
+
+        // primary stage is ready
+        EventBus.publish(Events.PrimaryStageReady, primaryStage);
+
+        // call chara.ready
         chara.ready(new Chara.ReadyParams());
+        EventBus.publish(Events.CharacterReady, chara);
     }
 
     private AppCallback getAppCallback() {
@@ -381,6 +399,7 @@ public class App {
         ex += primaryStage.getCutLeft();
         ey += primaryStage.getCutTop();
         primaryStage.scaleAt(ex, ey, ratio);
+        EventBus.publish(Events.PrimaryStageResized, null);
 
         primaryStage.saveConfig();
 
@@ -422,6 +441,7 @@ public class App {
 
             primaryStage.setAbsoluteX(e.getScreenX() - this.oldScreenX + this.oldStageX);
             primaryStage.setAbsoluteY(e.getScreenY() - this.oldScreenY + this.oldStageY);
+            EventBus.publish(Events.PrimaryStageMoved, null);
 
             primaryStage.saveConfig();
 
@@ -598,9 +618,7 @@ public class App {
         }
 
         if (messageStage == null) {
-            messageStage = new MessageStage(primaryStage);
-            messageStage.setAlwaysOnTop(primaryStage.getStage().isAlwaysOnTop());
-            calculateMessageStagePosition();
+            return; // not constructed yet
         }
         int colorHash = (int) (Math.random() * 1000);
         int n = 0;
@@ -691,6 +709,7 @@ public class App {
     private void moveWindow(double deltaX, double deltaY) {
         primaryStage.setAbsoluteX(primaryStage.getAbsoluteX() + deltaX * primaryStage.getScaleRatio());
         primaryStage.setAbsoluteY(primaryStage.getAbsoluteY() + deltaY * primaryStage.getScaleRatio());
+        EventBus.publish(Events.PrimaryStageMoved, null);
     }
 
     private void setGlobalScreen(boolean globalScreen) {
@@ -736,8 +755,8 @@ public class App {
     }
 
     private void takeMessage(String text) {
-        // check special texts
         chara.takeMessage(text);
+        EventBus.publish(Events.MessageTaken, text);
     }
 
     private void keyPressed(KeyEvent e) {

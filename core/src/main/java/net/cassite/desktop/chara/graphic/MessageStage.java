@@ -9,10 +9,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.Global;
-import net.cassite.desktop.chara.util.StageUtils;
+import net.cassite.desktop.chara.util.*;
 import net.cassite.desktop.chara.ThreadUtils;
-import net.cassite.desktop.chara.util.Consts;
-import net.cassite.desktop.chara.util.Logger;
 
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
@@ -75,6 +73,7 @@ public class MessageStage extends Stage {
             // focus the primary stage to make pushMessage behavior consistent
             primaryStage.getStage().requestFocus();
         }
+        EventBus.publish(Events.MessageShown, message);
     }
 
     private void postOperation() {
@@ -107,11 +106,15 @@ public class MessageStage extends Stage {
     public void hide() {
         super.hide();
         tmpStage.hide();
+
+        EventBus.publish(Events.MessageStageHidden, null);
     }
 
     public void showAll() {
         tmpStage.show();
         show();
+
+        EventBus.publish(Events.MessageStageShown, null);
     }
 
     private static final int REMOVING_ANIMATION_DURATION = 100;

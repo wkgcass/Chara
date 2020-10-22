@@ -55,6 +55,10 @@ public class I18nConsts {
         ("显示版本号")
         .setEn("Show versions")
         .build();
+    public static final Words pluginMenu = new WordsBuilder
+        ("插件")
+        .setEn("Plugins")
+        .build();
     public static final Words exitMenuItem = new WordsBuilder
         ("退出")
         .setEn("Exit")

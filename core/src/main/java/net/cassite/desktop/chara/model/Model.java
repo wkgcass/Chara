@@ -19,6 +19,13 @@ public interface Model {
     String name();
 
     /**
+     * Version of the model/character
+     *
+     * @return version
+     */
+    int version();
+
+    /**
      * Construct the character object
      *
      * @param params parameters for construction

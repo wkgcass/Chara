@@ -17,17 +17,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class ModelManager {
-    private static final List<Model> models = new ArrayList<>();
-
-    private static void register(Model model) {
-        for (Model m : models) {
-            if (m.name().equals(model.name())) {
-                throw new IllegalStateException("model with name " + m.name() + " already registered");
-            }
-        }
-        models.add(model);
-    }
-
     public static Model load(String modelFile) {
         ZipFile zipFile;
         try {
@@ -76,30 +65,31 @@ public class ModelManager {
         }
 
         // init code
+        Model selected;
         try {
-            initCode(zipFile, name, modelClass);
+            Class<?> cls = Utils.loadClassFromZipFile(zipFile, "model-" + name, modelClass);
+            selected = (Model) cls.getConstructor().newInstance();
         } catch (Exception e) {
             Logger.fatal("init code failed: " + e.getMessage(), e);
             return null;
         }
 
-        // find name
-        Model selected = null;
-        for (Model m : models) {
-            if (m.name().equals(name)) {
-                selected = m;
-            }
-        }
-        if (selected == null) {
-            Logger.fatal("model not found: " + name);
+        Logger.info("getting model " + selected.name());
+
+        // check config name and version
+        if (!name.equals(selected.name())) {
+            Logger.fatal("name in the model config " + name +
+                " is not the same as model.name() in code " + selected.name());
             return null;
         }
-        Logger.info("getting model " + selected.name());
+        if (version != selected.version()) {
+            Logger.fatal("version in the model config " + Utils.verNum2Str(version) +
+                " is not the same as model.version() in code " + Utils.verNum2Str(selected.version()));
+            return null;
+        }
 
         // prepare init config
         ModelInitConfig modelInitConfig = new ModelInitConfig();
-        modelInitConfig.version = version;
-        Global.modelVersion = version;
 
         // get words
         var words = new HashMap<String, WordsSelector>();
@@ -123,7 +113,7 @@ public class ModelManager {
                 }
             }
         }
-        modelInitConfig.interactionWordsSelectors = words;
+        modelInitConfig.setInteractionWordsSelectors(words);
 
         // get values
         var intMap = new HashMap<String, Integer>();
@@ -219,12 +209,6 @@ public class ModelManager {
             return null;
         }
         return inst;
-    }
-
-    private static void initCode(ZipFile zipFile, String modelName, String modelClass) throws Exception {
-        Class<?> cls = Utils.loadClassFromZipFile(zipFile, "model-" + modelName, modelClass);
-        Model model = (Model) cls.getConstructor().newInstance();
-        register(model);
     }
 
     private static WordsSelector getWords(ZipFile zipFile, ZipEntry wordsEntry) throws Exception {

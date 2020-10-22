@@ -8,6 +8,8 @@ import net.cassite.desktop.chara.CharaPoints;
 import net.cassite.desktop.chara.css.ProgressBarCss;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.util.Consts;
+import net.cassite.desktop.chara.util.EventBus;
+import net.cassite.desktop.chara.util.Events;
 
 public class Bars {
     public final Group barGroup;
@@ -140,6 +142,14 @@ public class Bars {
         double bondPrevious = fixCharaPoint(points.bondPrevious);
         double desireCurrent = fixCharaPoint(points.desireCurrent);
         double desirePrevious = fixCharaPoint(points.desirePrevious);
+
+        // publish events
+        if (bondCurrent != bondPrevious) {
+            EventBus.publish(Events.BondPointChanged, bondCurrent);
+        }
+        if (desireCurrent != desirePrevious) {
+            EventBus.publish(Events.DesirePointChanged, desireCurrent);
+        }
 
         ConfigManager.get().setBondPoint(bondCurrent);
         ConfigManager.get().setDesirePoint(desireCurrent);

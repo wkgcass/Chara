@@ -12,20 +12,25 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class PluginManager {
     private static final PluginManager instance = new PluginManager();
-    private final Map<String, Plugin> plugins = new HashMap<>();
+    private final Map<String, Plugin> plugins = new LinkedHashMap<>();
 
     private PluginManager() {
     }
 
     public static PluginManager get() {
         return instance;
+    }
+
+    public Collection<Plugin> getPlugins() {
+        return plugins.values();
     }
 
     public void load() {
@@ -68,6 +73,7 @@ public class PluginManager {
         }
         JSON.Object pluginJson = (JSON.Object) JSON.parse(sb.toString());
         String name = pluginJson.getString("name");
+        int version = pluginJson.getInt("version");
         int minVer = pluginJson.getInt("compatibleMinCodeVersion");
         int maxVer = pluginJson.getInt("compatibleMaxCodeVersion");
         String pluginClass = pluginJson.getString("pluginClass");
@@ -85,8 +91,22 @@ public class PluginManager {
 
         Class<?> cls = Utils.loadClassFromZipFile(zipFile, "plugin-" + name, pluginClass);
         Plugin plugin = (Plugin) cls.getConstructor().newInstance();
-        plugin.launch();
 
+        // check plugin name and version
+        if (!name.equals(plugin.name())) {
+            Logger.fatal("name in the plugin config " + name +
+                " is not the same as plugin.name() in code " + plugin.name());
+            return;
+        }
+        if (version != plugin.version()) {
+            Logger.fatal("version in the plugin config " + Utils.verNum2Str(version) +
+                " is not the same as plugin.version() in code " + Utils.verNum2Str(plugin.version()));
+            return;
+        }
+
+        // launch
+        plugin.launch();
+        // register
         plugins.put(name, plugin);
 
         br.close();

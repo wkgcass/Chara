@@ -12,19 +12,16 @@ import java.util.Map;
  * The config for model initialization
  */
 public class ModelInitConfig {
-    /**
-     * version number defined in model file
-     */
-    public int version;
-    /**
-     * a map containing words selector loaded from model <code>/words</code> directory
-     */
-    public Map<String, WordsSelector> interactionWordsSelectors;
+    private Map<String, WordsSelector> interactionWordsSelectors;
     private Map<String, Integer> integerValuesMap;
     private Map<String, Double> doubleValuesMap;
     private Map<String, Rec> integerRectanglesMap;
 
     public ModelInitConfig() {
+    }
+
+    public void setInteractionWordsSelectors(Map<String, WordsSelector> interactionWordsSelectors) {
+        this.interactionWordsSelectors = interactionWordsSelectors;
     }
 
     public void setIntegerValuesMap(Map<String, Integer> integerValuesMap) {
@@ -37,6 +34,15 @@ public class ModelInitConfig {
 
     public void setIntegerRectanglesMap(Map<String, Rec> integerRectanglesMap) {
         this.integerRectanglesMap = integerRectanglesMap;
+    }
+
+    /**
+     * Get a map containing words selector loaded from model <code>/words</code> directory
+     *
+     * @return a map containing words selector loaded from model <code>/words</code> directory
+     */
+    public Map<String, WordsSelector> getInteractionWordsSelectors() {
+        return interactionWordsSelectors;
     }
 
     /**

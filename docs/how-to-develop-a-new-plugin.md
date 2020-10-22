@@ -28,9 +28,11 @@
 ```js
 {
   "name": "插件的名字",
-  "compatibleMinCodeVersion": 1000000, // 基础代码的最低版本号。格式是这样：比方说版本号是x.y.z，那么这里填 x * 1_000_000 + y * 1000 + z,
+  "version": 1000000, // 插件的版本号。格式是这样：比方说版本号是x.y.z，那么这里填 x * 1_000_000 + y * 1000 + z
+  "compatibleMinCodeVersion": 1000000, // 基础代码的最低版本号
   "compatibleMaxCodeVersion": -1, // 基础代码的最高版本号，写-1表示没有要求
-  "pluginClass": "插件实现的类名"
+  "pluginClass": "插件实现的类名",
+  "extra": { } // 该字段可选。这个字段的内容没有限制。可以存入各类自定义信息，比如作者、网站、git等信息。
 }
 ```
 

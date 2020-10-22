@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.util.Logger;
 
+/**
+ * The stage transformer which holds a stage and manages relative coordinates and scales.
+ */
 public class StageTransformer {
     private final Stage stage;
     private final double originalWidth;
@@ -42,6 +45,11 @@ public class StageTransformer {
         stage.setHeight(originalHeight - cutBottom - cutTop);
     }
 
+    /**
+     * Retrieve the held stage
+     *
+     * @return stage
+     */
     public Stage getStage() {
         return stage;
     }
@@ -55,10 +63,22 @@ public class StageTransformer {
         stage.setY(stage.getY() + deltaY);
     }
 
+    /**
+     * Scale the stage at real position (0, 0)
+     *
+     * @param ratio scale ratio
+     */
     public void scale(double ratio) {
         scaleAt(cutLeft, cutTop, ratio);
     }
 
+    /**
+     * Scale the stage at specified position
+     *
+     * @param originalOldScaleAtX scale at x pos of the original image
+     * @param originalOldScaleAtY scale at y pos of the original image
+     * @param ratio               scaling ratio
+     */
     public void scaleAt(double originalOldScaleAtX, double originalOldScaleAtY, double ratio) {
         assert Logger.debug("scaleAt(" + originalOldScaleAtX + "," + originalOldScaleAtY + "," + ratio + ")");
 
@@ -79,6 +99,9 @@ public class StageTransformer {
         debugStage("scaleAt");
     }
 
+    /**
+     * Move the stage to the center of the screen
+     */
     public void centerOnScreen() {
         assert Logger.debug("centerOnScreen()");
 
@@ -94,32 +117,66 @@ public class StageTransformer {
         debugStage("centerOnScreen");
     }
 
+    /**
+     * Get current scaling ratio
+     *
+     * @return scaleRatio
+     */
     public double getScaleRatio() {
         return scaleRatio;
     }
 
+    /**
+     * Get absolute x relative to the screen
+     *
+     * @return stage.x
+     */
     public double getAbsoluteX() {
         return stage.getX();
     }
 
+    /**
+     * Get absolute y relative to the screen
+     *
+     * @return stage.y
+     */
     public double getAbsoluteY() {
         return stage.getY();
     }
 
+    /**
+     * Set absolute x relative to the screen
+     *
+     * @param x x
+     */
     public void setAbsoluteX(double x) {
         stage.setX(x);
     }
 
+    /**
+     * Set absolute y relative to the screen
+     *
+     * @param y y
+     */
     public void setAbsoluteY(double y) {
         stage.setY(y);
     }
 
+    /**
+     * Save stage x, y and ratio to the config file
+     */
     public void saveConfig() {
         ConfigManager.get().setStageX(stage.getX());
         ConfigManager.get().setStageY(stage.getY());
         ConfigManager.get().setCharacterRatio(scaleRatio);
     }
 
+    /**
+     * Retrieve the screen that is showing the stage.<br>
+     * If not retrieved, the primary screen will return.
+     *
+     * @return the showing screen or the primary screen
+     */
     public Screen getScreen() {
         Screen screen;
         var ls = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
@@ -133,32 +190,69 @@ public class StageTransformer {
         return screen;
     }
 
+    /**
+     * Get pixels of image cut from the left
+     *
+     * @return cutLeft
+     */
     public double getCutLeft() {
         return cutLeft;
     }
 
+    /**
+     * Get pixels of image cut from the right
+     *
+     * @return cutRight
+     */
     public double getCutRight() {
         return cutRight;
     }
 
+    /**
+     * Get pixels of image cut from the top
+     *
+     * @return cutTop
+     */
     public double getCutTop() {
         return cutTop;
     }
 
+    /**
+     * Get pixels of image cut from the bottom
+     *
+     * @return cutBottom
+     */
     public double getCutBottom() {
         return cutBottom;
     }
 
+    /**
+     * Get real pixels added to the top
+     *
+     * @return addAbsolute top
+     */
     public double getAddAbsoluteTop() {
         return addAbsoluteTop;
     }
 
+    /**
+     * Get image x by real x relative to the scene
+     *
+     * @param x x
+     * @return calculated image x
+     */
     public double getImageXBySceneX(double x) {
         x /= getScaleRatio();
         x += getCutLeft();
         return x;
     }
 
+    /**
+     * Get image y by real y relative to the scene
+     *
+     * @param y y
+     * @return calculated image y
+     */
     public double getImageYBySceneY(double y) {
         y -= getAddAbsoluteTop();
         y /= getScaleRatio();

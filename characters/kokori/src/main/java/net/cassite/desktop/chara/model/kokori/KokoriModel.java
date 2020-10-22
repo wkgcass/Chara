@@ -22,6 +22,11 @@ public class KokoriModel implements Model {
     }
 
     @Override
+    public int version() {
+        return 1000000;
+    }
+
+    @Override
     public Chara construct(ConstructParams params) {
         return new Kokori(kokoriConsts, params.cb, params.parent, params.characterMenu);
     }
@@ -33,10 +38,10 @@ public class KokoriModel implements Model {
 
     @Override
     public void init(ModelInitConfig conf) {
-        WordsSelector normal = conf.interactionWordsSelectors.get("normal");
-        WordsSelector high = conf.interactionWordsSelectors.get("high");
-        WordsSelector opening = conf.interactionWordsSelectors.get("opening");
-        WordsSelector flirt = conf.interactionWordsSelectors.get("flirt");
+        WordsSelector normal = conf.getInteractionWordsSelectors().get("normal");
+        WordsSelector high = conf.getInteractionWordsSelectors().get("high");
+        WordsSelector opening = conf.getInteractionWordsSelectors().get("opening");
+        WordsSelector flirt = conf.getInteractionWordsSelectors().get("flirt");
 
         KokoriWords.setNormalConversationsFromModel(normal);
         KokoriWords.setHighIntimacyConversationsFromModel(high);
