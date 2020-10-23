@@ -3,6 +3,7 @@
 package net.cassite.desktop.chara.control;
 
 import javafx.application.Platform;
+import net.cassite.desktop.chara.util.Logger;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseInputListener;
 
@@ -40,12 +41,26 @@ public class NativeMouseListenerUtils implements NativeMouseInputListener {
         // ignore
     }
 
+    private volatile boolean isHandlingMouseMovedEvent = false;
+    private volatile NativeMouseEvent lastHoldingMouseMovedEvent = null;
+
     @Override
     public void nativeMouseMoved(NativeMouseEvent e) {
+        lastHoldingMouseMovedEvent = e;
+        if (isHandlingMouseMovedEvent) {
+            assert Logger.debug("currently handling mouse event, hold this event");
+            return;
+        }
+        isHandlingMouseMovedEvent = true;
         Platform.runLater(() -> {
-            for (var h : mouseMoveHandlers) {
-                h.accept(e);
+            NativeMouseEvent last;
+            while ((last = lastHoldingMouseMovedEvent) != null) {
+                lastHoldingMouseMovedEvent = null;
+                for (var h : mouseMoveHandlers) {
+                    h.accept(last);
+                }
             }
+            isHandlingMouseMovedEvent = false;
         });
     }
 
