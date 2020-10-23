@@ -1,14 +1,14 @@
 .PHONY: all
 all: clean compile output-all
 
-.PHONY: clean
-clean: clean-core clean-characters clean-plugins clean-output
-
 .PHONY: compile
 compile: core characters plugins
-
+.PHONY: clean
+clean: clean-core clean-characters clean-plugins clean-output
 .PHONY: output-all
 output-all: output-core output-characters output-plugins
+.PHONY: deploy
+deploy: deploy-plugins
 
 .PHONY: characters
 characters: kokori
@@ -23,6 +23,8 @@ plugins: dev-plugin tianxing-chatbot-plugin
 clean-plugins: clean-dev-plugin clean-tianxing-chatbot-plugin
 .PHONY: output-plugins
 output-plugins: output-dev-plugin output-tianxing-chatbot-plugin
+.PHONY: deploy-plugins
+deploy-plugins: deploy-dev-plugin deploy-tianxing-chatbot-plugin
 
 output:
 	mkdir output
@@ -62,6 +64,9 @@ clean-dev-plugin:
 .PHONY: output-dev-plugin
 output-dev-plugin: output dev-plugin
 	cp plugins/dev/plugin/*.plugin output/
+.PHONY: deploy-dev-plugin
+deploy-dev-plugin: output-dev-plugin
+	cp output/dev.plugin ~/.chara/plugin/
 
 .PHONY: tianxing-chatbot-plugin
 tianxing-chatbot-plugin:
@@ -73,3 +78,6 @@ clean-tianxing-chatbot-plugin:
 .PHONY: output-tianxing-chatbot-plugin
 output-tianxing-chatbot-plugin: output tianxing-chatbot-plugin
 	cp plugins/tianxing-chatbot/plugin/*.plugin output/
+.PHONY: deploy-tianxing-chatbot-plugin
+deploy-tianxing-chatbot-plugin: output-tianxing-chatbot-plugin
+	cp output/tianxing-chatbot.plugin ~/.chara/plugin/
