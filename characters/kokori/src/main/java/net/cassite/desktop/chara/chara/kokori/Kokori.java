@@ -440,6 +440,11 @@ public class Kokori implements Chara {
         return data;
     }
 
+    @Override
+    public int shutdown(Runnable cb) {
+        return 0;
+    }
+
     private void clickHair(double x, double y) {
         assert Logger.debug("click hair");
         hair.swing();

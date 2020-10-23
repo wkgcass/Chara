@@ -2,7 +2,6 @@
 
 package net.cassite.desktop.chara;
 
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -114,22 +113,37 @@ public class App {
 
         // register terminating hook
         primaryStage.setOnCloseRequest(e -> {
-            chara.release();
-            PluginManager.get().release();
-            ThreadUtils.get().shutdownNow();
-            if (messageStage != null) {
-                if (messageStage.isShowing()) {
-                    messageStage.hide();
+            boolean[] closed = {false};
+            Runnable shutdown = () -> {
+                if (closed[0]) {
+                    return;
                 }
+                closed[0] = true;
+
+                chara.release();
+                PluginManager.get().release();
+                ThreadUtils.get().shutdownNow();
+                if (messageStage != null) {
+                    if (messageStage.isShowing()) {
+                        messageStage.hide();
+                    }
+                }
+                Alert.shutdown();
+                setGlobalScreen(false);
+                ConfigManager.get().setLastTimestamp(System.currentTimeMillis());
+                ConfigManager.saveNow();
+                try {
+                    Resolver.getDefault().stop();
+                } catch (IOException ignore) {
+                }
+            };
+
+            int timeout = chara.shutdown(shutdown);
+            if (timeout == 0) {
+                shutdown.run();
+                return;
             }
-            Alert.shutdown();
-            setGlobalScreen(false);
-            ConfigManager.get().setLastTimestamp(System.currentTimeMillis());
-            ConfigManager.saveNow();
-            try {
-                Resolver.getDefault().stop();
-            } catch (IOException ignore) {
-            }
+            ThreadUtils.get().scheduleFX(shutdown, timeout, TimeUnit.MILLISECONDS);
         });
 
         // calculate MAX_WIDTH and MAX_HEIGHT

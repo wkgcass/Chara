@@ -77,6 +77,18 @@ public interface Chara {
     Data data();
 
     /**
+     * The user requested to shutdown the program.<br>
+     * A callback is provided so that the implementation can do some handling before actually shutting down.<br>
+     * A timeout in millis should be returned to the lib to avoid that the shutdown process hangs and callback not called.<br>
+     * Note that release operations should be put into the {@link #release()} method instead of this one.<br>
+     * The {@link #release()} method would be called after the callback is called or timed-out.
+     *
+     * @param cb the callback when the <code>Chara</code> is shutdown
+     * @return a timeout in millis as the maximum wait time for the callback to be called, or 0 for directly shutting down
+     */
+    int shutdown(Runnable cb);
+
+    /**
      * Release resources held by this character.
      */
     void release();
