@@ -3,6 +3,7 @@
 package net.cassite.desktop.chara.graphic;
 
 import javafx.application.Platform;
+import net.cassite.desktop.chara.ThreadUtils;
 
 /**
  * A helper for framed based animation.<br>
@@ -137,7 +138,7 @@ public class FrameBasedAnimationHelper implements Updatable {
         var pauseCallbackLocal = this.pauseCallbackOnce;
         this.pauseCallbackOnce = null;
         if (pauseCallbackLocal != null) {
-            Platform.runLater(pauseCallbackLocal);
+            ThreadUtils.get().runOnFX(pauseCallbackLocal);
         }
         return this;
     }

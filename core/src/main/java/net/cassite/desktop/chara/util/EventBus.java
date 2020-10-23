@@ -30,16 +30,16 @@ public class EventBus {
         if (consumers == null) {
             return;
         }
-        for (var consumer : consumers) {
-            Platform.runLater(() -> {
+        Platform.runLater(() -> {
+            for (var consumer : consumers) {
                 try {
                     //noinspection unchecked
                     consumer.accept(message);
                 } catch (Throwable t) {
                     Logger.error("consumer thrown exception when handling event " + event + " with message " + message, t);
                 }
-            });
-        }
+            }
+        });
     }
 
     /**

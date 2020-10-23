@@ -3,6 +3,7 @@
 package net.cassite.desktop.chara.graphic;
 
 import javafx.application.Platform;
+import net.cassite.desktop.chara.ThreadUtils;
 
 /**
  * A helper for time based animation.<br>
@@ -102,7 +103,7 @@ public class TimeBasedAnimationHelper implements Updatable {
             skipped = 0;
             if (!playing) {
                 if (finishCallback != null) {
-                    Platform.runLater(() -> finishCallback.run());
+                    ThreadUtils.get().runOnFX(() -> finishCallback.run());
                 }
             }
         } else {

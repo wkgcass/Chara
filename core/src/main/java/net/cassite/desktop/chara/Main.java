@@ -48,7 +48,7 @@ import java.util.logging.LogManager;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
-        preWork(() -> Platform.runLater(() -> {
+        preWork(() -> ThreadUtils.get().runOnFX(() -> {
             // construct root element
             Pane rootPane = new Pane();
             rootPane.setBackground(Background.EMPTY);
@@ -180,7 +180,7 @@ public class Main extends Application {
 
             assert Logger.debug("config files found, show config selection page");
             final var finalConfigs = configs;
-            Platform.runLater(() -> {
+            ThreadUtils.get().runOnFX(() -> {
                 Stage chooseModelConfigStage = new Stage();
                 chooseModelConfigStage.initStyle(StageStyle.UNIFIED);
                 chooseModelConfigStage.setWidth(256);
@@ -245,7 +245,7 @@ public class Main extends Application {
     }
 
     private void chooseModelFile(Runnable cb) {
-        Platform.runLater(() -> {
+        ThreadUtils.get().runOnFX(() -> {
             // should run from UI thread
 
             if (Global.modelName != null) {
@@ -327,7 +327,7 @@ public class Main extends Application {
     }
 
     private void loadImages(List<String> requiredImageList, Runnable cb) {
-        Platform.runLater(() -> {
+        ThreadUtils.get().runOnFX(() -> {
             // should run from UI thread
 
             Stage loadingStage = new Stage();

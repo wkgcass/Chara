@@ -316,17 +316,17 @@ public class App {
         var appCallback = new AppCallback() {
             @Override
             public void setCharaPoints(CharaPoints points) {
-                Platform.runLater(() -> bars.setCharaPoints(points));
+                ThreadUtils.get().runOnFX(() -> bars.setCharaPoints(points));
             }
 
             @Override
             public void showMessage(Words words) {
-                Platform.runLater(() -> App.this.showMessage(words));
+                ThreadUtils.get().runOnFX(() -> App.this.showMessage(words));
             }
 
             @Override
             public void clearAllMessages() {
-                Platform.runLater(App.this::clearAllMessages);
+                ThreadUtils.get().runOnFX(App.this::clearAllMessages);
             }
 
             @Override
@@ -338,22 +338,22 @@ public class App {
 
             @Override
             public void clickNothing(double x, double y) {
-                Platform.runLater(() -> App.this.clickNothing(x, y));
+                ThreadUtils.get().runOnFX(() -> App.this.clickNothing(x, y));
             }
 
             @Override
             public void moveWindow(double deltaX, double deltaY) {
-                Platform.runLater(() -> App.this.moveWindow(deltaX, deltaY));
+                ThreadUtils.get().runOnFX(() -> App.this.moveWindow(deltaX, deltaY));
             }
 
             @Override
             public void setDraggable(boolean draggable) {
-                Platform.runLater(() -> App.this.windowIsDraggable = draggable);
+                ThreadUtils.get().runOnFX(() -> App.this.windowIsDraggable = draggable);
             }
 
             @Override
             public void setGlobalScreen(boolean globalScreen) {
-                Platform.runLater(() -> {
+                ThreadUtils.get().runOnFX(() -> {
                     setGlobalScreenFromChara = globalScreen;
                     if (!globalScreen) {
                         App.this.setGlobalScreen(false);
@@ -364,7 +364,7 @@ public class App {
 
             @Override
             public void setAlwaysShowBar(boolean alwaysShowBar) {
-                Platform.runLater(() -> bars.setAlwaysShowBar(alwaysShowBar));
+                ThreadUtils.get().runOnFX(() -> bars.setAlwaysShowBar(alwaysShowBar));
             }
         };
         EventBus.publish(Events.AppCallbackReady, appCallback);

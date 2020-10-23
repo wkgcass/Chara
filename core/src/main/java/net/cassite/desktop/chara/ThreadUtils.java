@@ -149,4 +149,19 @@ public class ThreadUtils {
         }
         nonblockingThreads.next().getSelectorEventLoop().runOnLoop(runnable);
     }
+
+    /**
+     * Run on JavaFX thread.<br>
+     * If current thread is JavaFX thread, the runnable is directly called.<br>
+     * Otherwise {@link Platform#runLater(Runnable)} will be called.
+     *
+     * @param runnable task to run
+     */
+    public void runOnFX(Runnable runnable) {
+        if (Platform.isFxApplicationThread()) {
+            runnable.run();
+        } else {
+            Platform.runLater(runnable);
+        }
+    }
 }

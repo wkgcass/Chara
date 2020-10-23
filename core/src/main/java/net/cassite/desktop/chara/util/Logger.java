@@ -66,7 +66,7 @@ public class Logger {
         }
 
         Semaphore semaphore = new Semaphore(0);
-        Platform.runLater(() -> {
+        ThreadUtils.get().runOnFX(() -> {
             var alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
             alert.setTitle(msg.split("\n")[0].trim());
             alert.setContentText(msg);
