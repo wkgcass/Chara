@@ -12,6 +12,7 @@ import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.util.*;
 import net.cassite.desktop.chara.ThreadUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -288,7 +289,7 @@ public class MessageStage extends Stage {
     }
 
     private long getDuration(MessageBubble msg) {
-        int len = msg.message.getBytes().length;
+        int len = msg.message.getBytes(StandardCharsets.UTF_8).length;
         int duration = 3000;
         if (len > 30) {
             duration += (len - 30) * 100;

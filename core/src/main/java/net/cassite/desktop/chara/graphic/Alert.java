@@ -16,6 +16,7 @@ import net.cassite.desktop.chara.util.StageUtils;
 import net.cassite.desktop.chara.manager.FontManager;
 import net.cassite.desktop.chara.util.Utils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Alert {
@@ -73,7 +74,7 @@ public class Alert {
         stage.setScene(scene);
 
         int duration = 1500;
-        int msgLen = msg.getBytes().length;
+        int msgLen = msg.getBytes(StandardCharsets.UTF_8).length;
         if (msgLen > 30) {
             duration += (msgLen - 30) * 50;
         }
