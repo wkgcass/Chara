@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.zip.ZipFile;
 
 public class DevPlugin implements Plugin {
-    private boolean enabled;
+    private boolean enabled = false;
     @SuppressWarnings("rawtypes")
     private final Set<EventBus.WatchingRegistration> registrations = new HashSet<>();
     private StageTransformer primaryStage;
@@ -56,7 +56,7 @@ public class DevPlugin implements Plugin {
             ((Group) primaryStage.getStage().getScene().getRoot()).getChildren().add(root);
         }
 
-        enabled = true;
+        enabled = false;
     }
 
     private void primaryStageReady(StageTransformer stage) {
@@ -64,7 +64,9 @@ public class DevPlugin implements Plugin {
         var parent = (Pane) primaryStage.getStage().getScene().getRoot();
         parent.getChildren().add(root);
 
-        Alert.alert(DevPluginI18nConsts.devPluginEnabled.get()[0]);
+        if (enabled) {
+            Alert.alert(DevPluginI18nConsts.devPluginEnabled.get()[0]);
+        }
     }
 
     private void resized(Void v) {
