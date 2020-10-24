@@ -75,9 +75,7 @@ public class MessageStage extends Stage {
         messageBubbles.add(msg);
         setHeight(ySum);
         msg.addTo(root);
-        if (!isShowing()) {
-            showAll();
-        }
+        showAll();
         EventBus.publish(Events.MessageShown, message);
     }
 
@@ -112,24 +110,43 @@ public class MessageStage extends Stage {
      */
     @Override
     public void hide() {
-        if (!StageUtils.primaryStageFocused && !StageUtils.messageStageFocused) {
-            // focus primary stage before hiding if the app is not focused
+        if (!isShowing) {
+            return;
+        }
+        isShowing = false;
+
+        // do not hide stages
+        // to avoid windows taskbar icon pop-up
+        // because the stage is transparent and height 0 when no messages
+        // so it may stay there and won't cause any trouble for user
+
+        assert Logger.debug("message stage hide()");
+        if (StageUtils.primaryStageFocused || StageUtils.messageStageFocused) {
+            // focus primary stage if necessary
             primaryStage.getStage().requestFocus();
         }
 
-        super.hide();
-        tmpStage.hide();
-
         EventBus.publish(Events.MessageStageHidden, null);
     }
+
+    private boolean isShowing = false;
 
     /**
      * Show the stage.<br>
      * Do not call {@link #show()} on this stage.
      */
     public void showAll() {
-        tmpStage.show();
-        show();
+        if (isShowing) {
+            return;
+        }
+        isShowing = true;
+
+        if (!tmpStage.isShowing()) {
+            tmpStage.show();
+        }
+        if (!isShowing()) {
+            show();
+        }
 
         assert Logger.debug("message stage show()");
         // focus the primary stage to make pushMessage behavior consistent
@@ -138,6 +155,11 @@ public class MessageStage extends Stage {
         }
 
         EventBus.publish(Events.MessageStageShown, null);
+    }
+
+    public void release() {
+        super.hide();
+        tmpStage.hide();
     }
 
     private static final int REMOVING_ANIMATION_DURATION = 100;

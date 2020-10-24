@@ -124,9 +124,7 @@ public class App {
                 PluginManager.get().release();
                 ThreadUtils.get().shutdownNow();
                 if (messageStage != null) {
-                    if (messageStage.isShowing()) {
-                        messageStage.hide();
-                    }
+                    messageStage.release();
                 }
                 Alert.shutdown();
                 setGlobalScreen(false);
