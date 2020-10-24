@@ -32,8 +32,6 @@ public class Utils {
     private Utils() {
     }
 
-    private static final Random rnd = ThreadLocalRandom.current();
-
     /**
      * Double values difference is lower than the expected value
      *
@@ -101,6 +99,7 @@ public class Utils {
      * @return true if happends, false otherwise
      */
     public static boolean random(double probability) {
+        var rnd = ThreadLocalRandom.current();
         return rnd.nextDouble() <= probability;
     }
 
@@ -139,6 +138,7 @@ public class Utils {
      * @param r callback function
      */
     public static void randomDelay(Runnable r) {
+        var rnd = ThreadLocalRandom.current();
         ThreadUtils.get().scheduleFX(r, rnd.nextInt(1000), TimeUnit.MILLISECONDS);
     }
 
