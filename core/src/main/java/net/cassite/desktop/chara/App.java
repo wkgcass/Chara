@@ -114,7 +114,7 @@ public class App {
         // register terminating hook
         primaryStage.setOnCloseRequest(e -> {
             boolean[] closed = {false};
-            Runnable shutdown = () -> {
+            Runnable shutdown = () -> ThreadUtils.get().runOnFX(() -> {
                 if (closed[0]) {
                     return;
                 }
@@ -136,7 +136,7 @@ public class App {
                     Resolver.getDefault().stop();
                 } catch (IOException ignore) {
                 }
-            };
+            });
 
             int timeout = chara.shutdown(shutdown);
             if (timeout == 0) {
