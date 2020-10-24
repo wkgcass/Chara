@@ -542,7 +542,8 @@ public class App {
 
         if (setGlobalScreenFromChara) {
             setGlobalScreen(true);
-        } else {
+        }
+        if (!GlobalScreen.isNativeHookRegistered()) {
             // should alert events by jfx
             double x = primaryStage.getImageXBySceneX(e.getX());
             double y = primaryStage.getImageYBySceneY(e.getY());
@@ -739,6 +740,9 @@ public class App {
 
     private void setGlobalScreen(boolean globalScreen) {
         if (globalScreen) {
+            if (!Global.globalScreenEnabled) {
+                return;
+            }
             if (GlobalScreen.isNativeHookRegistered()) {
                 return;
             }

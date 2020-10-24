@@ -4,6 +4,7 @@ package net.cassite.desktop.chara;
 
 import javafx.scene.image.Image;
 import net.cassite.desktop.chara.model.Model;
+import net.cassite.desktop.chara.util.Utils;
 
 public class Global {
     /**
@@ -35,6 +36,10 @@ public class Global {
      * whether should enable debug features
      */
     public static final boolean debugFeatures = System.getProperty("ebugFeatures", "false").equals("true"); // -DebugFeatures=...
+    /**
+     * whether global screen enabled
+     */
+    public static final boolean globalScreenEnabled = Utils.isWindows(); // only enable for windows
 
     private Global() {
     }

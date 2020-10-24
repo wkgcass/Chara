@@ -134,13 +134,15 @@ public class Main extends Application {
         LogManager.getLogManager().reset();
         logger.setLevel(Level.WARNING);
         logger.setUseParentHandlers(false);
-        // enable native mouse
-        try {
-            GlobalScreen.registerNativeHook();
-            GlobalScreen.addNativeMouseMotionListener(NativeMouseListenerUtils.get());
-        } catch (NativeHookException e) {
-            Logger.error("register native hook failed\n" +
-                "it's necessary for detecting the mouse movements", e);
+        if (Global.globalScreenEnabled) {
+            // enable native mouse
+            try {
+                GlobalScreen.registerNativeHook();
+                GlobalScreen.addNativeMouseMotionListener(NativeMouseListenerUtils.get());
+            } catch (NativeHookException e) {
+                Logger.error("register native hook failed\n" +
+                    "it's necessary for detecting the mouse movements", e);
+            }
         }
     }
 
