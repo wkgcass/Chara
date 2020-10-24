@@ -278,6 +278,9 @@ public class App {
             pluginItem.setOnAction(e -> plugin.clicked());
             pluginMenu.getItems().add(pluginItem);
         }
+        if (PluginManager.get().getPlugins().isEmpty()) {
+            pluginMenu.setDisable(true);
+        }
         MenuItem exitItem = new MenuItem(I18nConsts.exitMenuItem.get()[0]);
         exitItem.setOnAction(e -> StageUtils.closePrimaryStage());
         systemMenu.getItems().addAll(showVersionsItem, pluginMenu, exitItem);
