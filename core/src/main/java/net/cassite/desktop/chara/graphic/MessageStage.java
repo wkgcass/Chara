@@ -77,9 +77,6 @@ public class MessageStage extends Stage {
         msg.addTo(root);
         if (!isShowing()) {
             showAll();
-            assert Logger.debug("message stage show()");
-            // focus the primary stage to make pushMessage behavior consistent
-            primaryStage.getStage().requestFocus();
         }
         EventBus.publish(Events.MessageShown, message);
     }
@@ -115,6 +112,11 @@ public class MessageStage extends Stage {
      */
     @Override
     public void hide() {
+        if (!StageUtils.primaryStageFocused && !StageUtils.messageStageFocused) {
+            // focus primary stage before hiding if the app is not focused
+            primaryStage.getStage().requestFocus();
+        }
+
         super.hide();
         tmpStage.hide();
 
@@ -128,6 +130,12 @@ public class MessageStage extends Stage {
     public void showAll() {
         tmpStage.show();
         show();
+
+        assert Logger.debug("message stage show()");
+        // focus the primary stage to make pushMessage behavior consistent
+        if (StageUtils.primaryStageFocused || StageUtils.messageStageFocused) {
+            primaryStage.getStage().requestFocus();
+        }
 
         EventBus.publish(Events.MessageStageShown, null);
     }

@@ -314,6 +314,12 @@ public class App {
     public void ready() {
         // construct message stage
         messageStage = new MessageStage(primaryStage);
+        messageStage.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            assert Logger.debug("message stage focused: " + newValue);
+            if (newValue != null) {
+                StageUtils.messageStageFocused = newValue;
+            }
+        });
         messageStage.setAlwaysOnTop(primaryStage.getStage().isAlwaysOnTop());
         calculateMessageStagePosition();
         EventBus.publish(Events.MessageStageReady, messageStage);

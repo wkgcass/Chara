@@ -18,6 +18,10 @@ public class StageUtils {
      */
     public static boolean primaryStageFocused = true;
     /**
+     * the message stag is now focused
+     */
+    public static boolean messageStageFocused = false;
+    /**
      * the primary stage
      */
     public static Stage primaryStage;
