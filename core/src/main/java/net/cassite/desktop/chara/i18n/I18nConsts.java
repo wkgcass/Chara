@@ -68,22 +68,6 @@ public class I18nConsts {
         .setEn("Exit")
         .build();
 
-    public static final Words messageEnabled = new WordsBuilder
-        ("对话功能已启用")
-        .setEn("Chat feature enabled")
-        .build();
-    public static final Words messageDisabled = new WordsBuilder
-        ("对话功能已禁用")
-        .setEn("Chat feature disabled")
-        .build();
-    public static final Words alwaysOnTopDisabled = new WordsBuilder
-        ("取消放置在最前")
-        .setEn("Always on top disabled")
-        .build();
-    public static final Words alwaysOnTopEnabled = new WordsBuilder
-        ("放置在最前")
-        .setEn("Always on top enabled")
-        .build();
     public static final Words snapshotSavedInClipboard = new WordsBuilder
         ("截图已保存至剪贴板中")
         .setEn("Snapshot saved into clipboard")

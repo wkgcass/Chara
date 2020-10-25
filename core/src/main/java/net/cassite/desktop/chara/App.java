@@ -882,14 +882,12 @@ public class App {
             if (messageStage != null) {
                 messageStage.setAlwaysOnTop(false);
             }
-            Alert.alert(I18nConsts.alwaysOnTopDisabled.get()[0]);
         } else {
             assert Logger.debug("always on top enabled");
             primaryStage.getStage().setAlwaysOnTop(true);
             if (messageStage != null) {
                 messageStage.setAlwaysOnTop(true);
             }
-            Alert.alert(I18nConsts.alwaysOnTopEnabled.get()[0]);
         }
         ConfigManager.get().setAlwaysOnTop(primaryStage.getStage().isAlwaysOnTop());
     }
@@ -903,11 +901,9 @@ public class App {
         if (messageDisabled) {
             assert Logger.debug("message enabled");
             messageDisabled = false;
-            Alert.alert(I18nConsts.messageEnabled.get()[0]);
         } else {
             assert Logger.debug("message disable");
             messageDisabled = true;
-            Alert.alert(I18nConsts.messageDisabled.get()[0]);
             inputBox.hide();
         }
         ConfigManager.get().setChatFeatureEnabled(!messageDisabled);
