@@ -10,6 +10,7 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
@@ -113,27 +114,15 @@ public class App {
 
         // register terminating hook
         primaryStage.setOnCloseRequest(e -> {
+            e.consume();
+
             boolean[] closed = {false};
             Runnable shutdown = () -> ThreadUtils.get().runOnFX(() -> {
                 if (closed[0]) {
                     return;
                 }
                 closed[0] = true;
-
-                chara.release();
-                PluginManager.get().release();
-                ThreadUtils.get().shutdownNow();
-                if (messageStage != null) {
-                    messageStage.release();
-                }
-                Alert.shutdown();
-                setGlobalScreen(false);
-                ConfigManager.get().setLastTimestamp(System.currentTimeMillis());
-                ConfigManager.saveNow();
-                try {
-                    Resolver.getDefault().stop();
-                } catch (IOException ignore) {
-                }
+                animateShutdown();
             });
 
             int timeout = chara.shutdown(shutdown);
@@ -175,6 +164,47 @@ public class App {
         mouseCircleInner.setFill(new Color(1, 1, 1, 0.5));
         mouseCircle.setMouseTransparent(true);
         mouseCircle.getChildren().addAll(mouseCircleOuter, mouseCircleInner);
+    }
+
+    private void animateShutdown() {
+        GaussianBlur blur = new GaussianBlur();
+        blur.setRadius(0);
+        rootPane.setEffect(blur);
+        double x = rootScalePane.getLayoutX();
+        double y = rootScalePane.getLayoutY();
+        double s = scale.getX();
+        double w = rootScalePane.getWidth();
+        double h = rootScalePane.getHeight();
+        double ws = w * s;
+        double hs = h * s;
+        new TimeBasedAnimationHelper(500, percentage -> {
+            double ss = s * (1 - percentage / 4);
+            scale.setX(ss);
+            scale.setY(ss);
+            double wss = w * ss;
+            double hss = h * ss;
+            rootScalePane.setLayoutX(x + (ws - wss) / 2);
+            rootScalePane.setLayoutY(y + (hs - hss) / 1.2);
+
+            primaryStage.getStage().setOpacity(1 - percentage);
+            blur.setRadius(percentage * primaryStage.getStage().getWidth() / 20);
+        }).setFinishCallback(() -> {
+            primaryStage.getStage().hide();
+            chara.release();
+            PluginManager.get().release();
+            ThreadUtils.get().shutdownNow();
+            if (messageStage != null) {
+                messageStage.release();
+            }
+            Alert.shutdown();
+            setGlobalScreen(false);
+            ConfigManager.get().setLastTimestamp(System.currentTimeMillis());
+            ConfigManager.saveNow();
+            try {
+                Resolver.getDefault().stop();
+            } catch (IOException ignore) {
+            }
+        }).play();
     }
 
     public void init() {
