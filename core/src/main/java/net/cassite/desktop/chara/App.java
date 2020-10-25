@@ -193,7 +193,6 @@ public class App {
             primaryStage.getStage().setOpacity(1 - percentage);
             blur.setRadius(percentage * primaryStage.getStage().getWidth() / 20);
         }).setFinishCallback(() -> {
-            primaryStage.getStage().hide();
             chara.release();
             PluginManager.get().release();
             ThreadUtils.get().shutdownNow();
@@ -208,6 +207,7 @@ public class App {
                 Resolver.getDefault().stop();
             } catch (IOException ignore) {
             }
+            primaryStage.getStage().hide();
         }).play();
     }
 
