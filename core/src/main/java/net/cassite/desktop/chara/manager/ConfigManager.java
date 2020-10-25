@@ -34,6 +34,7 @@ public class ConfigManager {
         private Double characterRatio;
         private Boolean chatFeatureEnabled;
         private Boolean alwaysOnTop;
+        private Boolean mouseIndicatorEnabled;
         private Boolean activeInteractionEnabled;
         private Double bondPoint;
         private Double desirePoint;
@@ -95,6 +96,15 @@ public class ConfigManager {
 
         public void setAlwaysOnTop(boolean alwaysOnTop) {
             this.alwaysOnTop = alwaysOnTop;
+            save();
+        }
+
+        public Boolean getMouseIndicatorEnabled() {
+            return mouseIndicatorEnabled;
+        }
+
+        public void setMouseIndicatorEnabled(boolean mouseIndicatorEnabled) {
+            this.mouseIndicatorEnabled = mouseIndicatorEnabled;
             save();
         }
 
@@ -226,6 +236,12 @@ public class ConfigManager {
                     this.alwaysOnTop = ((JSON.Bool) o).booleanValue();
                 }
             }
+            if (obj.containsKey("mouse_indicator_enabled")) {
+                var o = obj.get("mouse_indicator_enabled");
+                if (o instanceof JSON.Bool) {
+                    this.mouseIndicatorEnabled = ((JSON.Bool) o).booleanValue();
+                }
+            }
             if (obj.containsKey("active_interaction_enabled")) {
                 var o = obj.get("active_interaction_enabled");
                 if (o instanceof JSON.Bool) {
@@ -317,6 +333,9 @@ public class ConfigManager {
             if (alwaysOnTop != null) {
                 ob.put("always_on_top", alwaysOnTop);
             }
+            if (mouseIndicatorEnabled != null) {
+                ob.put("mouse_indicator_enabled", mouseIndicatorEnabled);
+            }
             if (activeInteractionEnabled != null) {
                 ob.put("active_interaction_enabled", activeInteractionEnabled);
             }
@@ -358,6 +377,10 @@ public class ConfigManager {
                 ", stageX=" + stageX +
                 ", stageY=" + stageY +
                 ", characterRatio=" + characterRatio +
+                ", chatFeatureEnabled=" + chatFeatureEnabled +
+                ", alwaysOnTop=" + alwaysOnTop +
+                ", mouseIndicatorEnabled=" + mouseIndicatorEnabled +
+                ", activeInteractionEnabled=" + activeInteractionEnabled +
                 ", bondPoint=" + bondPoint +
                 ", desirePoint=" + desirePoint +
                 ", integerRegisters=" + integerRegisters +

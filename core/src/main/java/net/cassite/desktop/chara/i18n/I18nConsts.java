@@ -35,6 +35,10 @@ public class I18nConsts {
         ("窗口放置在最前")
         .setEn("Window always on top")
         .build();
+    public static final Words mouseIndicatorItem = new WordsBuilder
+        ("启用鼠标指示器")
+        .setEn("Enable mouse indicator")
+        .build();
     public static final Words activeInteractionItem = new WordsBuilder
         ("允许主动互动")
         .setEn("Allow active interaction")

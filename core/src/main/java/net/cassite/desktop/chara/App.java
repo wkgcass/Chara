@@ -72,6 +72,10 @@ public class App {
             if (activeInteractionEnabled != null) {
                 this.allowActiveInteraction = activeInteractionEnabled;
             }
+            Boolean mouseIndicatorEnabled = ConfigManager.get().getMouseIndicatorEnabled();
+            if (mouseIndicatorEnabled != null) {
+                this.mouseIndicatorEnabled = mouseIndicatorEnabled;
+            }
             // note: alwaysOnTop is loaded in init() method
         }
 
@@ -277,6 +281,12 @@ public class App {
             setOrUnsetAlwaysTop();
             alwaysOnTopItem.setSelected(primaryStage.getStage().isAlwaysOnTop());
         });
+        CheckMenuItem mouseIndicatorItem = new CheckMenuItem(I18nConsts.mouseIndicatorItem.get()[0]);
+        mouseIndicatorItem.setSelected(mouseIndicatorEnabled);
+        mouseIndicatorItem.setOnAction(e -> {
+            toggleMouseIndicator();
+            mouseIndicatorItem.setSelected(mouseIndicatorEnabled);
+        });
         CheckMenuItem activeInteractionItem = new CheckMenuItem(I18nConsts.activeInteractionItem.get()[0]);
         activeInteractionItem.setSelected(allowActiveInteraction);
         if (!chara.data().activeInteractionSupported) {
@@ -317,6 +327,7 @@ public class App {
         contextMenu.getItems().addAll(
             messageEnableItem,
             alwaysOnTopItem,
+            mouseIndicatorItem,
             activeInteractionItem,
             snapshotItem,
             characterMenu,
@@ -532,11 +543,15 @@ public class App {
     private Scheduled deregisterGlobalScreenAfterMouseLeaveScheduledFuture;
     private boolean setGlobalScreenFromChara = true;
 
+    private boolean mouseIndicatorEnabled = true;
     private boolean mouseCircleIsShown = false;
     private static final int mouseCircleRadius = 25;
     private static final int mouseCircleInnerRadius = 5;
 
     private void mouseCircleMove(double sceneX, double sceneY) {
+        if (!mouseIndicatorEnabled) {
+            return; // do not show the mouse if disabled
+        }
         mouseCircle.setLayoutX(sceneX);
         mouseCircle.setLayoutY(sceneY);
         if (sceneX < mouseCircleRadius ||
@@ -560,6 +575,14 @@ public class App {
         if (mouseCircleIsShown) {
             mouseCircleIsShown = false;
             rootPane.getChildren().remove(mouseCircle);
+        }
+    }
+
+    private void toggleMouseIndicator() {
+        mouseIndicatorEnabled = !mouseIndicatorEnabled;
+        ConfigManager.get().setMouseIndicatorEnabled(mouseIndicatorEnabled);
+        if (!mouseIndicatorEnabled) {
+            mouseCircleHide();
         }
     }
 
