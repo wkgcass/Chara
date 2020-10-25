@@ -28,7 +28,7 @@ public class FontManager {
         if (Utils.isMac()) {
             fontFamily = "PingFang SC";
         } else if (Utils.isWindows()) {
-            fontFamily = "Microsoft YaHei";
+            fontFamily = "YouYuan";
         } else {
             fontFamily = "";
         }
