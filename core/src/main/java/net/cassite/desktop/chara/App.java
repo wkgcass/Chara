@@ -908,7 +908,10 @@ public class App {
     private void showVersions() {
         Alert.alert("" +
             "code: " + Utils.verNum2Str(Consts.VERSION_NUM) + "\n" +
-            "model: " + Utils.verNum2Str(Global.modelVersion) +
+            "model: " + Utils.verNum2Str(Global.modelVersion) + "\n" +
+            "vproxy: " + vproxybase.util.Version.VERSION + "\n" +
+            "vjson: " + vjson.util.VERSION.VERSION + "\n" +
+            "jnativehook: " + Consts.JNATIVEHOOK_VERSION +
             "");
     }
 
