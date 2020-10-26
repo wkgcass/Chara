@@ -729,6 +729,7 @@ public class App {
     }
 
     private MessageStage messageStage = null;
+    private int colorHash = 0;
 
     private void showMessage(Words words) {
         if (messageDisabled) {
@@ -739,7 +740,7 @@ public class App {
         if (messageStage == null) {
             return; // not constructed yet
         }
-        int colorHash = (int) (Math.random() * 1000);
+        int colorHash = this.colorHash++;
         int n = 0;
         for (String message : words.get()) {
             var msg = new InputMessage(message).setColor(colorHash);
