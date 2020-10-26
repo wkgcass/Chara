@@ -58,12 +58,14 @@ public class Main extends Application {
             Stage primaryStage;
             if (!showIconOnTaskbar) {
                 Logger.info("hide icon on taskbar");
-                StageUtils.configureTransparentTemporaryUtilityStage(javafxPrimaryStage);
                 primaryStage = new Stage();
+                StageUtils.primaryStage = primaryStage;
                 StageUtils.primaryTemporaryStage = javafxPrimaryStage;
+                StageUtils.configureTransparentTemporaryUtilityStage(javafxPrimaryStage);
                 primaryStage.initOwner(javafxPrimaryStage);
             } else {
                 primaryStage = javafxPrimaryStage;
+                StageUtils.primaryStage = primaryStage;
             }
 
             // construct root element
@@ -97,7 +99,6 @@ public class Main extends Application {
             // enable implicit exit
             Platform.setImplicitExit(true);
 
-            StageUtils.primaryStage = primaryStage;
             app.ready();
         }));
     }
