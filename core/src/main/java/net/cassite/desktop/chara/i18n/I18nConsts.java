@@ -31,6 +31,10 @@ public class I18nConsts {
         ("启用对话功能")
         .setEn("Enable chat feature")
         .build();
+    public static final Words toBackItem = new WordsBuilder
+        ("窗口置于底层")
+        .setEn("Put to the bottom")
+        .build();
     public static final Words alwaysOnTopItem = new WordsBuilder
         ("窗口放置在最前")
         .setEn("Window always on top")

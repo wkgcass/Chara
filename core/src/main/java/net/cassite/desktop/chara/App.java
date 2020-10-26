@@ -275,11 +275,18 @@ public class App {
             messageDisableOrEnable();
             messageEnableItem.setSelected(!messageDisabled);
         });
+        MenuItem toBackItem = new MenuItem(I18nConsts.toBackItem.get()[0] + "(ESC)");
+        toBackItem.setDisable(primaryStage.getStage().isAlwaysOnTop());
+        toBackItem.setOnAction(e -> {
+            if (primaryStage.getStage().isAlwaysOnTop()) return;
+            primaryStage.getStage().toBack();
+        });
         CheckMenuItem alwaysOnTopItem = new CheckMenuItem(I18nConsts.alwaysOnTopItem.get()[0]);
         alwaysOnTopItem.setSelected(primaryStage.getStage().isAlwaysOnTop());
         alwaysOnTopItem.setOnAction(e -> {
             setOrUnsetAlwaysTop();
             alwaysOnTopItem.setSelected(primaryStage.getStage().isAlwaysOnTop());
+            toBackItem.setDisable(primaryStage.getStage().isAlwaysOnTop());
         });
         CheckMenuItem mouseIndicatorItem = new CheckMenuItem(I18nConsts.mouseIndicatorItem.get()[0]);
         mouseIndicatorItem.setSelected(mouseIndicatorEnabled);
@@ -327,6 +334,7 @@ public class App {
         contextMenu.getItems().addAll(
             messageEnableItem,
             alwaysOnTopItem,
+            toBackItem,
             mouseIndicatorItem,
             activeInteractionItem,
             snapshotItem,
@@ -864,6 +872,12 @@ public class App {
                     Clipboard clipboard = Clipboard.getSystemClipboard();
                     chara.takeDebugMessage(clipboard);
                 }
+            }
+        }
+        if (e.getCode() == KeyCode.ESCAPE) {
+            // put to bottom
+            if (!primaryStage.getStage().isAlwaysOnTop()) {
+                primaryStage.getStage().toBack();
             }
         }
     }
