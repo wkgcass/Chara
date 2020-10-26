@@ -106,6 +106,27 @@ public class MessageStage extends Stage {
         ySum = 0;
     }
 
+    private double posX;
+    private double posY;
+
+    public void setPosX(double x) {
+        posX = x;
+        if (isShowing) {
+            setX(posX);
+        } else {
+            setX(primaryStage.getStage().getX() + 1);
+        }
+    }
+
+    public void setPosY(double y) {
+        posY = y;
+        if (isShowing) {
+            setY(posY);
+        } else {
+            setY(primaryStage.getStage().getY() + 1);
+        }
+    }
+
     /**
      * Hide the stage
      */
@@ -118,8 +139,11 @@ public class MessageStage extends Stage {
 
         // do not hide stages
         // to avoid windows taskbar icon pop-up
-        // because the stage is transparent and height 0 when no messages
-        // so it may stay there and won't cause any trouble for user
+        setX(primaryStage.getStage().getX() + 1);
+        setY(primaryStage.getStage().getY() + 1);
+        setWidth(1);
+        setHeight(1);
+        setOpacity(0);
 
         assert Logger.debug("message stage hide()");
         if (StageUtils.primaryStageFocused || StageUtils.messageStageFocused) {
@@ -148,6 +172,10 @@ public class MessageStage extends Stage {
         if (!isShowing()) {
             show();
         }
+        setX(posX);
+        setY(posY);
+        setWidth(Consts.MSG_STAGE_WIDTH);
+        setOpacity(1);
 
         assert Logger.debug("message stage show()");
         // focus the primary stage to make pushMessage behavior consistent

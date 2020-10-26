@@ -54,14 +54,25 @@ public class StageUtils {
     }
 
     public static void configureTransparentTemporaryUtilityStage(Stage stage) {
+        primaryStage.xProperty().addListener((ob, old, now) ->
+            stage.setX(now.doubleValue() + 1));
+        primaryStage.yProperty().addListener((ob, old, now) ->
+            stage.setY(now.doubleValue() + 1));
+
+        stage.focusedProperty().addListener((ob, old, now) -> {
+            if (now) primaryStage.requestFocus();
+        });
+
         stage.initStyle(StageStyle.UTILITY);
-        stage.setWidth(0);
-        stage.setHeight(0);
+        stage.setResizable(false);
+        stage.setWidth(1);
+        stage.setHeight(1);
         stage.setOpacity(0);
-        stage.setX(Integer.MAX_VALUE);
-        stage.setY(Integer.MAX_VALUE);
+        stage.setX(primaryStage.getX() + 1);
+        stage.setY(primaryStage.getY() + 1);
 
         Pane pane = new Pane();
+        pane.setMouseTransparent(true);
         Scene scene = new Scene(pane);
         stage.setScene(scene);
     }

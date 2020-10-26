@@ -797,13 +797,13 @@ public class App {
         var offsetX = chara.data().messageOffsetX * primaryStage.getScaleRatio();
         if (messageStage.isPointingToRight()) {
             var maxX = middleXOfScreen - offsetX;
-            messageStage.setX(maxX - Consts.MSG_STAGE_WIDTH);
+            messageStage.setPosX(maxX - Consts.MSG_STAGE_WIDTH);
         } else {
-            messageStage.setX(middleXOfScreen + offsetX);
+            messageStage.setPosX(middleXOfScreen + offsetX);
         }
 
         var y = primaryStage.getAbsoluteY() + primaryStage.getSceneYByImageY(chara.data().messageAtMinY);
-        messageStage.setY(y);
+        messageStage.setPosY(y);
     }
 
     private void clickNothing(double x, double y) {
