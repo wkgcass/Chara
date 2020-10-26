@@ -57,17 +57,30 @@ public class Bars {
     private double finalBarOpacity = 0;
     private boolean animatingShowBar = false;
     private boolean alwaysShowBar = false;
+    private boolean alwaysHideBar = false;
 
     public void setAlwaysShowBar(boolean alwaysShowBar) {
         this.alwaysShowBar = alwaysShowBar;
         if (alwaysShowBar) {
+            setAlwaysHideBar(false);
             doShowBar();
         } else {
             doHideBar();
         }
     }
 
+    public void setAlwaysHideBar(boolean alwaysHideBar) {
+        this.alwaysHideBar = alwaysHideBar;
+        if (alwaysHideBar) {
+            setAlwaysShowBar(false);
+            doHideBar();
+        }
+    }
+
     public void doShowBar() {
+        if (alwaysHideBar) {
+            return;
+        }
         animatingShowBar = true;
         finalBarOpacity = 1;
         if (barAnimationHelper.isPlaying()) {

@@ -73,4 +73,9 @@ public class AppCallbackDelegate implements AppCallback {
     public void setAlwaysShowBar(boolean alwaysShowBar) {
         target.setAlwaysShowBar(alwaysShowBar);
     }
+
+    @Override
+    public void setAlwaysHideBar(boolean alwaysHideBar) {
+        target.setAlwaysHideBar(alwaysHideBar);
+    }
 }

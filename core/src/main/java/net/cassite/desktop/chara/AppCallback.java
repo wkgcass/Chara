@@ -93,9 +93,16 @@ public interface AppCallback {
     void setGlobalScreen(boolean globalScreen);
 
     /**
-     * Always show chara points bars or not
+     * Always show chara points bars or not. Setting this option to true will override {@link #setAlwaysHideBar(boolean)}.
      *
      * @param alwaysShowBar true to show, false otherwise
      */
     void setAlwaysShowBar(boolean alwaysShowBar);
+
+    /**
+     * Always hide chara points bar or not. Setting this option to true will overrdie {@link #setAlwaysShowBar(boolean)}.
+     *
+     * @param alwaysHideBar true to hide, false otherwise
+     */
+    void setAlwaysHideBar(boolean alwaysHideBar);
 }

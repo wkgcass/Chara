@@ -466,6 +466,11 @@ public class App {
             public void setAlwaysShowBar(boolean alwaysShowBar) {
                 ThreadUtils.get().runOnFX(() -> bars.setAlwaysShowBar(alwaysShowBar));
             }
+
+            @Override
+            public void setAlwaysHideBar(boolean alwaysHideBar) {
+                ThreadUtils.get().runOnFX(() -> bars.setAlwaysHideBar(alwaysHideBar));
+            }
         };
         EventBus.publish(Events.AppCallbackReady, appCallback);
         return appCallback;
