@@ -58,6 +58,7 @@ public class App {
     private final Menu characterMenu = new Menu(I18nConsts.characterMenu.get()[0]);
 
     private final Group mouseCircle = new Group();
+    private final Scale mouseCircleScale = new Scale(0, 0);
 
     public App(Stage primaryStage, Scene scene, Pane rootPane, Pane rootScalePane, Scale scale) {
         assert Logger.debug("new App(...)");
@@ -175,6 +176,7 @@ public class App {
         mouseCircleInner.setFill(new Color(1, 1, 1, 0.5));
         mouseCircle.setMouseTransparent(true);
         mouseCircle.getChildren().addAll(mouseCircleOuter, mouseCircleInner);
+        mouseCircle.getTransforms().add(mouseCircleScale);
     }
 
     private void animateShutdown() {
@@ -590,20 +592,40 @@ public class App {
         }
         mouseCircle.setLayoutX(sceneX);
         mouseCircle.setLayoutY(sceneY);
-        if (sceneX < mouseCircleRadius ||
-            sceneX > primaryStage.getStage().getWidth() - mouseCircleRadius ||
-            sceneY < mouseCircleRadius ||
-            sceneY > primaryStage.getStage().getHeight() - mouseCircleRadius) {
-            // should hide
-            if (mouseCircleIsShown) {
-                mouseCircleIsShown = false;
-                rootPane.getChildren().remove(mouseCircle);
+
+        //noinspection UnnecessaryLocalVariable
+        double left = sceneX;
+        double right = primaryStage.getStage().getWidth() - sceneX;
+        //noinspection UnnecessaryLocalVariable
+        double top = sceneY;
+        double bot = primaryStage.getStage().getHeight() - sceneY;
+
+        if (!mouseCircleIsShown) {
+            mouseCircleIsShown = true;
+            rootPane.getChildren().add(mouseCircle);
+        }
+
+        if (left < mouseCircleRadius ||
+            right < mouseCircleRadius ||
+            top < mouseCircleRadius ||
+            bot < mouseCircleRadius) {
+            // should scale smaller
+            double min = left;
+            if (right < min) {
+                min = right;
             }
+            if (top < min) {
+                min = top;
+            }
+            if (bot < min) {
+                min = bot;
+            }
+            double s = min / mouseCircleRadius;
+            mouseCircleScale.setX(s);
+            mouseCircleScale.setY(s);
         } else {
-            if (!mouseCircleIsShown) {
-                mouseCircleIsShown = true;
-                rootPane.getChildren().add(mouseCircle);
-            }
+            mouseCircleScale.setX(1);
+            mouseCircleScale.setY(1);
         }
     }
 
