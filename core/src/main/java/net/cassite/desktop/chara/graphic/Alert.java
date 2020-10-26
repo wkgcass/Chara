@@ -26,7 +26,11 @@ public class Alert {
     private static final int MARGIN_HORIZONTAL = 40;
     private static final int MARGIN_VERTICAL = 30;
     private static final int FONT_SIZE = 64;
-    private static final double MAX_OPACITY = 0.65;
+    private static final double MAX_OPACITY = (
+        Utils.isMac() ? 0.65 : (
+            Utils.isWindows() ? 0.85 : (
+                Utils.isLinux() ? 0.65 :
+                    0.65)));
 
     private static final Object _VALUE_ = new Object();
     private static final ConcurrentHashMap<Stage, Object> showingStages = new ConcurrentHashMap<>();
