@@ -29,6 +29,7 @@ public class ConfigManager {
      */
     public class Config {
         private String modelFile;
+        private Boolean showIconOnTaskbar;
         private Double stageX;
         private Double stageY;
         private Double characterRatio;
@@ -51,6 +52,15 @@ public class ConfigManager {
 
         public void setModelFile(String modelFile) {
             this.modelFile = modelFile;
+            save();
+        }
+
+        public Boolean getShowIconOnTaskbar() {
+            return showIconOnTaskbar;
+        }
+
+        public void setShowIconOnTaskbar(boolean showIconOnTaskbar) {
+            this.showIconOnTaskbar = showIconOnTaskbar;
             save();
         }
 
@@ -206,6 +216,12 @@ public class ConfigManager {
                     this.modelFile = ((JSON.String) o).toJavaObject();
                 }
             }
+            if (obj.containsKey("show_icon_on_taskbar")) {
+                var o = obj.get("show_icon_on_taskbar");
+                if (o instanceof JSON.Bool) {
+                    this.showIconOnTaskbar = ((JSON.Bool) o).booleanValue();
+                }
+            }
             if (obj.containsKey("stage_x")) {
                 var o = obj.get("stage_x");
                 if (o instanceof JSON.Double) {
@@ -314,6 +330,9 @@ public class ConfigManager {
             ObjectBuilder ob = new ObjectBuilder();
             if (modelFile != null) {
                 ob.put("model_file", modelFile);
+            }
+            if (showIconOnTaskbar != null) {
+                ob.put("show_icon_on_taskbar", showIconOnTaskbar);
             }
             if (stageX != null) {
                 ob.put("stage_x", stageX);

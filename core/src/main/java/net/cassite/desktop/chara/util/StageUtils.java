@@ -25,6 +25,10 @@ public class StageUtils {
      * the primary stage
      */
     public static Stage primaryStage;
+    /**
+     * the primary temporary stage
+     */
+    public static Stage primaryTemporaryStage;
 
     private StageUtils() {
     }
@@ -45,6 +49,11 @@ public class StageUtils {
     public static Stage createTransparentTemporaryUtilityStage() {
         Stage stage = new Stage();
         stage.initOwner(primaryStage);
+        configureTransparentTemporaryUtilityStage(stage);
+        return stage;
+    }
+
+    public static void configureTransparentTemporaryUtilityStage(Stage stage) {
         stage.initStyle(StageStyle.UTILITY);
         stage.setWidth(0);
         stage.setHeight(0);
@@ -55,8 +64,6 @@ public class StageUtils {
         Pane pane = new Pane();
         Scene scene = new Scene(pane);
         stage.setScene(scene);
-
-        return stage;
     }
 
     /**

@@ -63,6 +63,10 @@ public class I18nConsts {
         ("显示版本号")
         .setEn("Show versions")
         .build();
+    public static final Words showItemOnTaskbarItem = new WordsBuilder
+        ("在任务栏上显示")
+        .setEn("Show on taskbar")
+        .build();
     public static final Words pluginMenu = new WordsBuilder
         ("插件")
         .setEn("Plugins")
@@ -83,6 +87,10 @@ public class I18nConsts {
     public static final Words activeInteractionDisabled = new WordsBuilder
         ("主动互动已禁用")
         .setEn("Active interaction disabled")
+        .build();
+    public static final Words applyAfterReboot = new WordsBuilder
+        ("重新启动本程序后生效")
+        .setEn("Apply after rebooting this program")
         .build();
 
     public static final Words chatbotNotConfigured = new WordsBuilder

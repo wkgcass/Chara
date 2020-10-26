@@ -47,8 +47,25 @@ import java.util.logging.LogManager;
 
 public class Main extends Application {
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage javafxPrimaryStage) {
         preWork(() -> ThreadUtils.get().runOnFX(() -> {
+            // get config
+            Boolean showIconOnTaskbar = ConfigManager.get().getShowIconOnTaskbar();
+            if (showIconOnTaskbar == null) {
+                showIconOnTaskbar = true;
+                ConfigManager.get().setShowIconOnTaskbar(true);
+            }
+            Stage primaryStage;
+            if (!showIconOnTaskbar) {
+                Logger.info("hide icon on taskbar");
+                StageUtils.configureTransparentTemporaryUtilityStage(javafxPrimaryStage);
+                primaryStage = new Stage();
+                StageUtils.primaryTemporaryStage = javafxPrimaryStage;
+                primaryStage.initOwner(javafxPrimaryStage);
+            } else {
+                primaryStage = javafxPrimaryStage;
+            }
+
             // construct root element
             Pane rootPane = new Pane();
             rootPane.setBackground(Background.EMPTY);
@@ -72,6 +89,9 @@ public class Main extends Application {
             // stage config
             setName(primaryStage, rootPane);
             setIcon(primaryStage);
+            if (StageUtils.primaryTemporaryStage != null) {
+                StageUtils.primaryTemporaryStage.show();
+            }
             primaryStage.show();
 
             // enable implicit exit

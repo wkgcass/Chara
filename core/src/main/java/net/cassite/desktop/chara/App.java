@@ -137,6 +137,13 @@ public class App {
             ThreadUtils.get().scheduleFX(shutdown, timeout, TimeUnit.MILLISECONDS);
         });
 
+        // iconified hook
+        primaryStage.iconifiedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                primaryStage.setIconified(false);
+            }
+        });
+
         // calculate MAX_WIDTH and MAX_HEIGHT
         {
             double maxWidth = chara.data().imageWidth;
@@ -208,6 +215,10 @@ public class App {
             } catch (IOException ignore) {
             }
             primaryStage.getStage().hide();
+            if (StageUtils.primaryTemporaryStage != null) {
+                Logger.info("hide primary temporary stage");
+                StageUtils.primaryTemporaryStage.hide();
+            }
         }).play();
     }
 
@@ -275,7 +286,7 @@ public class App {
             messageDisableOrEnable();
             messageEnableItem.setSelected(!messageDisabled);
         });
-        MenuItem toBackItem = new MenuItem(I18nConsts.toBackItem.get()[0] + "(ESC)");
+        MenuItem toBackItem = new MenuItem(I18nConsts.toBackItem.get()[0]);
         toBackItem.setDisable(primaryStage.getStage().isAlwaysOnTop());
         toBackItem.setOnAction(e -> {
             if (primaryStage.getStage().isAlwaysOnTop()) return;
@@ -319,6 +330,14 @@ public class App {
         Menu systemMenu = new Menu(I18nConsts.systemMenu.get()[0]);
         MenuItem showVersionsItem = new MenuItem(I18nConsts.showVersionsItem.get()[0]);
         showVersionsItem.setOnAction(e -> showVersions());
+        CheckMenuItem showIconOnTaskbarItem = new CheckMenuItem(I18nConsts.showItemOnTaskbarItem.get()[0]);
+        showIconOnTaskbarItem.setSelected(ConfigManager.get().getShowIconOnTaskbar());
+        showIconOnTaskbarItem.setOnAction(e -> {
+            boolean b = !ConfigManager.get().getShowIconOnTaskbar();
+            ConfigManager.get().setShowIconOnTaskbar(b);
+            showIconOnTaskbarItem.setSelected(b);
+            Alert.alert(I18nConsts.applyAfterReboot.get()[0]);
+        });
         Menu pluginMenu = new Menu(I18nConsts.pluginMenu.get()[0]);
         for (Plugin plugin : PluginManager.get().getPlugins()) {
             MenuItem pluginItem = new MenuItem(plugin.name() + ": " + Utils.verNum2Str(plugin.version()));
@@ -330,7 +349,11 @@ public class App {
         }
         MenuItem exitItem = new MenuItem(I18nConsts.exitMenuItem.get()[0]);
         exitItem.setOnAction(e -> StageUtils.closePrimaryStage());
-        systemMenu.getItems().addAll(showVersionsItem, pluginMenu, exitItem);
+        if (Utils.isWindows()) {
+            systemMenu.getItems().addAll(showVersionsItem, showIconOnTaskbarItem, pluginMenu, exitItem);
+        } else {
+            systemMenu.getItems().addAll(showVersionsItem, pluginMenu, exitItem);
+        }
         contextMenu.getItems().addAll(
             messageEnableItem,
             alwaysOnTopItem,
@@ -872,12 +895,6 @@ public class App {
                     Clipboard clipboard = Clipboard.getSystemClipboard();
                     chara.takeDebugMessage(clipboard);
                 }
-            }
-        }
-        if (e.getCode() == KeyCode.ESCAPE) {
-            // put to bottom
-            if (!primaryStage.getStage().isAlwaysOnTop()) {
-                primaryStage.getStage().toBack();
             }
         }
     }
