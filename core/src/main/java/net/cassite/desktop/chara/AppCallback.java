@@ -58,13 +58,24 @@ public interface AppCallback {
 
     /**
      * Move the primary stage with specific length to move.<br>
-     * The parameters should be the length before scaling, in another words, the actual length of the original image.<br>
-     * For example, if the current scale is 0.5, and specified in arguments to move 100 pixels, the stage will move 50 pixels.
+     * The delta parameters should be the length before scaling, in another words, the actual length relative to the original image.<br>
+     * For example, if the current scale is 0.5, and specified in arguments to move 100 pixels, the stage will move 50 pixels.<br>
+     * The anchor parameters should be the real positions, they are used as anchors which help you animate the stage back to
+     * exactly the original position.
      *
-     * @param deltaX length to move in X direction
-     * @param deltaY length to move in Y direction
+     * @param anchorX the base x position
+     * @param deltaX  length to move in X direction
+     * @param anchorY the base y position
+     * @param deltaY  length to move in Y direction
      */
-    void moveWindow(double deltaX, double deltaY);
+    void moveWindow(double anchorX, double deltaX, double anchorY, double deltaY);
+
+    /**
+     * Retrieve current window position
+     *
+     * @return array representing the position: [x, y]
+     */
+    double[] getWindowPosition();
 
     /**
      * Make the app to be draggable or not

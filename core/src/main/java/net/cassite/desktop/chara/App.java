@@ -404,8 +404,13 @@ public class App {
             }
 
             @Override
-            public void moveWindow(double deltaX, double deltaY) {
-                ThreadUtils.get().runOnFX(() -> App.this.moveWindow(deltaX, deltaY));
+            public void moveWindow(double anchorX, double deltaX, double anchorY, double deltaY) {
+                ThreadUtils.get().runOnFX(() -> App.this.moveWindow(anchorX, deltaX, anchorY, deltaY));
+            }
+
+            @Override
+            public double[] getWindowPosition() {
+                return new double[]{primaryStage.getAbsoluteX(), primaryStage.getAbsoluteY()};
             }
 
             @Override
@@ -785,9 +790,9 @@ public class App {
         messageStage.click(x, y);
     }
 
-    private void moveWindow(double deltaX, double deltaY) {
-        primaryStage.setAbsoluteX(primaryStage.getAbsoluteX() + deltaX * primaryStage.getScaleRatio());
-        primaryStage.setAbsoluteY(primaryStage.getAbsoluteY() + deltaY * primaryStage.getScaleRatio());
+    private void moveWindow(double anchorX, double deltaX, double anchorY, double deltaY) {
+        primaryStage.setAbsoluteX(anchorX + deltaX * primaryStage.getScaleRatio());
+        primaryStage.setAbsoluteY(anchorY + deltaY * primaryStage.getScaleRatio());
         EventBus.publish(Events.PrimaryStageMoved, null);
     }
 

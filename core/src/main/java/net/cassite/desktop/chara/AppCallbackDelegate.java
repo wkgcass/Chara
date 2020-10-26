@@ -50,8 +50,13 @@ public class AppCallbackDelegate implements AppCallback {
     }
 
     @Override
-    public void moveWindow(double deltaX, double deltaY) {
-        target.moveWindow(deltaX, deltaY);
+    public void moveWindow(double anchorX, double deltaX, double anchorY, double deltaY) {
+        target.moveWindow(anchorX, deltaX, anchorY, deltaY);
+    }
+
+    @Override
+    public double[] getWindowPosition() {
+        return target.getWindowPosition();
     }
 
     @Override

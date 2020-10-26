@@ -313,21 +313,17 @@ public class KokoriR18 {
         }
 
         final double moveMax = kokoriConsts.sexMoveMax;
-        double[] alreadyMoved = {0};
         final int durationMax = 800;
         final int durationMin = 400;
+        double[] windowPosition = appCallback.getWindowPosition();
         int duration = (int) (durationMax - (durationMax - durationMin) * personality.getDesirePoint());
         new TimeBasedAnimationHelper(duration / 2, percentage -> {
             double targetPosition = moveMax * percentage;
-            double shouldMove = targetPosition - alreadyMoved[0];
-            alreadyMoved[0] = targetPosition;
-            appCallback.moveWindow(0, -shouldMove);
+            appCallback.moveWindow(windowPosition[0], 0, windowPosition[1], -targetPosition);
         }).setFinishCallback(() ->
             new TimeBasedAnimationHelper(duration / 2, percentage -> {
                 double targetPosition = moveMax * (1 - percentage);
-                double shouldMove = alreadyMoved[0] - targetPosition;
-                alreadyMoved[0] = targetPosition;
-                appCallback.moveWindow(0, shouldMove);
+                appCallback.moveWindow(windowPosition[0], 0, windowPosition[1], -targetPosition);
             }).setFinishCallback(() -> {
                 if (needAnimateSexLater) {
                     needAnimateSexLater = false;
