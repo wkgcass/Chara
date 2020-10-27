@@ -38,15 +38,18 @@ public class PluginManager {
         File pluginFileDir = new File(System.getProperty("user.home") + "/" + Consts.PLUGIN_BASE_DIR);
         if (!pluginFileDir.isDirectory()) {
             Logger.warn(pluginFileDir + " is not a directory, plugins will not be loaded");
+            cb.run();
             return;
         }
         File[] files = pluginFileDir.listFiles(f -> f.getName().endsWith(".plugin"));
         if (files == null) {
             Logger.warn("failed to list plugin files in dir " + pluginFileDir);
+            cb.run();
             return;
         }
         if (files.length == 0) {
             assert Logger.debug("no plugin files found");
+            cb.run();
             return;
         }
         List<Tuple<Plugin, ZipFile>> allPlugins = new LinkedList<>();
