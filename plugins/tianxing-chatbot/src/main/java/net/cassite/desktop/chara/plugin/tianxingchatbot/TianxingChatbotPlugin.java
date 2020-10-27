@@ -2,18 +2,25 @@
 
 package net.cassite.desktop.chara.plugin.tianxingchatbot;
 
-import net.cassite.desktop.chara.chat.tianxing.TianxingTuling;
+import net.cassite.desktop.chara.chat.tianxing.TianxingChatbot;
+import net.cassite.desktop.chara.graphic.Alert;
+import net.cassite.desktop.chara.graphic.StageTransformer;
+import net.cassite.desktop.chara.i18n.tianxing.I18n;
 import net.cassite.desktop.chara.manager.ChatbotManager;
 import net.cassite.desktop.chara.plugin.Plugin;
+import net.cassite.desktop.chara.util.EventBus;
+import net.cassite.desktop.chara.util.Events;
 import net.cassite.desktop.chara.util.ResourceHandler;
 
 import java.util.Collections;
 import java.util.List;
 
 public class TianxingChatbotPlugin implements Plugin {
+    private EventBus.WatchingRegistration<StageTransformer> primaryStageReadyWatchingRegistration;
+
     @Override
     public String name() {
-        return "TianxingChatbot";
+        return "tianxing-chatbot";
     }
 
     @Override
@@ -28,16 +35,30 @@ public class TianxingChatbotPlugin implements Plugin {
 
     @Override
     public void launch() {
-        ChatbotManager.register(new TianxingTuling());
+        ChatbotManager.register(new TianxingChatbot());
+        primaryStageReadyWatchingRegistration =
+            EventBus.watch(Events.PrimaryStageReady, primaryStage -> alertApiType());
     }
 
     @Override
     public void clicked() {
-        // do nothing
+        TianxingChatbot.switchType();
+        alertApiType();
+    }
+
+    private void alertApiType() {
+        if (TianxingChatbot.apiType == TianxingChatbot.APIType.tuling) {
+            Alert.alert(I18n.usingTianxingTuling.get()[0]);
+        } else if (TianxingChatbot.apiType == TianxingChatbot.APIType.robot) {
+            Alert.alert(I18n.usingTianxingRobot.get()[0]);
+        }
     }
 
     @Override
     public void release() {
-        // do nothing
+        if (primaryStageReadyWatchingRegistration != null) {
+            primaryStageReadyWatchingRegistration.cancel();
+            primaryStageReadyWatchingRegistration = null;
+        }
     }
 }

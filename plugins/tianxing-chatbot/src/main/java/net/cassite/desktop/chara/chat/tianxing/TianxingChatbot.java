@@ -5,6 +5,7 @@ package net.cassite.desktop.chara.chat.tianxing;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.chat.AbstractChatbot;
 import net.cassite.desktop.chara.chat.Chatbot;
+import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.util.Logger;
 import vclient.HttpClient;
 import vclient.impl.Http1ClientImpl;
@@ -18,13 +19,29 @@ import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
-public class TianxingTuling extends AbstractChatbot implements Chatbot {
+public class TianxingChatbot extends AbstractChatbot implements Chatbot {
     private static final String HOSTNAME = "api.tianapi.com";
+
+    public enum APIType {
+        tuling,
+        robot,
+        ;
+    }
+
+    public static APIType apiType = APIType.robot;
+
+    public static void switchType() {
+        if (apiType == APIType.tuling) {
+            apiType = APIType.robot;
+        } else if (apiType == APIType.robot) {
+            apiType = APIType.tuling;
+        }
+    }
 
     private String apiKey;
     private HttpClient httpClient;
 
-    public TianxingTuling() {
+    public TianxingChatbot() {
         super("tianxing");
     }
 
@@ -61,11 +78,22 @@ public class TianxingTuling extends AbstractChatbot implements Chatbot {
     }
 
     private void sendRequest(String msg) {
-        httpClient.get("/txapi/tuling/index?key=" + apiKey + "&question=" + URLEncoder.encode(msg, StandardCharsets.UTF_8))
+        String url;
+        if (apiType == APIType.tuling) {
+            url = "/txapi/tuling/index";
+        } else if (apiType == APIType.robot) {
+            url = "/txapi/robot/index";
+        } else {
+            Logger.shouldNotReachHere(new Exception("invalid apiType: " + apiType));
+            return;
+        }
+        httpClient.get(url + "?key=" + apiKey
+            + "&userid=" + ConfigManager.get().getUuid()
+            + "&question=" + URLEncoder.encode(msg, StandardCharsets.UTF_8))
             .header("Host", HOSTNAME)
             .send((err, resp) -> {
                 if (err != null) {
-                    Logger.error("request TianxingTuling failed", err);
+                    Logger.error("request Tianxing failed", err);
                     return;
                 }
                 //noinspection rawtypes
@@ -73,14 +101,14 @@ public class TianxingTuling extends AbstractChatbot implements Chatbot {
                 try {
                     inst = JSON.parse(new String(resp.body().toJavaArray(), StandardCharsets.UTF_8));
                 } catch (Exception e) {
-                    Logger.error("TianxingTuling response is not json: " + resp.bodyAsString(), e);
+                    Logger.error("Tianxing response is not json: " + resp.bodyAsString(), e);
                     return;
                 }
-                Logger.info("TianxingTuling return " + inst.stringify());
+                Logger.info("Tianxing return " + inst.stringify());
                 try {
                     JSON.Object o = (JSON.Object) inst;
                     if (o.getInt("code") != 200) {
-                        Logger.error("TianxingTuling response code is not 200");
+                        Logger.error("Tianxing response code is not 200");
                         return;
                     }
                     var arr = o.getArray("newslist");
@@ -90,7 +118,7 @@ public class TianxingTuling extends AbstractChatbot implements Chatbot {
                     }
                     sendMessage(ret);
                 } catch (RuntimeException e) {
-                    Logger.error("TianxingTuling response is not valid: " + resp.bodyAsString(), e);
+                    Logger.error("Tianxing response is not valid: " + resp.bodyAsString(), e);
                     //noinspection UnnecessaryReturnStatement
                     return;
                 }

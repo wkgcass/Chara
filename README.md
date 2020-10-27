@@ -95,6 +95,8 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 使用[天行机器人](https://www.tianapi.com/search/机器人)作为聊天机器人。
 
+默认使用天行机器人，点击右键菜单中的按钮可切换天行图灵。（天行图灵免费额度较低）
+
 # 开发文档
 
 * [如何开发一个新角色](docs/how-to-develop-a-new-character.md)

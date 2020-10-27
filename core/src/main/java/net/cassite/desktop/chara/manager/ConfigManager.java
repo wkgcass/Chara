@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +30,7 @@ public class ConfigManager {
      */
     public class Config {
         private String modelFile;
+        private String uuid;
         private Boolean showIconOnTaskbar;
         private Double stageX;
         private Double stageY;
@@ -53,6 +55,14 @@ public class ConfigManager {
         public void setModelFile(String modelFile) {
             this.modelFile = modelFile;
             save();
+        }
+
+        public String getUuid() {
+            if (uuid == null) {
+                uuid = UUID.randomUUID().toString();
+                save();
+            }
+            return uuid;
         }
 
         public Boolean getShowIconOnTaskbar() {
@@ -216,6 +226,12 @@ public class ConfigManager {
                     this.modelFile = ((JSON.String) o).toJavaObject();
                 }
             }
+            if (obj.containsKey("uuid")) {
+                var o = obj.get("uuid");
+                if (o instanceof JSON.String) {
+                    this.uuid = ((JSON.String) o).toJavaObject();
+                }
+            }
             if (obj.containsKey("show_icon_on_taskbar")) {
                 var o = obj.get("show_icon_on_taskbar");
                 if (o instanceof JSON.Bool) {
@@ -330,6 +346,9 @@ public class ConfigManager {
             ObjectBuilder ob = new ObjectBuilder();
             if (modelFile != null) {
                 ob.put("model_file", modelFile);
+            }
+            if (uuid != null) {
+                ob.put("uuid", uuid);
             }
             if (showIconOnTaskbar != null) {
                 ob.put("show_icon_on_taskbar", showIconOnTaskbar);
