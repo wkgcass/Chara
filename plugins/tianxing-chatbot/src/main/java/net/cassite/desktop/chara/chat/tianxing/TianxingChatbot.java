@@ -115,6 +115,7 @@ public class TianxingChatbot extends AbstractChatbot implements Chatbot {
                     String[] ret = new String[arr.length()];
                     for (int i = 0; i < ret.length; ++i) {
                         ret[i] = arr.getObject(i).getString("reply");
+                        ret[i] = ret[i].replaceAll("<br/>", "\n"); // the response may contain <br/>
                     }
                     sendMessage(ret);
                 } catch (RuntimeException e) {
