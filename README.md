@@ -81,6 +81,8 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 # 目前实现的插件
 
+将插件放置在`~/.chara/plugin/`（`%userprofile%\.chara\plugin`）目录中即可启用。
+
 ## dev
 
 提供一些在开发模型中常常能用到的功能。目前实现了：鼠标点击时显示坐标。
