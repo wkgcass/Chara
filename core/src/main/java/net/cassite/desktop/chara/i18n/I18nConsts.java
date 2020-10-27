@@ -6,6 +6,10 @@ public class I18nConsts {
     private I18nConsts() {
     }
 
+    public static final Words SELECT_PLUGINS_TO_LOAD = new WordsBuilder
+        ("选择要加载的插件")
+        .setEn("Select plugins to load")
+        .build();
     public static final Words SELECT_EXISTING_MODEL_CONFIG = new WordsBuilder
         ("选择已有的模型配置")
         .setEn("Select existing model config")

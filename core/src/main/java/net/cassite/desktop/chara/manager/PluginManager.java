@@ -3,10 +3,21 @@
 package net.cassite.desktop.chara.manager;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.StringConverter;
 import net.cassite.desktop.chara.ThreadUtils;
+import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.plugin.Plugin;
 import net.cassite.desktop.chara.util.*;
 import vjson.JSON;
@@ -16,6 +27,7 @@ import vproxybase.util.Tuple3;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -52,8 +64,100 @@ public class PluginManager {
             cb.run();
             return;
         }
+
+        selectPluginsToLoad(files, selected ->
+            loadPlugins(selected, cb));
+    }
+
+    private void selectPluginsToLoad(File[] pluginFiles, Consumer<List<File>> cb) {
+        ThreadUtils.get().runOnFX(() -> {
+            Stage selectPluginsStage = new Stage();
+            selectPluginsStage.initStyle(StageStyle.UNIFIED);
+            selectPluginsStage.setWidth(256);
+            selectPluginsStage.setHeight(290);
+            selectPluginsStage.setResizable(false);
+            Utils.fixStageSize(selectPluginsStage, StageStyle.UNIFIED);
+            selectPluginsStage.centerOnScreen();
+            selectPluginsStage.setTitle(I18nConsts.SELECT_PLUGINS_TO_LOAD.get()[0]);
+
+            Pane root = new Pane();
+            Scene scene = new Scene(root);
+            selectPluginsStage.setScene(scene);
+
+            class SelectFile {
+                boolean selected;
+                File file;
+            }
+            List<SelectFile> selectFiles = new ArrayList<>(pluginFiles.length);
+            for (File f : pluginFiles) {
+                var s = new SelectFile();
+                s.selected = true;
+                s.file = f;
+                selectFiles.add(s);
+            }
+            ListView<SelectFile> listView = new ListView<>();
+            listView.setPrefWidth(236);
+            listView.setPrefHeight(230);
+            listView.setLayoutX(10);
+            listView.setLayoutY(10);
+            var listData = FXCollections.observableList(selectFiles);
+            listView.setItems(listData);
+            listView.setCellFactory(CheckBoxListCell.forListView(param -> {
+                BooleanProperty ob = new SimpleBooleanProperty();
+                ob.set(true);
+                ob.addListener((obs, old, now) -> param.selected = now);
+                return ob;
+            }, new StringConverter<>() {
+                @Override
+                public String toString(SelectFile object) {
+                    String name = object.file.getName();
+                    name = name.substring(0, name.length() - ".plugin".length());
+                    return name;
+                }
+
+                @Override
+                public SelectFile fromString(String string) {
+                    return null;
+                }
+            }));
+            root.getChildren().add(listView);
+
+            Button okBtn = new Button(I18nConsts.OK_BTN.get()[0]);
+            okBtn.setPrefWidth(236);
+            okBtn.setPrefHeight(20);
+            okBtn.setLayoutX(10);
+            okBtn.setLayoutY(250);
+            root.getChildren().add(okBtn);
+
+            okBtn.setOnMouseClicked(e -> {
+                List<File> selected = new LinkedList<>();
+                for (SelectFile s : selectFiles) {
+                    if (s.selected) {
+                        selected.add(s.file);
+                    }
+                }
+                Logger.info("selected plugins: " + selected);
+
+                Platform.setImplicitExit(false);
+                selectPluginsStage.hide();
+                cb.accept(selected);
+            });
+            selectPluginsStage.show();
+            Platform.setImplicitExit(true);
+            selectPluginsStage.setOnCloseRequest(e -> {
+                Platform.setImplicitExit(false);
+                Logger.fatal("program exits while selecting plugins");
+            });
+        });
+    }
+
+    private void loadPlugins(List<File> selected, Runnable cb) {
+        if (selected.isEmpty()) {
+            cb.run();
+            return;
+        }
         List<Tuple<Plugin, ZipFile>> allPlugins = new LinkedList<>();
-        for (File f : files) {
+        for (File f : selected) {
             try {
                 var tup = preLoad(f);
                 if (tup == null) {

@@ -264,10 +264,8 @@ public class Main extends Application {
                 chooseModelConfigStage.show();
                 Platform.setImplicitExit(true);
                 chooseModelConfigStage.setOnCloseRequest(e -> {
-                    if (Global.modelName == null) {
-                        Logger.fatal("model config not selected");
-                        Platform.setImplicitExit(false);
-                    }
+                    Platform.setImplicitExit(false);
+                    Logger.fatal("program exits while choosing model");
                 });
             });
         });

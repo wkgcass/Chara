@@ -110,6 +110,11 @@ public class StageUtils {
         progressBar.setProgress(0);
         pane.getChildren().add(progressBar);
 
+        loadingStage.setOnCloseRequest(e -> {
+            Platform.setImplicitExit(false);
+            Logger.fatal("program exits while loading");
+        });
+
         return new Tuple3<>(loadingStage, progressBar, label);
     }
 
