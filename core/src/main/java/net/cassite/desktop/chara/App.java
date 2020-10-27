@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.chara.Chara;
 import net.cassite.desktop.chara.control.NativeMouseListenerUtils;
+import net.cassite.desktop.chara.css.MenuItemFontFamily;
 import net.cassite.desktop.chara.graphic.*;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.i18n.Words;
@@ -68,14 +69,22 @@ public class App {
             Boolean chatFeatureEnabled = ConfigManager.get().getChatFeatureEnabled();
             if (chatFeatureEnabled != null) {
                 this.messageDisabled = !chatFeatureEnabled;
+            } else {
+                this.messageDisabled = !Global.model.data().defaultMessageEnabled;
             }
             Boolean activeInteractionEnabled = ConfigManager.get().getActiveInteractionEnabled();
+            //noinspection ReplaceNullCheck
             if (activeInteractionEnabled != null) {
                 this.allowActiveInteraction = activeInteractionEnabled;
+            } else {
+                this.allowActiveInteraction = Global.model.data().defaultAllowActiveInteraction;
             }
             Boolean mouseIndicatorEnabled = ConfigManager.get().getMouseIndicatorEnabled();
+            //noinspection ReplaceNullCheck
             if (mouseIndicatorEnabled != null) {
                 this.mouseIndicatorEnabled = mouseIndicatorEnabled;
+            } else {
+                this.mouseIndicatorEnabled = Global.model.data().defaultMouseIndicatorEnabled;
             }
             // note: alwaysOnTop is loaded in init() method
         }
@@ -240,10 +249,10 @@ public class App {
         }
 
         // chara config
-        if (!chara.data().messageSupported) {
+        if (!Global.model.data().messageSupported) {
             messageDisabled = true;
         }
-        if (!chara.data().activeInteractionSupported) {
+        if (!Global.model.data().activeInteractionSupported) {
             allowActiveInteraction = false;
         }
 
@@ -252,7 +261,7 @@ public class App {
         { // load alwaysOnTop from config
             Boolean alwaysOnTop = ConfigManager.get().getAlwaysOnTop();
             if (alwaysOnTop == null) {
-                alwaysOnTop = true;
+                alwaysOnTop = Global.model.data().defaultAlwaysOnTop;
             }
             primaryStage.getStage().setAlwaysOnTop(alwaysOnTop);
         }
@@ -279,9 +288,10 @@ public class App {
         rootScalePane.setLayoutY(primaryStage.getAddAbsoluteTop());
 
         // menu
+        scene.getStylesheets().add(new MenuItemFontFamily(FontManager.getFontFamily()).toURLString());
         CheckMenuItem messageEnableItem = new CheckMenuItem(I18nConsts.enableChatFeatureItem.get()[0]);
         messageEnableItem.setSelected(!messageDisabled);
-        if (!chara.data().messageSupported) {
+        if (!Global.model.data().messageSupported) {
             messageEnableItem.setDisable(true);
         }
         messageEnableItem.setOnAction(e -> {
@@ -309,7 +319,7 @@ public class App {
         });
         CheckMenuItem activeInteractionItem = new CheckMenuItem(I18nConsts.activeInteractionItem.get()[0]);
         activeInteractionItem.setSelected(allowActiveInteraction);
-        if (!chara.data().activeInteractionSupported) {
+        if (!Global.model.data().activeInteractionSupported) {
             activeInteractionItem.setDisable(true);
         }
         activeInteractionItem.setOnAction(e -> {
@@ -586,7 +596,7 @@ public class App {
     private Scheduled deregisterGlobalScreenAfterMouseLeaveScheduledFuture;
     private boolean setGlobalScreenFromChara = true;
 
-    private boolean mouseIndicatorEnabled = true;
+    private boolean mouseIndicatorEnabled;
     private boolean mouseCircleIsShown = false;
     private static final int mouseCircleRadius = 25;
     private static final int mouseCircleInnerRadius = 5;
@@ -959,10 +969,10 @@ public class App {
         ConfigManager.get().setAlwaysOnTop(primaryStage.getStage().isAlwaysOnTop());
     }
 
-    private boolean messageDisabled = false;
+    private boolean messageDisabled;
 
     private void messageDisableOrEnable() {
-        if (!chara.data().messageSupported) {
+        if (!Global.model.data().messageSupported) {
             return;
         }
         if (messageDisabled) {
@@ -976,10 +986,10 @@ public class App {
         ConfigManager.get().setChatFeatureEnabled(!messageDisabled);
     }
 
-    private boolean allowActiveInteraction = false;
+    private boolean allowActiveInteraction;
 
     private void activeInteractionEnableOrDisable() {
-        if (!chara.data().activeInteractionSupported) {
+        if (!Global.model.data().activeInteractionSupported) {
             return;
         }
         allowActiveInteraction = !allowActiveInteraction;

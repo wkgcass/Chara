@@ -147,7 +147,7 @@ public class ImageManager {
     }
 
     private static XImage tryFileCache(String name) {
-        File cacheFile = new File(System.getProperty("user.home") + "/" + Consts.CACHE_DIR_NAME + "/" + name);
+        File cacheFile = new File(System.getProperty("user.home") + "/" + Consts.CACHE_DIR_NAME + "/" + Global.model.name() + "/" + name);
         if (!cacheFile.isDirectory()) {
             return null;
         }
@@ -248,7 +248,7 @@ public class ImageManager {
     }
 
     private static void writeCacheFile(String name, XImage image) {
-        File cacheFile = new File(System.getProperty("user.home") + "/" + Consts.CACHE_DIR_NAME + "/" + name);
+        File cacheFile = new File(System.getProperty("user.home") + "/" + Consts.CACHE_DIR_NAME + "/" + Global.model.name() + "/" + name);
         if (cacheFile.exists()) {
             if (!cacheFile.isDirectory()) {
                 Logger.error(cacheFile.getAbsolutePath() + " exists but is not directory");

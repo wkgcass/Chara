@@ -79,6 +79,22 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 一句话人物概述：神社的巫女，外表柔弱内心坚强的小姐姐，少量病娇属性。
 
+# 目前实现的插件
+
+## dev
+
+提供一些在开发模型中常常能用到的功能。目前实现了：鼠标点击时显示坐标。
+
+点击右键菜单中的按钮启用或关闭标记功能。
+
+## wqy-microhei-font
+
+使用文泉驿微米黑字体。
+
+## tianxing-chatbot
+
+使用[天行机器人](https://www.tianapi.com/search/机器人)作为聊天机器人。
+
 # 开发文档
 
 * [如何开发一个新角色](docs/how-to-develop-a-new-character.md)

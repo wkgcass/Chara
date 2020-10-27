@@ -92,8 +92,7 @@ public class Kokori implements Chara {
             .setMessageOffsetX(kokoriConsts.msgOffsetX)
             .setMessageAtMinY(kokoriConsts.msgMinY)
             .setMinY(kokoriConsts.yMin)
-            .setMaxY(kokoriConsts.yMax)
-            .setMessageSupported(true);
+            .setMaxY(kokoriConsts.yMax);
         this.data = dataBuilder.build();
 
         root.setLayoutX(0);

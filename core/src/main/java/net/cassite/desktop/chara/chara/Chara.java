@@ -70,6 +70,7 @@ public interface Chara {
      * Get constant data of the character<br>
      * You MUST NOT change any value on the returned object between any two calls.<br>
      * You should store the returned object in a field and reuse the object everytime this method is called.<br>
+     * Use {@link DataBuilder} to build the returned object.<br>
      * It's recommended to initialize this object in the constructor.
      *
      * @return constant data of the character.
@@ -173,16 +174,6 @@ public interface Chara {
          */
         public final int maxY;
 
-        /**
-         * the character impl supports messages (in other words, the chat feature).
-         */
-        public final boolean messageSupported;
-        /**
-         * the character impl may perform active interaction<br>
-         * active interaction means that the character may perform attractive things without user interaction.
-         */
-        public final boolean activeInteractionSupported;
-
         private Data(int imageWidth,
                      int imageHeight,
                      int minWidth,
@@ -194,9 +185,7 @@ public interface Chara {
                      int messageOffsetX,
                      int messageAtMinY,
                      int minY,
-                     int maxY,
-                     boolean messageSupported,
-                     boolean activeInteractionSupported) {
+                     int maxY) {
             this.imageWidth = imageWidth;
             this.imageHeight = imageHeight;
             this.minWidth = minWidth;
@@ -209,8 +198,6 @@ public interface Chara {
             this.messageAtMinY = messageAtMinY;
             this.minY = minY;
             this.maxY = maxY;
-            this.messageSupported = messageSupported;
-            this.activeInteractionSupported = activeInteractionSupported;
         }
     }
 
@@ -227,8 +214,6 @@ public interface Chara {
         private Integer messageAtMinY;
         private Integer minY;
         private Integer maxY;
-        private boolean messageSupported = false;
-        private boolean activeInteractionSupported = false;
 
         /**
          * Check null values and construct the {@link Data} object
@@ -259,9 +244,7 @@ public interface Chara {
                 messageOffsetX,
                 messageAtMinY,
                 minY,
-                maxY,
-                messageSupported,
-                activeInteractionSupported
+                maxY
             );
         }
 
@@ -370,24 +353,6 @@ public interface Chara {
          */
         public DataBuilder setMaxY(int maxY) {
             this.maxY = maxY;
-            return this;
-        }
-
-        /**
-         * @param messageSupported {@link Data#messageSupported}
-         * @return this
-         */
-        public DataBuilder setMessageSupported(boolean messageSupported) {
-            this.messageSupported = messageSupported;
-            return this;
-        }
-
-        /**
-         * @param activeInteractionSupported {@link Data#activeInteractionSupported}
-         * @return this
-         */
-        public DataBuilder setActiveInteractionSupported(boolean activeInteractionSupported) {
-            this.activeInteractionSupported = activeInteractionSupported;
             return this;
         }
     }

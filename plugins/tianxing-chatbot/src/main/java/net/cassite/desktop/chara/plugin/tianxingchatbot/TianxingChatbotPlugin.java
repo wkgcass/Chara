@@ -5,8 +5,10 @@ package net.cassite.desktop.chara.plugin.tianxingchatbot;
 import net.cassite.desktop.chara.chat.tianxing.TianxingTuling;
 import net.cassite.desktop.chara.manager.ChatbotManager;
 import net.cassite.desktop.chara.plugin.Plugin;
+import net.cassite.desktop.chara.util.ResourceHandler;
 
-import java.util.zip.ZipFile;
+import java.util.Collections;
+import java.util.List;
 
 public class TianxingChatbotPlugin implements Plugin {
     @Override
@@ -20,13 +22,13 @@ public class TianxingChatbotPlugin implements Plugin {
     }
 
     @Override
-    public void init(ZipFile zipFile) {
-        ChatbotManager.register(new TianxingTuling());
+    public List<ResourceHandler> resourceHandlers() {
+        return Collections.emptyList();
     }
 
     @Override
     public void launch() {
-        // do nothing
+        ChatbotManager.register(new TianxingTuling());
     }
 
     @Override

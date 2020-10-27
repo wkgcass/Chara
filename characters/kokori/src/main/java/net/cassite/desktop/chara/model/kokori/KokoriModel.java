@@ -5,16 +5,22 @@ package net.cassite.desktop.chara.model.kokori;
 import net.cassite.desktop.chara.chara.Chara;
 import net.cassite.desktop.chara.chara.kokori.Kokori;
 import net.cassite.desktop.chara.chara.kokori.personality.KokoriWords;
+import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.i18n.WordsSelector;
 import net.cassite.desktop.chara.model.Model;
 import net.cassite.desktop.chara.model.ModelInitConfig;
+import net.cassite.desktop.chara.util.ResourceHandler;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.zip.ZipFile;
 
 public class KokoriModel implements Model {
     private KokoriConsts kokoriConsts;
+    private final Data data = new DataBuilder()
+        .setMessageSupported(true)
+        .setModelMenuItemText(I18nConsts.characterMenu)
+        .build();
 
     @Override
     public String name() {
@@ -27,6 +33,11 @@ public class KokoriModel implements Model {
     }
 
     @Override
+    public Data data() {
+        return data;
+    }
+
+    @Override
     public Chara construct(ConstructParams params) {
         return new Kokori(kokoriConsts, params.cb, params.parent, params.characterMenu);
     }
@@ -34,6 +45,11 @@ public class KokoriModel implements Model {
     @Override
     public List<String> requiredImages() {
         return Arrays.asList(images);
+    }
+
+    @Override
+    public List<ResourceHandler> resourceHandlers() {
+        return Collections.emptyList(); // load nothing
     }
 
     @Override
@@ -49,11 +65,6 @@ public class KokoriModel implements Model {
         KokoriWords.setFlirtFromModel(flirt);
 
         kokoriConsts = new KokoriConsts(conf);
-    }
-
-    @Override
-    public void customizeInit(ZipFile model) {
-        // do nothing
     }
 
     private static final String[] images = new String[]{

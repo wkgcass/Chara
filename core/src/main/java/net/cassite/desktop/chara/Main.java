@@ -25,9 +25,10 @@ import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.control.NativeMouseListenerUtils;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.manager.ConfigManager;
-import net.cassite.desktop.chara.manager.ImageManager;
 import net.cassite.desktop.chara.manager.ModelManager;
 import net.cassite.desktop.chara.manager.PluginManager;
+import net.cassite.desktop.chara.util.ImageResourceHandler;
+import net.cassite.desktop.chara.util.ResourceHandler;
 import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.StageUtils;
@@ -35,10 +36,13 @@ import net.cassite.desktop.chara.util.Utils;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import vproxybase.dns.Resolver;
+import vproxybase.util.Callback;
+import vproxybase.util.Tuple3;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -52,8 +56,7 @@ public class Main extends Application {
             // get config
             Boolean showIconOnTaskbar = ConfigManager.get().getShowIconOnTaskbar();
             if (showIconOnTaskbar == null) {
-                showIconOnTaskbar = true;
-                ConfigManager.get().setShowIconOnTaskbar(true);
+                showIconOnTaskbar = Global.model.data().defaultShowIconOnTaskbar;
             }
             Stage primaryStage;
             if (!showIconOnTaskbar) {
@@ -133,12 +136,13 @@ public class Main extends Application {
     private void preWork(Runnable cb) {
         launchDnsResolver();
         registerNativeHook();
-        loadPlugins();
-        chooseModel(() ->
-            chooseModelFile(() ->
-                loadModel(() ->
-                    loadCommonItemsFromModel(() ->
-                        loadImages(Global.model.requiredImages(), cb)
+        loadPlugins(() ->
+            chooseModel(() ->
+                chooseModelFile(() ->
+                    loadModel(() ->
+                        loadCommonItemsFromModel(() ->
+                            loadImagesAndResources(Global.model.requiredImages(), Global.model.resourceHandlers(), cb)
+                        )
                     )
                 )
             )
@@ -167,8 +171,8 @@ public class Main extends Application {
         }
     }
 
-    private void loadPlugins() {
-        PluginManager.get().load();
+    private void loadPlugins(Runnable cb) {
+        PluginManager.get().load(cb);
     }
 
     private void chooseModel(Runnable cb) {
@@ -258,9 +262,11 @@ public class Main extends Application {
                 });
 
                 chooseModelConfigStage.show();
+                Platform.setImplicitExit(true);
                 chooseModelConfigStage.setOnCloseRequest(e -> {
                     if (Global.modelName == null) {
                         Logger.fatal("model config not selected");
+                        Platform.setImplicitExit(false);
                     }
                 });
             });
@@ -349,77 +355,103 @@ public class Main extends Application {
         });
     }
 
-    private void loadImages(List<String> requiredImageList, Runnable cb) {
+    private void loadImagesAndResources(List<String> requiredImages, List<ResourceHandler> resourceHandlers, Runnable cb) {
+        double allResourceRatioSum = 0;
+        for (var h : resourceHandlers) {
+            allResourceRatioSum += h.progressRatio;
+        }
+        allResourceRatioSum += requiredImages.size();
+        final var finalAllResourceRatioSum = allResourceRatioSum;
+
+        List<ResourceHandler> imageAndResourceHandlers = new ArrayList<>(requiredImages.size() + resourceHandlers.size());
+        for (var imageStr : requiredImages) {
+            imageAndResourceHandlers.add(new ImageResourceHandler(imageStr));
+        }
+        imageAndResourceHandlers.addAll(resourceHandlers);
+
         ThreadUtils.get().runOnFX(() -> {
             // should run from UI thread
 
-            Stage loadingStage = new Stage();
-            loadingStage.initStyle(StageStyle.UNIFIED);
-            loadingStage.setWidth(600);
-            loadingStage.setHeight(80);
-            loadingStage.setResizable(false);
-            loadingStage.setTitle(I18nConsts.LOADING.get()[0]);
-            Utils.fixStageSize(loadingStage, StageStyle.UNIFIED);
-            loadingStage.centerOnScreen();
+            var loadingTup = StageUtils.createLoadingBarStage();
+            loadingTup._1.show();
+            Platform.setImplicitExit(true);
 
-            Pane pane = new Pane();
-            Scene scene = new Scene(pane);
-            loadingStage.setScene(scene);
-
-            Label label = new Label();
-            label.setLayoutX(10);
-            label.setLayoutY(10);
-            label.setPrefHeight(20);
-            label.setText(I18nConsts.LOADING.get()[0]);
-            pane.getChildren().add(label);
-
-            ProgressBar progressBar = new ProgressBar();
-            progressBar.setLayoutX(10);
-            progressBar.setLayoutY(40);
-            progressBar.setPrefWidth(580);
-            progressBar.setPrefHeight(20);
-            progressBar.setProgress(0);
-            pane.getChildren().add(progressBar);
-
-            loadingStage.show();
-
-            recursiveLoadImages(requiredImageList.iterator(), requiredImageList.size(), 0, label, progressBar, loadingStage, cb);
+            loadResources(loadingTup, imageAndResourceHandlers, finalAllResourceRatioSum, () ->
+                ThreadUtils.get().runOnFX(() -> {
+                    Platform.setImplicitExit(false);
+                    loadingTup._1.hide();
+                    cb.run();
+                }));
         });
     }
 
-    private void recursiveLoadImages(Iterator<String> iterator, int total, int currentIndex,
-                                     Label label, ProgressBar progressBar,
-                                     Stage loadingStage, Runnable runAfterLoading) {
-        if (!iterator.hasNext()) {
-            progressBar.setProgress(1);
-            label.setText("");
-            Platform.setImplicitExit(false);
-            loadingStage.hide();
+    private void loadResources(Tuple3<Stage, ProgressBar, Label> loadingTuple, List<ResourceHandler> resourceHandlers,
+                               double allResourceRatioSum, Runnable cb) {
+        ThreadUtils.get().runOnFX(() ->
+            recursiveLoadResources(
+                resourceHandlers.iterator(), allResourceRatioSum,
+                loadingTuple, 0,
+                cb));
+    }
 
-            runAfterLoading.run();
+    private void recursiveLoadResources(Iterator<ResourceHandler> iterator, double allResourceRatioSum,
+                                        Tuple3<Stage, ProgressBar, Label> loadingTuple, double lastProcess,
+                                        Runnable cb) {
+        if (!iterator.hasNext()) {
+            loadingTuple._2.setProgress(1);
+            loadingTuple._3.setText("");
+            cb.run();
             return;
         }
         if (ThreadUtils.get().isShutdown()) {
             return;
         }
-
-        progressBar.setProgress(((double) currentIndex) / total);
-        String name = iterator.next();
-        label.setText(name);
+        var handler = iterator.next();
+        loadingTuple._3.setText(handler.entrySuffix);
 
         ThreadUtils.get().submit(() -> {
-            ImageManager.load(name);
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ignore) {
-            }
-            if (ThreadUtils.get().isShutdown()) {
+            String entry = Global.model.name() + "/" + handler.entrySuffix;
+            InputStream inputStream = ModelManager.getEntryFromModel(entry);
+            if (inputStream == null) {
+                Logger.fatal("cannot find entry " + entry + " in model file");
                 return;
             }
-            Platform.runLater(() ->
-                recursiveLoadImages(iterator, total, currentIndex + 1,
-                    label, progressBar,
-                    loadingStage, runAfterLoading));
+            Logger.info("loading " + entry + " for model " + Global.model.name());
+            try {
+                handler.handler.accept(inputStream, new Callback<>() {
+                    @Override
+                    protected void onSucceeded(Void aVoid) {
+                        try {
+                            inputStream.close();
+                        } catch (IOException ignore) {
+                        }
+                        // wait 1 millisecond to make the cpu lower
+                        try {
+                            Thread.sleep(1);
+                        } catch (InterruptedException ignore) {
+                        }
+                        if (ThreadUtils.get().isShutdown()) {
+                            return;
+                        }
+
+                        // increase progressbar and recurse
+                        Platform.runLater(() -> {
+                            double now = lastProcess + handler.progressRatio / allResourceRatioSum;
+                            loadingTuple._2.setProgress(now);
+                            recursiveLoadResources(iterator, allResourceRatioSum,
+                                loadingTuple, now,
+                                cb);
+                        });
+                    }
+
+                    @Override
+                    protected void onFailed(Exception e) {
+                        Logger.fatal("failed handling " + entry, e);
+                    }
+                });
+            } catch (Exception e) {
+                Logger.fatal("failed handling " + entry, e);
+            }
         });
     }
 }

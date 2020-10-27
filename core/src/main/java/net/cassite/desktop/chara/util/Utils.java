@@ -330,4 +330,43 @@ public class Utils {
         URLClassLoader urlClassLoader = new URLClassLoader(urlArray);
         return urlClassLoader.loadClass(classname);
     }
+
+    public static InputStream getEntryFromZipFile(String zipFilePath, String name) {
+        ZipFile file;
+        try {
+            file = new ZipFile(zipFilePath);
+        } catch (IOException e) {
+            Logger.fatal("failed to open model file", e);
+            return null;
+        }
+        var entry = file.getEntry(name);
+        if (entry == null) {
+            assert Logger.debug("entry " + name + " not found");
+            try {
+                file.close();
+            } catch (IOException ignore) {
+            }
+            return null;
+        }
+        try {
+            return new ZipFileInputStreamDelegate(file, file.getInputStream(entry));
+        } catch (IOException e) {
+            Logger.fatal("failed to get input stream from entry " + name, e);
+            return null;
+        }
+    }
+
+    public static InputStream getEntryFromZipFile(ZipFile zipFile, String name) {
+        var entry = zipFile.getEntry(name);
+        if (entry == null) {
+            assert Logger.debug("entry " + name + " not found");
+            return null;
+        }
+        try {
+            return new ZipFileInputStreamDelegate(zipFile, zipFile.getInputStream(entry));
+        } catch (IOException e) {
+            Logger.fatal("failed to get input stream from entry " + name, e);
+            return null;
+        }
+    }
 }

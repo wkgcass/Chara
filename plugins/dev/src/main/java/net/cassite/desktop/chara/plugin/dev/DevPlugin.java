@@ -11,12 +11,9 @@ import net.cassite.desktop.chara.plugin.Plugin;
 import net.cassite.desktop.chara.util.EventBus;
 import net.cassite.desktop.chara.util.Events;
 import net.cassite.desktop.chara.util.Logger;
+import net.cassite.desktop.chara.util.ResourceHandler;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipFile;
+import java.util.*;
 
 public class DevPlugin implements Plugin {
     private boolean enabled = false;
@@ -41,8 +38,8 @@ public class DevPlugin implements Plugin {
     }
 
     @Override
-    public void init(ZipFile zipFile) {
-        // do nothing
+    public List<ResourceHandler> resourceHandlers() {
+        return Collections.emptyList();
     }
 
     @Override

@@ -32,10 +32,11 @@ core模块公开提供的事件，可以在`Events`类中找到。
 
 其目录结构如下：
 
-|               | 说明
-|---------------|--------------------------------
-| `plugin.json` | 插件配置文件
-| `code`        | 存放插件相关的代码，目录下可以存放多个`.jar`文件
+|                  | 说明
+|------------------|--------------------------------
+| `plugin.json`    | 插件配置文件
+| `code`           | 存放插件相关的代码，目录下可以存放多个`.jar`文件
+| 插件名称同名目录 | 可选。存放插件相关资源，例如图片、音乐、影像、字体等资源
 
 ### plugin.json
 
@@ -58,13 +59,18 @@ code目录中存放插件代码的`.jar`文件。需要将所有依赖的jar也�
 
 注意，这里的`.jar`文件需要包含`plugin.json`中配置的`pluginClass`，并且`module-info.java`中需要将对应的包export出来。
 
+### 插件名称同名目录
+
+该目录需要和`plugin.json`中配置的`name`字段一致。资源文件都需要放置在该目录中。`Plugin`接口的`resourceHandlers()`方法会加载这个目录中的资源文件。  
+该目录内部的结构没有特定要求，按照自己喜好组织即可。
+
 ### 其他
 
 在插件文件中还可以放置一些其他文件，例如LICENSE、README等。
 
 ### 参考目录
 
-dev插件的目录结构的结构是这样的：
+dev插件的目录结构是这样的：
 
 ```
 dev.plugin +
@@ -73,6 +79,27 @@ dev.plugin +
            +-- code +
                     |
                     +-- dev.jar
+```
+
+wqy-microhei-font插件的目录结构是这样的：
+
+```
+wqy-microhei-font.plugin +
+                         |
+                         +-- plugin.json
+                         +-- code +
+                         |        |
+                         |        +-- wqy-microhei-font.jar
+                         |
+                         +-- wqy-microhei-font +
+                         |                     |
+                         |                     +-- font +
+                         +-- wqy +                      |
+                                 |                      +-- wqy-microhei.ttc
+                                 +-- LICENSE_Apache2.txt
+                                 +-- LICENSE_GPLv3.txt
+                                 +-- AUTHORS.txt
+                                ...
 ```
 
 ## 开发流程

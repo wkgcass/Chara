@@ -51,9 +51,17 @@ public class I18nConsts {
         ("截图")
         .setEn("Snapshot")
         .build();
+    public static final Words modelMenu = new WordsBuilder
+        ("模型")
+        .setEn("Model")
+        .build();
     public static final Words characterMenu = new WordsBuilder
         ("角色")
         .setEn("Character")
+        .build();
+    public static final Words widgetMenu = new WordsBuilder
+        ("小组件")
+        .setEn("Widget")
         .build();
     public static final Words systemMenu = new WordsBuilder
         ("系统")

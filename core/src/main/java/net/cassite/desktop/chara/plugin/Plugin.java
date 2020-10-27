@@ -2,7 +2,9 @@
 
 package net.cassite.desktop.chara.plugin;
 
-import java.util.zip.ZipFile;
+import net.cassite.desktop.chara.util.ResourceHandler;
+
+import java.util.List;
 
 public interface Plugin {
     /**
@@ -20,18 +22,16 @@ public interface Plugin {
     int version();
 
     /**
-     * Initiate the plugin.<br>
-     * You should put irrecoverable operations into this function.
-     * Recoverable operations should be put into <code>launch()</code> method.
+     * Get resource handlers of the plugin<br>
+     * The list will be used on the startup loading bar.
      *
-     * @param zipFile zip file of the plugin
-     * @throws Exception any exception when initiating
+     * @return the resource handlers list
      */
-    void init(ZipFile zipFile) throws Exception;
+    List<ResourceHandler> resourceHandlers();
 
     /**
      * Launch the plugin.<br>
-     * You should put recoverable operations into this function,
+     * You should put initiating operations into this function,
      * and these operations should be reverted in <code>release</code> function.
      */
     void launch();

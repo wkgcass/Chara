@@ -4,10 +4,14 @@ package net.cassite.desktop.chara.util;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import net.cassite.desktop.chara.i18n.I18nConsts;
+import vproxybase.util.Tuple3;
 
 /**
  * Stage utility
@@ -75,6 +79,38 @@ public class StageUtils {
         pane.setMouseTransparent(true);
         Scene scene = new Scene(pane);
         stage.setScene(scene);
+    }
+
+    public static Tuple3<Stage, ProgressBar, Label> createLoadingBarStage() {
+        Stage loadingStage = new Stage();
+        loadingStage.initStyle(StageStyle.UNIFIED);
+        loadingStage.setWidth(600);
+        loadingStage.setHeight(80);
+        loadingStage.setResizable(false);
+        loadingStage.setTitle(I18nConsts.LOADING.get()[0]);
+        Utils.fixStageSize(loadingStage, StageStyle.UNIFIED);
+        loadingStage.centerOnScreen();
+
+        Pane pane = new Pane();
+        Scene scene = new Scene(pane);
+        loadingStage.setScene(scene);
+
+        Label label = new Label();
+        label.setLayoutX(10);
+        label.setLayoutY(10);
+        label.setPrefHeight(20);
+        label.setText(I18nConsts.LOADING.get()[0]);
+        pane.getChildren().add(label);
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.setLayoutX(10);
+        progressBar.setLayoutY(40);
+        progressBar.setPrefWidth(580);
+        progressBar.setPrefHeight(20);
+        progressBar.setProgress(0);
+        pane.getChildren().add(progressBar);
+
+        return new Tuple3<>(loadingStage, progressBar, label);
     }
 
     /**

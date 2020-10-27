@@ -1,0 +1,7 @@
+{
+  "name": "wqy-microhei-font",
+  "version": 1000000,
+  "compatibleMinCodeVersion": 1000000,
+  "compatibleMaxCodeVersion": -1,
+  "pluginClass": "net.cassite.desktop.chara.plugin.wqymicroheifont.WqyMicroheiFontPlugin"
+}

@@ -163,14 +163,6 @@ public class ModelManager {
         // init
         selected.init(modelInitConfig);
 
-        // additional init
-        try {
-            selected.customizeInit(zipFile);
-        } catch (Exception e) {
-            Logger.fatal("model implementation raise an exception when initiating", e);
-            return null;
-        }
-
         // done
         try {
             zipFile.close();
@@ -303,27 +295,6 @@ public class ModelManager {
     }
 
     public static InputStream getEntryFromModel(String name) {
-        ZipFile file;
-        try {
-            file = new ZipFile(Global.modelFilePath);
-        } catch (IOException e) {
-            Logger.fatal("failed to open model file", e);
-            return null;
-        }
-        var entry = file.getEntry(name);
-        if (entry == null) {
-            assert Logger.debug("entry " + name + " not found");
-            try {
-                file.close();
-            } catch (IOException ignore) {
-            }
-            return null;
-        }
-        try {
-            return new ZipFileInputStreamDelegate(file, file.getInputStream(entry));
-        } catch (IOException e) {
-            Logger.fatal("failed to get input stream from entry " + name, e);
-            return null;
-        }
+        return Utils.getEntryFromZipFile(Global.modelFilePath, name);
     }
 }
