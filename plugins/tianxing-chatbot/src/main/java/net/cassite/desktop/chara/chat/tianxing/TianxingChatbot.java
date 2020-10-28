@@ -87,9 +87,11 @@ public class TianxingChatbot extends AbstractChatbot implements Chatbot {
             Logger.shouldNotReachHere(new Exception("invalid apiType: " + apiType));
             return;
         }
-        httpClient.get(url + "?key=" + apiKey
+        String req = url + "?key=" + apiKey
             + "&userid=" + ConfigManager.get().getUuid()
-            + "&question=" + URLEncoder.encode(msg, StandardCharsets.UTF_8))
+            + "&question=" + URLEncoder.encode(msg, StandardCharsets.UTF_8);
+        Logger.info("Tianxing request: " + req);
+        httpClient.get(req)
             .header("Host", HOSTNAME)
             .send((err, resp) -> {
                 if (err != null) {

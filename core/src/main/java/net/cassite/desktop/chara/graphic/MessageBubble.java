@@ -25,12 +25,33 @@ public class MessageBubble {
     private boolean pointToRight;
 
     public MessageBubble(String message, boolean pointToRight, Consts.MsgBubbleColor color) {
+        // format message
+        {
+            StringBuilder sb = new StringBuilder();
+            String[] arr = message.split("\n");
+            boolean isFirst = true;
+            for (String s : arr) {
+                if (s.isBlank()) {
+                    continue;
+                }
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    sb.append("\n");
+                }
+                sb.append(s);
+            }
+            message = sb.toString();
+        }
         this.message = message;
         this.pointToRight = pointToRight;
         this.color = color;
 
         {
             Text foo = new Text(message);
+            // the calculation of text height is not correct, set the line spacing to fix the issue
+            // it's not the ultimate fix but it looks better
+            foo.setLineSpacing(FontManager.getLineSpacingFix());
             foo.setFont(Font.font(FontManager.getFontFamily(), Consts.MSG_FONT_SIZE));
             double w = foo.getLayoutBounds().getWidth();
             if (w > Consts.MSG_BUBBLE_MAX_WIDTH - Consts.MSG_BUBBLE_PADDING_HORIZONTAL * 2) {

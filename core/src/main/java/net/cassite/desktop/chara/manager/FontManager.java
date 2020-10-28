@@ -16,6 +16,7 @@ public class FontManager {
     }
 
     private static String fontFamily;
+    private static double lineSpacingFix;
 
     /**
      * Register a new font
@@ -42,15 +43,17 @@ public class FontManager {
     /**
      * Set or replace the default font family.
      *
-     * @param fontFamily the font family to set
+     * @param fontFamily     the font family to set
+     * @param lineSpacingFix used to fix the text line height calculation
      */
-    public static void setDefaultFontFamily(String fontFamily) {
+    public static void setDefaultFontFamily(String fontFamily, double lineSpacingFix) {
         if (FontManager.fontFamily != null) {
-            Logger.warn("replacing default font family from " + FontManager.fontFamily + " to " + fontFamily);
+            Logger.warn("replacing default font family from " + FontManager.fontFamily + " to " + fontFamily + ", fix = " + lineSpacingFix);
         } else {
-            Logger.info("font family is set to " + fontFamily);
+            Logger.info("font family is set to " + fontFamily + ", fix = " + lineSpacingFix);
         }
         FontManager.fontFamily = fontFamily;
+        FontManager.lineSpacingFix = lineSpacingFix;
     }
 
     /**
@@ -65,12 +68,20 @@ public class FontManager {
         Logger.info("all available font families: " + Font.getFamilies());
         if (Utils.isMac()) {
             fontFamily = "PingFang SC";
+            lineSpacingFix = 1.8;
         } else if (Utils.isWindows()) {
             fontFamily = "YouYuan";
+            lineSpacingFix = 2;
         } else {
             fontFamily = "WenQuanYi Micro Hei";
+            lineSpacingFix = 1.5;
         }
         Logger.info("font family set to: " + fontFamily);
         return fontFamily;
+    }
+
+    public static double getLineSpacingFix() {
+        getFontFamily(); // ensure it's set
+        return lineSpacingFix;
     }
 }
