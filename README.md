@@ -24,43 +24,7 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 # 演示
 
-## 眼睛跟踪鼠标
-
-![](docs/readme-bundle/kokori-eye-track.gif)
-
-## 触摸反馈
-
-![](docs/readme-bundle/kokori-touch.gif)
-
-触摸后的反应会根据羁绊值的高低而不同哦～
-
-## 菜单交互
-
-![](docs/readme-bundle/kokori-menu.gif)
-
-## 羁绊值
-
-![](docs/readme-bundle/kokori-bond-bar.gif)
-
-通过增加羁绊值和▇▇值解锁更多新交互吧～
-
-<details><summary>...</summary>
-减少羁绊值也会发生变化～
-</details>
-
-## 聊天交互
-
-![](docs/readme-bundle/kokori-chat-feature.gif)
-
-聊天交互需要事先配置chatbot
-
-<details><summary>别点我</summary>
-
-## R18特性
-
-![](docs/readme-bundle/kokori-r18.gif)
-
-</details>
+请见这里：[http://blog.cassite.net/Chara/](http://blog.cassite.net/Chara/)。
 
 # 目前实现的角色
 

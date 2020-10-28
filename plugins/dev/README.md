@@ -8,9 +8,7 @@
 
 ## 演示
 
-### 显示点的坐标
-
-![](../../docs/readme-bundle/dev-plugin.gif)
+请见这里：[http://blog.cassite.net/Chara/#dev-plugin](http://blog.cassite.net/Chara/#dev-plugin)。
 
 ## 命令
 
