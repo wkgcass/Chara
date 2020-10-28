@@ -4,20 +4,15 @@ package net.cassite.desktop.chara.plugin.tianxingchatbot;
 
 import net.cassite.desktop.chara.chat.tianxing.TianxingChatbot;
 import net.cassite.desktop.chara.graphic.Alert;
-import net.cassite.desktop.chara.graphic.StageTransformer;
 import net.cassite.desktop.chara.i18n.tianxing.I18n;
 import net.cassite.desktop.chara.manager.ChatbotManager;
 import net.cassite.desktop.chara.plugin.Plugin;
-import net.cassite.desktop.chara.util.EventBus;
-import net.cassite.desktop.chara.util.Events;
 import net.cassite.desktop.chara.util.ResourceHandler;
 
 import java.util.Collections;
 import java.util.List;
 
 public class TianxingChatbotPlugin implements Plugin {
-    private EventBus.WatchingRegistration<StageTransformer> primaryStageReadyWatchingRegistration;
-
     @Override
     public String name() {
         return "tianxing-chatbot";
@@ -36,8 +31,6 @@ public class TianxingChatbotPlugin implements Plugin {
     @Override
     public void launch() {
         ChatbotManager.register(new TianxingChatbot());
-        primaryStageReadyWatchingRegistration =
-            EventBus.watch(Events.PrimaryStageReady, primaryStage -> alertApiType());
     }
 
     @Override
@@ -56,9 +49,6 @@ public class TianxingChatbotPlugin implements Plugin {
 
     @Override
     public void release() {
-        if (primaryStageReadyWatchingRegistration != null) {
-            primaryStageReadyWatchingRegistration.cancel();
-            primaryStageReadyWatchingRegistration = null;
-        }
+        // do nothing
     }
 }
