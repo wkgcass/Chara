@@ -363,7 +363,7 @@ public class Utils {
             return null;
         }
         try {
-            return new ZipFileInputStreamDelegate(zipFile, zipFile.getInputStream(entry));
+            return zipFile.getInputStream(entry);
         } catch (IOException e) {
             Logger.fatal("failed to get input stream from entry " + name, e);
             return null;
