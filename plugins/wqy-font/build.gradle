@@ -23,7 +23,7 @@ repositories {
 }
 
 jar {
-    archiveName = 'wqy-microhei-font.jar'
+    archiveName = 'wqy-font.jar'
 }
 
 dependencies {

@@ -25,17 +25,17 @@ clean-characters: clean-kokori
 output-characters: output-kokori
 
 .PHONY: plugins
-plugins: dev-plugin tianxing-chatbot-plugin wqy-microhei-font-plugin
+plugins: dev-plugin tianxing-chatbot-plugin wqy-font-plugin
 .PHONY: compile-plugins
-compile-plugins: compile-dev-plugin compile-tianxing-chatbot-plugin compile-wqy-microhei-font-plugin
+compile-plugins: compile-dev-plugin compile-tianxing-chatbot-plugin compile-wqy-font-plugin
 .PHONY: build-plugins
-build-plugins: build-dev-plugin build-tianxing-chatbot-plugin build-wqy-microhei-font-plugin
+build-plugins: build-dev-plugin build-tianxing-chatbot-plugin build-wqy-font-plugin
 .PHONY: clean-plugins
-clean-plugins: clean-dev-plugin clean-tianxing-chatbot-plugin clean-wqy-microhei-font-plugin
+clean-plugins: clean-dev-plugin clean-tianxing-chatbot-plugin clean-wqy-font-plugin
 .PHONY: output-plugins
-output-plugins: output-dev-plugin output-tianxing-chatbot-plugin output-wqy-microhei-font-plugin
+output-plugins: output-dev-plugin output-tianxing-chatbot-plugin output-wqy-font-plugin
 .PHONY: deploy-plugins
-deploy-plugins: deploy-dev-plugin deploy-tianxing-chatbot-plugin deploy-wqy-microhei-font-plugin
+deploy-plugins: deploy-dev-plugin deploy-tianxing-chatbot-plugin deploy-wqy-font-plugin
 
 CHRONIC := $(shell if [[ ! -z "`which chronic`" ]]; then echo "chronic"; fi)
 
@@ -121,21 +121,21 @@ output-tianxing-chatbot-plugin: output build-tianxing-chatbot-plugin
 deploy-tianxing-chatbot-plugin: output-tianxing-chatbot-plugin home-chara
 	cp output/tianxing-chatbot.plugin ~/.chara/plugin/
 
-.PHONY: wqy-microhei-font-plugin
-wqy-microhei-font-plugin: clean-wqy-microhei-font-plugin compile-wqy-microhei-font-plugin build-wqy-microhei-font-plugin output-wqy-microhei-font-plugin deploy-wqy-microhei-font-plugin
-.PHONY: compile-wqy-microhei-font-plugin
-compile-wqy-microhei-font-plugin: compile-core
-	cd plugins/wqy-microhei-font/ && $(CHRONIC) ./gradlew clean jar
-.PHONY: build-wqy-microhei-font-plugin
-build-wqy-microhei-font-plugin: compile-core
-	cd plugins/wqy-microhei-font/ && $(CHRONIC) ./build-plugin.sh
-.PHONY: clean-wqy-microhei-font-plugin
-clean-wqy-microhei-font-plugin:
-	cd plugins/wqy-microhei-font/ && $(CHRONIC) ./gradlew clean
-	cd plugins/wqy-microhei-font/plugin/ && rm -f *.plugin
-.PHONY: output-wqy-microhei-font-plugin
-output-wqy-microhei-font-plugin: output build-wqy-microhei-font-plugin
-	cp plugins/wqy-microhei-font/plugin/*.plugin output/
-.PHONY: deploy-wqy-microhei-font-plugin
-deploy-wqy-microhei-font-plugin: output-wqy-microhei-font-plugin home-chara
-	cp output/wqy-microhei-font.plugin ~/.chara/plugin/
+.PHONY: wqy-font-plugin
+wqy-font-plugin: clean-wqy-font-plugin compile-wqy-font-plugin build-wqy-font-plugin output-wqy-font-plugin deploy-wqy-font-plugin
+.PHONY: compile-wqy-font-plugin
+compile-wqy-font-plugin: compile-core
+	cd plugins/wqy-font/ && $(CHRONIC) ./gradlew clean jar
+.PHONY: build-wqy-font-plugin
+build-wqy-font-plugin: compile-core
+	cd plugins/wqy-font/ && $(CHRONIC) ./build-plugin.sh
+.PHONY: clean-wqy-font-plugin
+clean-wqy-font-plugin:
+	cd plugins/wqy-font/ && $(CHRONIC) ./gradlew clean
+	cd plugins/wqy-font/plugin/ && rm -f *.plugin
+.PHONY: output-wqy-font-plugin
+output-wqy-font-plugin: output build-wqy-font-plugin
+	cp plugins/wqy-font/plugin/*.plugin output/
+.PHONY: deploy-wqy-font-plugin
+deploy-wqy-font-plugin: output-wqy-font-plugin home-chara
+	cp output/wqy-font.plugin ~/.chara/plugin/

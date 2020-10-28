@@ -89,9 +89,9 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 点击右键菜单中的按钮启用或关闭标记功能。
 
-## wqy-microhei-font
+## wqy-font
 
-使用文泉驿微米黑字体。
+使用文泉驿字体。
 
 ## tianxing-chatbot
 

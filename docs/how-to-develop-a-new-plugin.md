@@ -81,17 +81,17 @@ dev.plugin +
                     +-- dev.jar
 ```
 
-wqy-microhei-font插件的目录结构是这样的：
+wqy-font插件的目录结构是这样的：
 
 ```
-wqy-microhei-font.plugin +
+wqy-font.plugin +
                          |
                          +-- plugin.json
                          +-- code +
                          |        |
-                         |        +-- wqy-microhei-font.jar
+                         |        +-- wqy-font.jar
                          |
-                         +-- wqy-microhei-font +
+                         +-- wqy-font +
                          |                     |
                          |                     +-- font +
                          +-- wqy +                      |

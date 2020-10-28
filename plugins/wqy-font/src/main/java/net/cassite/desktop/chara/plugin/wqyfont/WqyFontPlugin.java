@@ -1,6 +1,6 @@
 // ***LICENSE*** This file is licensed under GPLv2 with Classpath Exception. See LICENSE file under project root for more info
 
-package net.cassite.desktop.chara.plugin.wqymicroheifont;
+package net.cassite.desktop.chara.plugin.wqyfont;
 
 import javafx.scene.text.Font;
 import net.cassite.desktop.chara.manager.FontManager;
@@ -11,10 +11,10 @@ import net.cassite.desktop.chara.util.ResourceHandler;
 import java.util.Collections;
 import java.util.List;
 
-public class WqyMicroheiFontPlugin implements Plugin {
+public class WqyFontPlugin implements Plugin {
     @Override
     public String name() {
-        return "wqy-microhei-font";
+        return "wqy-font";
     }
 
     @Override

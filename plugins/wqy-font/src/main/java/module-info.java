@@ -5,6 +5,6 @@ module net.cassite.desktop.chara.plugin.tianxingchatbot {
     requires javafx.controls;
     requires vproxy;
     requires net.cassite.desktop.chara;
-    exports net.cassite.desktop.chara.plugin.wqymicroheifont;
-    exports run.plugin.wqymicroheifont;
+    exports net.cassite.desktop.chara.plugin.wqyfont;
+    exports run.plugin.wqyfont;
 }

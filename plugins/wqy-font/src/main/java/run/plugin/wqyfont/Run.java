@@ -1,6 +1,6 @@
 // ***LICENSE*** This file is licensed under GPLv2 with Classpath Exception. See LICENSE file under project root for more info
 
-package run.plugin.wqymicroheifont;
+package run.plugin.wqyfont;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
