@@ -3,7 +3,10 @@
 package net.cassite.desktop.chara.graphic;
 
 import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
@@ -49,24 +52,24 @@ public class MessageBubble {
 
         {
             Text foo = new Text(message);
-            // the calculation of text height is not correct, set the line spacing to fix the issue
-            // it's not the ultimate fix but it looks better
-            foo.setLineSpacing(FontManager.getLineSpacingFix());
             foo.setFont(Font.font(FontManager.getFontFamily(), Consts.MSG_FONT_SIZE));
             double w = foo.getLayoutBounds().getWidth();
+            double h;
             if (w > Consts.MSG_BUBBLE_MAX_WIDTH - Consts.MSG_BUBBLE_PADDING_HORIZONTAL * 2) {
                 w = Consts.MSG_BUBBLE_MAX_WIDTH - Consts.MSG_BUBBLE_PADDING_HORIZONTAL * 2;
-                foo.setWrappingWidth(w);
+                // use snapshot to calculate the text width and height
+                // Text#getLayoutBounds does not work when then text has multiple lines
+                Label text = getLabel(message, color, w);
+                new Scene(text);
+                WritableImage img = text.snapshot(new SnapshotParameters(), null);
+                h = img.getHeight();
+            } else {
+                h = foo.getLayoutBounds().getHeight();
             }
-            double h = foo.getLayoutBounds().getHeight();
             this.textWidth = w;
             this.textHeight = h;
         }
-        text = new Label(message);
-        text.setFont(Font.font(FontManager.getFontFamily(), Consts.MSG_FONT_SIZE));
-        text.setTextFill(color.text);
-        text.setWrapText(true);
-        text.setPrefWidth(textWidth);
+        text = getLabel(message, color, textWidth);
         background = new Label();
         background.setStyle("-fx-background-color: " + color.backgroundRGB + "; -fx-background-radius: 10px;");
         tri = new Polygon();
@@ -76,6 +79,15 @@ public class MessageBubble {
         group.getChildren().addAll(background, tri, text);
 
         calculatePosition();
+    }
+
+    private static Label getLabel(String message, Consts.MsgBubbleColor color, double textWidth) {
+        Label text = new Label(message);
+        text.setFont(Font.font(FontManager.getFontFamily(), Consts.MSG_FONT_SIZE));
+        text.setTextFill(color.text);
+        text.setWrapText(true);
+        text.setPrefWidth(textWidth);
+        return text;
     }
 
     public double getHeight() {

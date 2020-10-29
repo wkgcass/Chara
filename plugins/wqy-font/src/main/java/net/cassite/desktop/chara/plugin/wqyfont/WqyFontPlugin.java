@@ -27,7 +27,7 @@ public class WqyFontPlugin implements Plugin {
         return Collections.singletonList(
             new ResourceHandler("font/wqy-microhei.ttc", (inputStream, cb) -> {
                 FontManager.registerFont(inputStream);
-                FontManager.setDefaultFontFamily("WenQuanYi Micro Hei", 1.5);
+                FontManager.setDefaultFontFamily("WenQuanYi Micro Hei");
                 Logger.info("current font families list: " + Font.getFamilies());
                 cb.succeeded(null);
             })
