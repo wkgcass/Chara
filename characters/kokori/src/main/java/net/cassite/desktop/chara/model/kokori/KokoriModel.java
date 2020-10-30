@@ -20,6 +20,11 @@ public class KokoriModel implements Model {
     private final Data data = new DataBuilder()
         .setMessageSupported(true)
         .setModelMenuItemText(I18nConsts.characterMenu)
+        .setAboutMessage("" +
+            "author: wkgcass\n" +
+            "code license: GPLv2 with classpath exception\n" +
+            "model license: CC BY-NC-SA" +
+            "")
         .build();
 
     @Override

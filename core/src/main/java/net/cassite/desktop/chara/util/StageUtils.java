@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import vproxybase.util.Tuple3;
 
@@ -90,6 +91,7 @@ public class StageUtils {
         loadingStage.setTitle(I18nConsts.LOADING.get()[0]);
         Utils.fixStageSize(loadingStage, StageStyle.UNIFIED);
         loadingStage.centerOnScreen();
+        Utils.setIcon(loadingStage, Global.charaDefaultIcon);
 
         Pane pane = new Pane();
         Scene scene = new Scene(pane);

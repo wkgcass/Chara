@@ -29,6 +29,11 @@ public class Global {
     public static int modelVersion;
 
     /**
+     * the chara program default icon
+     */
+    public static Image charaDefaultIcon;
+
+    /**
      * whether should enable R18 features
      */
     public static final boolean r18features = System.getProperty("r18Features", "false").equals("true");

@@ -93,7 +93,7 @@ public class Main extends Application {
 
             // stage config
             setName(primaryStage, rootPane);
-            setIcon(primaryStage);
+            Utils.setIcon(primaryStage, Global.modelIcon);
             if (StageUtils.primaryTemporaryStage != null) {
                 StageUtils.primaryTemporaryStage.show();
             }
@@ -122,20 +122,10 @@ public class Main extends Application {
         }
     }
 
-    private void setIcon(Stage primaryStage) {
-        primaryStage.getIcons().add(Global.modelIcon);
-        if (Taskbar.isTaskbarSupported()) {
-            var taskbar = Taskbar.getTaskbar();
-            if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
-                var image = SwingFXUtils.fromFXImage(Global.modelIcon, null);
-                taskbar.setIconImage(image);
-            }
-        }
-    }
-
     private void preWork(Runnable cb) {
         launchDnsResolver();
         registerNativeHook();
+        loadDefaultIcon();
         loadPlugins(() ->
             chooseModel(() ->
                 chooseModelFile(() ->
@@ -169,6 +159,15 @@ public class Main extends Application {
                     "it's necessary for detecting the mouse movements", e);
             }
         }
+    }
+
+    private void loadDefaultIcon() {
+        InputStream inputStream = Main.class.getResourceAsStream("/chara.png");
+        if (inputStream == null) {
+            Logger.warn("/chara.png for icon not found");
+            return;
+        }
+        Global.charaDefaultIcon = new Image(inputStream);
     }
 
     private void loadPlugins(Runnable cb) {
@@ -216,6 +215,7 @@ public class Main extends Application {
                 Utils.fixStageSize(chooseModelConfigStage, StageStyle.UNIFIED);
                 chooseModelConfigStage.centerOnScreen();
                 chooseModelConfigStage.setTitle(I18nConsts.SELECT_EXISTING_MODEL_CONFIG.get()[0]);
+                Utils.setIcon(chooseModelConfigStage, Global.charaDefaultIcon);
 
                 Pane root = new Pane();
                 Scene scene = new Scene(root);

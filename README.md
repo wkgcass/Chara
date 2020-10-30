@@ -1,5 +1,9 @@
 # Chara
 
+<img src="docs/readme-bundle/chara.png" width="128px" height="128px">
+
+> “Ch”图标来源：[Icons8](https://icons8.com)
+
 Chara是一款基于JavaFX的桌面人物软件。
 
 目前支持如下功能：

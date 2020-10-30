@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
+import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.plugin.Plugin;
@@ -79,6 +80,7 @@ public class PluginManager {
             Utils.fixStageSize(selectPluginsStage, StageStyle.UNIFIED);
             selectPluginsStage.centerOnScreen();
             selectPluginsStage.setTitle(I18nConsts.SELECT_PLUGINS_TO_LOAD.get()[0]);
+            Utils.setIcon(selectPluginsStage, Global.charaDefaultIcon);
 
             Pane root = new Pane();
             Scene scene = new Scene(root);

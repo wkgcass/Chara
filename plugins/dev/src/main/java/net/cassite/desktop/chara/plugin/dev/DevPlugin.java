@@ -154,4 +154,12 @@ public class DevPlugin implements Plugin {
         }
         enabled = false;
     }
+
+    @Override
+    public String about() {
+        return "" +
+            "author: wkgcass\n" +
+            "code license: GPLv2 with classpath exception" +
+            "";
+    }
 }

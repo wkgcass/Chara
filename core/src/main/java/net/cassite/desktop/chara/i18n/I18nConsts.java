@@ -75,6 +75,10 @@ public class I18nConsts {
         ("显示版本号")
         .setEn("Show versions")
         .build();
+    public static final Words showAboutItem = new WordsBuilder
+        ("关于Chara")
+        .setEn("About Chara")
+        .build();
     public static final Words showItemOnTaskbarItem = new WordsBuilder
         ("在任务栏上显示")
         .setEn("Show on taskbar")

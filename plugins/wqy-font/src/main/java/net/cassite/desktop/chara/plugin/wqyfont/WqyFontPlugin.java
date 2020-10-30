@@ -48,4 +48,13 @@ public class WqyFontPlugin implements Plugin {
     public void release() {
         // do nothing
     }
+
+    @Override
+    public String about() {
+        return "" +
+            "author: wkgcass\n" +
+            "code license: GPLv2 with classpath exception\n" +
+            "font: wqy-microhei\n" +
+            "font license: Apache2 and GPLv3";
+    }
 }

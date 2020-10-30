@@ -130,7 +130,15 @@ public interface Model {
          * {@link net.cassite.desktop.chara.i18n.I18nConsts#widgetMenu}
          */
         public final Words modelMenuItemText;
+        /**
+         * controls whether icon should show on taskbar by default when the model is launched for the first time.<br>
+         * note: only works on windows
+         */
         public final boolean defaultShowIconOnTaskbar;
+        /**
+         * the "about" string of this model to be shown when clicking "About Chara" menu item
+         */
+        public final String aboutMessage;
 
         private Data(boolean messageSupported,
                      boolean activeInteractionSupported,
@@ -139,7 +147,8 @@ public interface Model {
                      boolean defaultMouseIndicatorEnabled,
                      boolean defaultAllowActiveInteraction,
                      Words modelMenuItemText,
-                     boolean defaultShowIconOnTaskbar) {
+                     boolean defaultShowIconOnTaskbar,
+                     String aboutMessage) {
             this.messageSupported = messageSupported;
             this.activeInteractionSupported = activeInteractionSupported;
             this.defaultMessageEnabled = defaultMessageEnabled;
@@ -148,6 +157,7 @@ public interface Model {
             this.defaultAllowActiveInteraction = defaultAllowActiveInteraction;
             this.modelMenuItemText = modelMenuItemText;
             this.defaultShowIconOnTaskbar = defaultShowIconOnTaskbar;
+            this.aboutMessage = aboutMessage;
         }
     }
 
@@ -162,6 +172,8 @@ public interface Model {
         private Words modelMenuItemText = I18nConsts.modelMenu;
         private boolean defaultShowIconOnTaskbar = true;
 
+        private String aboutMessage = null;
+
         public Data build() {
             return new Data(
                 messageSupported,
@@ -171,7 +183,8 @@ public interface Model {
                 defaultMouseIndicatorEnabled,
                 defaultAllowActiveInteraction,
                 modelMenuItemText,
-                defaultShowIconOnTaskbar
+                defaultShowIconOnTaskbar,
+                aboutMessage
             );
         }
 
@@ -244,6 +257,15 @@ public interface Model {
          */
         public DataBuilder setDefaultShowIconOnTaskbar(boolean defaultShowIconOnTaskbar) {
             this.defaultShowIconOnTaskbar = defaultShowIconOnTaskbar;
+            return this;
+        }
+
+        /**
+         * @param aboutMessage {@link Data#aboutMessage}
+         * @return this
+         */
+        public DataBuilder setAboutMessage(String aboutMessage) {
+            this.aboutMessage = aboutMessage;
             return this;
         }
     }

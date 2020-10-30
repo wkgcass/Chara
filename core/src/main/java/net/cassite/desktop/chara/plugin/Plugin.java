@@ -45,4 +45,11 @@ public interface Plugin {
      * Revert operation in <code>launch()</code>.<br>
      */
     void release();
+
+    /**
+     * The string to show when clicking "About Chara" menu item.
+     *
+     * @return the "about" string of this plugin
+     */
+    String about();
 }

@@ -342,6 +342,8 @@ public class App {
         Menu systemMenu = new Menu(I18nConsts.systemMenu.get()[0]);
         MenuItem showVersionsItem = new MenuItem(I18nConsts.showVersionsItem.get()[0]);
         showVersionsItem.setOnAction(e -> showVersions());
+        MenuItem showAboutItem = new MenuItem(I18nConsts.showAboutItem.get()[0]);
+        showAboutItem.setOnAction(e -> showAbout());
         CheckMenuItem showIconOnTaskbarItem = new CheckMenuItem(I18nConsts.showItemOnTaskbarItem.get()[0]);
         showIconOnTaskbarItem.setSelected(ConfigManager.get().getShowIconOnTaskbar());
         showIconOnTaskbarItem.setOnAction(e -> {
@@ -362,9 +364,9 @@ public class App {
         MenuItem exitItem = new MenuItem(I18nConsts.exitMenuItem.get()[0]);
         exitItem.setOnAction(e -> StageUtils.closePrimaryStage());
         if (Utils.isWindows()) {
-            systemMenu.getItems().addAll(showVersionsItem, showIconOnTaskbarItem, pluginMenu, exitItem);
+            systemMenu.getItems().addAll(showVersionsItem, showAboutItem, showIconOnTaskbarItem, pluginMenu, exitItem);
         } else {
-            systemMenu.getItems().addAll(showVersionsItem, pluginMenu, exitItem);
+            systemMenu.getItems().addAll(showVersionsItem, showAboutItem, pluginMenu, exitItem);
         }
         contextMenu.getItems().addAll(
             messageEnableItem,
@@ -950,6 +952,40 @@ public class App {
             "vjson: " + vjson.util.VERSION.VERSION + "\n" +
             "jnativehook: " + Consts.JNATIVEHOOK_VERSION +
             "");
+    }
+
+    private void showAbout() {
+        StringBuilder sb = new StringBuilder("" +
+            "Chara code license: GPLv2 with classpath exception\n" +
+            "Chara launcher icon: from https://icons8.com" +
+            "");
+        String modelAbout = Global.model.data().aboutMessage;
+        if (modelAbout != null && !modelAbout.isBlank()) {
+            sb.append("\nModel: ").append(Global.model.name()).append("\n");
+            appendAbout(sb, 2, modelAbout);
+        }
+        for (var plugin : PluginManager.get().getPlugins()) {
+            String pluginAbout = plugin.about();
+            if (pluginAbout != null && !pluginAbout.isBlank()) {
+                sb.append("\nPlugin: ").append(plugin.name()).append("\n");
+                appendAbout(sb, 2, pluginAbout);
+            }
+        }
+        Alert.alert(sb.toString());
+    }
+
+    private void appendAbout(StringBuilder sb, @SuppressWarnings("SameParameterValue") int indent, String text) {
+        text = text.trim();
+        boolean isFirst = true;
+        for (String line : text.split("\n")) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                sb.append("\n");
+            }
+            line = line.trim();
+            sb.append(" ".repeat(indent)).append(line);
+        }
     }
 
     private void setOrUnsetAlwaysTop() {

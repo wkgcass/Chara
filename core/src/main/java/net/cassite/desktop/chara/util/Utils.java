@@ -3,10 +3,13 @@
 package net.cassite.desktop.chara.util;
 
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.PluginManager;
@@ -14,6 +17,7 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import vproxybase.dns.Resolver;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -367,6 +371,20 @@ public class Utils {
         } catch (IOException e) {
             Logger.fatal("failed to get input stream from entry " + name, e);
             return null;
+        }
+    }
+
+    public static void setIcon(Stage stage, Image icon) {
+        if (icon == null) {
+            return; // do not set if not found
+        }
+        stage.getIcons().add(icon);
+        if (Taskbar.isTaskbarSupported()) {
+            var taskbar = Taskbar.getTaskbar();
+            if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                var image = SwingFXUtils.fromFXImage(icon, null);
+                taskbar.setIconImage(image);
+            }
         }
     }
 }

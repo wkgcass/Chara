@@ -51,4 +51,12 @@ public class TianxingChatbotPlugin implements Plugin {
     public void release() {
         // do nothing
     }
+
+    @Override
+    public String about() {
+        return "" +
+            "author: wkgcass\n" +
+            "code license: GPLv2 with classpath exception" +
+            "";
+    }
 }
