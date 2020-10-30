@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'net.cassite.desktop.chara'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
 sourceCompatibility = 11
 targetCompatibility = 11
