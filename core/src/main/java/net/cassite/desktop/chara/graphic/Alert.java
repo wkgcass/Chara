@@ -31,9 +31,10 @@ public class Alert {
             Utils.isWindows() ? 0.85 : (
                 Utils.isLinux() ? 0.65 :
                     0.65)));
+    private static final int MAX_ALERT_TEXT_HEIGHT = 768;
 
     private static final Object _VALUE_ = new Object();
-    private static final ConcurrentHashMap<Stage, Object> showingStages = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<AlertStage, Object> showingStages = new ConcurrentHashMap<>();
 
     /**
      * Show alert message
@@ -49,6 +50,10 @@ public class Alert {
         foo.setFont(Font.font(FontManager.getFontFamily(), FONT_SIZE));
         var w = foo.getLayoutBounds().getWidth();
         var h = foo.getLayoutBounds().getHeight();
+
+        if (h > MAX_ALERT_TEXT_HEIGHT) {
+            h = MAX_ALERT_TEXT_HEIGHT;
+        }
 
         Label label = new Label(msg);
         label.setFont(Font.font(FontManager.getFontFamily(), FONT_SIZE));
@@ -82,37 +87,91 @@ public class Alert {
         if (msgLen > 30) {
             duration += (msgLen - 30) * 50;
         }
-        final int fDuration = duration;
 
-        showingStages.put(stage, _VALUE_);
-        showingStages.put(tmpStage, _VALUE_);
-        tmpStage.show();
-        stage.show();
+        AlertStage alertStage = new AlertStage(stage, tmpStage, duration);
+        showingStages.put(alertStage, _VALUE_);
+        alertStage.animateShow();
 
-        Runnable hideFunc = () -> {
-            showingStages.remove(stage);
-            showingStages.remove(tmpStage);
-            stage.hide();
-            tmpStage.hide();
-        };
-
-        new TimeBasedAnimationHelper(500,
-            p -> stage.setOpacity(p * MAX_OPACITY))
-            .setFinishCallback(() ->
-                Utils.delayNoRecord(fDuration, () ->
-                    new TimeBasedAnimationHelper(500,
-                        p -> stage.setOpacity(MAX_OPACITY - p * MAX_OPACITY))
-                        .setFinishCallback(hideFunc)
-                        .play()
-                )
-            )
-            .play();
-
-        pane.setOnMouseClicked(e -> hideFunc.run());
+        pane.setOnMouseClicked(e -> alertStage.onClicked());
+        scene.setOnScroll(e -> {
+            double d = e.getDeltaY();
+            pane.setLayoutY(pane.getLayoutY() + d);
+        });
     }
 
     public static void shutdown() {
-        showingStages.keySet().forEach(Stage::hide);
+        showingStages.keySet().forEach(AlertStage::hide);
         showingStages.clear();
+    }
+
+    private static class AlertStage {
+        final Stage stage;
+        final Stage tmpStage;
+        final int duration;
+
+        boolean isHiding = false;
+        boolean isHidden = false;
+        boolean isClicked = false;
+
+        AlertStage(Stage stage, Stage tmpStage, int duration) {
+            this.stage = stage;
+            this.tmpStage = tmpStage;
+            this.duration = duration;
+
+            tmpStage.show();
+            stage.show();
+        }
+
+        void onClicked() {
+            if (isClicked) {
+                return; // already clicked
+            }
+            isClicked = true;
+            animateHide();
+        }
+
+        void animateShow() {
+            new TimeBasedAnimationHelper(500,
+                p -> {
+                    if (isClicked) {
+                        return; // is clicked to hide, so the animation should pause, let it hide
+                    }
+                    stage.setOpacity(p * MAX_OPACITY);
+                })
+                .setFinishCallback(() -> {
+                    if (isClicked) {
+                        return; // is clicked to hide, so the animation should pause, let it hide
+                    }
+                    Utils.delayNoRecord(duration, this::animateHide);
+                })
+                .play();
+        }
+
+        void animateHide() {
+            if (isHidden) {
+                return; // is already hidden, so no need to run hiding animation here
+            }
+            if (isHiding) {
+                return; // is going to hide, no need to handle here
+            }
+            // should run animation to hide the stage
+            isHiding = true;
+            new TimeBasedAnimationHelper(500,
+                p -> stage.setOpacity(MAX_OPACITY - p * MAX_OPACITY))
+                .setFinishCallback(this::hide)
+                .play();
+        }
+
+        void hide() {
+            isHiding = false;
+            if (isHidden) {
+                return; // already hidden
+            }
+            isHidden = true;
+
+            showingStages.remove(this);
+            stage.hide();
+            tmpStage.hide();
+        }
     }
 }
