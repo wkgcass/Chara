@@ -6,13 +6,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
@@ -21,25 +16,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.control.NativeMouseListenerUtils;
+import net.cassite.desktop.chara.graphic.UStage;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.ModelManager;
 import net.cassite.desktop.chara.manager.PluginManager;
-import net.cassite.desktop.chara.util.ImageResourceHandler;
-import net.cassite.desktop.chara.util.ResourceHandler;
-import net.cassite.desktop.chara.util.Consts;
-import net.cassite.desktop.chara.util.Logger;
-import net.cassite.desktop.chara.util.StageUtils;
-import net.cassite.desktop.chara.util.Utils;
+import net.cassite.desktop.chara.util.*;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import vproxybase.dns.Resolver;
 import vproxybase.util.Callback;
 import vproxybase.util.Tuple3;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -207,19 +196,14 @@ public class Main extends Application {
             assert Logger.debug("config files found, show config selection page");
             final var finalConfigs = configs;
             ThreadUtils.get().runOnFX(() -> {
-                Stage chooseModelConfigStage = new Stage();
-                chooseModelConfigStage.initStyle(StageStyle.UNIFIED);
-                chooseModelConfigStage.setWidth(256);
-                chooseModelConfigStage.setHeight(320);
-                chooseModelConfigStage.setResizable(false);
-                Utils.fixStageSize(chooseModelConfigStage, StageStyle.UNIFIED);
+                UStage chooseModelConfigStage = new UStage();
+                chooseModelConfigStage.setPaneWidth(256);
+                chooseModelConfigStage.setPaneHeight(325);
                 chooseModelConfigStage.centerOnScreen();
                 chooseModelConfigStage.setTitle(I18nConsts.SELECT_EXISTING_MODEL_CONFIG.get()[0]);
-                Utils.setIcon(chooseModelConfigStage, Global.charaDefaultIcon);
+                chooseModelConfigStage.setIcon(Global.charaDefaultIcon);
 
-                Pane root = new Pane();
-                Scene scene = new Scene(root);
-                chooseModelConfigStage.setScene(scene);
+                Pane root = chooseModelConfigStage.getRootPane();
 
                 ListView<String> listView = new ListView<>();
                 listView.setPrefWidth(236);
@@ -232,7 +216,7 @@ public class Main extends Application {
 
                 Button okBtn = new Button(I18nConsts.OK_BTN.get()[0]);
                 okBtn.setPrefWidth(236);
-                okBtn.setPrefHeight(20);
+                okBtn.setPrefHeight(30);
                 okBtn.setLayoutX(10);
                 okBtn.setLayoutY(250);
                 okBtn.setDisable(true);
@@ -240,9 +224,9 @@ public class Main extends Application {
 
                 Button chooseFileBtn = new Button(I18nConsts.CHOOSE_FILE_BTN.get()[0]);
                 chooseFileBtn.setPrefWidth(236);
-                chooseFileBtn.setPrefHeight(20);
+                chooseFileBtn.setPrefHeight(30);
                 chooseFileBtn.setLayoutX(10);
-                chooseFileBtn.setLayoutY(280);
+                chooseFileBtn.setLayoutY(285);
                 root.getChildren().add(chooseFileBtn);
 
                 listView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<String>) c -> okBtn.setDisable(false));
@@ -383,7 +367,7 @@ public class Main extends Application {
         });
     }
 
-    private void loadResources(Tuple3<Stage, ProgressBar, Label> loadingTuple, List<ResourceHandler> resourceHandlers,
+    private void loadResources(Tuple3<UStage, ProgressBar, Label> loadingTuple, List<ResourceHandler> resourceHandlers,
                                double allResourceRatioSum, Runnable cb) {
         ThreadUtils.get().runOnFX(() ->
             recursiveLoadResources(
@@ -393,7 +377,7 @@ public class Main extends Application {
     }
 
     private void recursiveLoadResources(Iterator<ResourceHandler> iterator, double allResourceRatioSum,
-                                        Tuple3<Stage, ProgressBar, Label> loadingTuple, double lastProcess,
+                                        Tuple3<UStage, ProgressBar, Label> loadingTuple, double lastProcess,
                                         Runnable cb) {
         if (!iterator.hasNext()) {
             loadingTuple._2.setProgress(1);

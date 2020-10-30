@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import net.cassite.desktop.chara.Global;
+import net.cassite.desktop.chara.graphic.UStage;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import vproxybase.util.Tuple3;
 
@@ -82,20 +83,15 @@ public class StageUtils {
         stage.setScene(scene);
     }
 
-    public static Tuple3<Stage, ProgressBar, Label> createLoadingBarStage() {
-        Stage loadingStage = new Stage();
-        loadingStage.initStyle(StageStyle.UNIFIED);
-        loadingStage.setWidth(600);
-        loadingStage.setHeight(80);
-        loadingStage.setResizable(false);
+    public static Tuple3<UStage, ProgressBar, Label> createLoadingBarStage() {
+        UStage loadingStage = new UStage();
+        loadingStage.setPaneWidth(600);
+        loadingStage.setPaneHeight(80);
         loadingStage.setTitle(I18nConsts.LOADING.get()[0]);
-        Utils.fixStageSize(loadingStage, StageStyle.UNIFIED);
         loadingStage.centerOnScreen();
-        Utils.setIcon(loadingStage, Global.charaDefaultIcon);
+        loadingStage.setIcon(Global.charaDefaultIcon);
 
-        Pane pane = new Pane();
-        Scene scene = new Scene(pane);
-        loadingStage.setScene(scene);
+        Pane pane = loadingStage.getRootPane();
 
         Label label = new Label();
         label.setLayoutX(10);

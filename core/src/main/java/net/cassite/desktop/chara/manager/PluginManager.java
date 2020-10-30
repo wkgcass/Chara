@@ -6,18 +6,16 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.ThreadUtils;
+import net.cassite.desktop.chara.graphic.UStage;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.plugin.Plugin;
 import net.cassite.desktop.chara.util.*;
@@ -72,19 +70,14 @@ public class PluginManager {
 
     private void selectPluginsToLoad(File[] pluginFiles, Consumer<List<File>> cb) {
         ThreadUtils.get().runOnFX(() -> {
-            Stage selectPluginsStage = new Stage();
-            selectPluginsStage.initStyle(StageStyle.UNIFIED);
-            selectPluginsStage.setWidth(256);
-            selectPluginsStage.setHeight(290);
-            selectPluginsStage.setResizable(false);
-            Utils.fixStageSize(selectPluginsStage, StageStyle.UNIFIED);
+            UStage selectPluginsStage = new UStage();
+            selectPluginsStage.setPaneWidth(256);
+            selectPluginsStage.setPaneHeight(290);
             selectPluginsStage.centerOnScreen();
             selectPluginsStage.setTitle(I18nConsts.SELECT_PLUGINS_TO_LOAD.get()[0]);
-            Utils.setIcon(selectPluginsStage, Global.charaDefaultIcon);
+            selectPluginsStage.setIcon(Global.charaDefaultIcon);
 
-            Pane root = new Pane();
-            Scene scene = new Scene(root);
-            selectPluginsStage.setScene(scene);
+            Pane root = selectPluginsStage.getRootPane();
 
             class SelectFile {
                 boolean selected;
@@ -126,7 +119,7 @@ public class PluginManager {
 
             Button okBtn = new Button(I18nConsts.OK_BTN.get()[0]);
             okBtn.setPrefWidth(236);
-            okBtn.setPrefHeight(20);
+            okBtn.setPrefHeight(30);
             okBtn.setLayoutX(10);
             okBtn.setLayoutY(250);
             root.getChildren().add(okBtn);
@@ -270,7 +263,7 @@ public class PluginManager {
     }
 
     private void recursiveLoad(Iterator<Tuple3<Plugin, ZipFile, ResourceHandler>> iterator, double total,
-                               Tuple3<Stage, ProgressBar, Label> loadingTuple, double lastProgress, Runnable cb) {
+                               Tuple3<UStage, ProgressBar, Label> loadingTuple, double lastProgress, Runnable cb) {
         var bar = loadingTuple._2;
         var label = loadingTuple._3;
         if (!iterator.hasNext()) {

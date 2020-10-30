@@ -180,31 +180,6 @@ public class Utils {
     }
 
     /**
-     * Expand the stage size because of the title and borders and margins.
-     *
-     * @param stage the stage to fix
-     * @param style style of the stage
-     */
-    public static void fixStageSize(Stage stage, StageStyle style) {
-        // build a stage to calculate dW and dH
-        Stage s = new Stage();
-        s.initStyle(style);
-        Pane pane = new Pane();
-        Scene scene = new Scene(pane);
-        s.setScene(scene);
-        s.setOpacity(0);
-        s.show();
-
-        double dW = s.getWidth() - scene.getWidth();
-        double dH = s.getHeight() - scene.getHeight();
-
-        s.hide();
-
-        stage.setWidth(stage.getWidth() + dW);
-        stage.setHeight(stage.getHeight() + dH);
-    }
-
-    /**
      * Version number to string
      *
      * @param ver version number

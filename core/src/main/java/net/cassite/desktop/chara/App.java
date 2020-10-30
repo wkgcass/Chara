@@ -2,7 +2,6 @@
 
 package net.cassite.desktop.chara;
 
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
@@ -528,45 +527,22 @@ public class App {
 
     private boolean windowIsDraggable = true;
 
-    private class DragWindowHandler implements EventHandler<MouseEvent> {
-        private double oldStageX;
-        private double oldStageY;
-        private double oldScreenX;
-        private double oldScreenY;
+    private class DragWindowHandler extends net.cassite.desktop.chara.util.DragWindowHandler {
+        public DragWindowHandler() {
+            super(primaryStage.getStage());
+        }
 
         @Override
-        public void handle(MouseEvent e) {
-            if (e.getEventType() == MouseEvent.MOUSE_PRESSED) {
-                pressed(e);
-            } else if (e.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-                dragged(e);
-            }
-        }
-
-        private void pressed(MouseEvent e) {
-            assert Logger.debug("mouse pressed ...");
-
-            this.oldStageX = primaryStage.getAbsoluteX();
-            this.oldStageY = primaryStage.getAbsoluteY();
-            oldScreenX = e.getScreenX();
-            oldScreenY = e.getScreenY();
-        }
-
-        private void dragged(MouseEvent e) {
+        protected void dragged(MouseEvent e) {
             if (!windowIsDraggable) {
                 assert Logger.debug("not draggable ...");
                 return;
             }
-            assert Logger.debug("mouse dragged ...");
-
-            primaryStage.setAbsoluteX(e.getScreenX() - this.oldScreenX + this.oldStageX);
-            primaryStage.setAbsoluteY(e.getScreenY() - this.oldScreenY + this.oldStageY);
+            super.dragged(e);
             EventBus.publish(Events.PrimaryStageMoved, null);
 
             primaryStage.saveConfig();
-
             chara.dragged();
-
             calculatePositions();
         }
     }
