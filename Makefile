@@ -13,6 +13,9 @@ output-all: output-core output-characters output-plugins
 .PHONY: deploy
 deploy: deploy-plugins
 
+.PHONY: jpackage
+jpackage: jpackage-core
+
 .PHONY: characters
 characters: kokori
 .PHONY: compile-characters
@@ -66,6 +69,11 @@ clean-core:
 output-core: output build-core
 	rm -rf ./output/chara
 	cp -r ./core/build/image ./output/chara
+.PHONY: jpackage-core
+jpackage-core: output
+	cd core && $(CHRONIC) ./gradlew clean jpackage
+	rm -rf ./output/chara.app
+	cp -r ./core/build/jpackage/* ./output
 
 .PHONY: kokori
 kokori: clean-kokori compile-kokori build-kokori output-kokori
