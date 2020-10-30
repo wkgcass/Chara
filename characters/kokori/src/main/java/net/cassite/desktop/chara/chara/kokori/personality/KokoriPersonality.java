@@ -242,7 +242,7 @@ public class KokoriPersonality {
     public void touchCloth() {
         preTouch();
         if (normalInteraction(null, null, null)) {
-            normalMessage();
+            showNormalMessage();
         }
     }
 
@@ -368,7 +368,7 @@ public class KokoriPersonality {
     public void touchOther() {
         preTouch();
         if (normalInteraction(null, null, null)) {
-            normalMessage();
+            showNormalMessage();
         }
     }
 
@@ -376,8 +376,13 @@ public class KokoriPersonality {
         rescheduleAutoCharaPointsIncreasingDecreasing();
     }
 
-    private void normalMessage() {
-        if (!messageRateLimit()) {
+    private final RateLimiter messageRateLimiter = new RateLimiter(
+        3 * 60 * 1000, 1, // 1 time in 3 minutes
+        10 * 60 * 1000, 3 // 3 times in 10 minutes
+    );
+
+    public void showNormalMessage() {
+        if (!messageRateLimiter.request()) {
             return;
         }
         if (bondPoint >= 0.85) {
@@ -389,15 +394,6 @@ public class KokoriPersonality {
         } else {
             appCallback.showMessage(KokoriWords.normalConversations().select());
         }
-    }
-
-    private final RateLimiter messageRateLimiter = new RateLimiter(
-        20 * 1000, 3, // 3 times in 20 seconds
-        4 * 1000, 1 // 1 time in 4 seconds
-    );
-
-    private boolean messageRateLimit() {
-        return messageRateLimiter.request();
     }
 
     public double getBondPoint() {

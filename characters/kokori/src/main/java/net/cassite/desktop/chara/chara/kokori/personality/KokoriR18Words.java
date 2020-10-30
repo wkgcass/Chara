@@ -70,7 +70,7 @@ public class KokoriR18Words {
             ("你在干什么！？",
                 "你居然想给我喂那种东西！")
             .setEn("What are you doing!?",
-                "How dare you feed me such a thing!")
+                "How dare you give me such a thing!")
             .build()
     );
 
@@ -115,7 +115,7 @@ public class KokoriR18Words {
             ("啊～啊，我要不行了～\u2665")
             .build(),
         new WordsBuilder
-            ("感觉有...有什么东西要...要出来了～\u2665")
+            ("感觉有...有什么东西要...啊～\u2665")
             .build()
     );
     public static final WordsSelector finish = new WordsSelector(

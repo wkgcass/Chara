@@ -454,7 +454,7 @@ public class Kokori implements Chara {
             if (Utils.random(0.5)) {
                 appCallback.showMessage(KokoriWords.happy.select());
             } else {
-                appCallback.showMessage(KokoriWords.normalConversations().select());
+                personality.showNormalMessage();
             }
             if (Utils.random(0.2)) {
                 Utils.shortDelay(mouth::toHappy);
