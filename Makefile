@@ -71,8 +71,9 @@ output-core: output build-core
 	cp -r ./core/build/image ./output/chara
 .PHONY: jpackage-core
 jpackage-core: output
-	cd core && $(CHRONIC) ./gradlew clean jpackage
+	cd core && $(CHRONIC) ./gradlew clean jpackagePost
 	rm -rf ./output/chara.app
+	rm -rf ./output/chara
 	cp -r ./core/build/jpackage/* ./output
 
 .PHONY: kokori

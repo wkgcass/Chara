@@ -45,8 +45,17 @@ jlink {
         if (currentOs.windows) {
             jpackageHome = '../../jdk-16'
             installerOptions += ['--resource-dir', "jpackage-resources/"]
+            skipInstaller = true
         }
     }
+}
+
+task jpackagePost(type: Copy) {
+    dependsOn jpackage
+    def currentOs = org.gradle.internal.os.OperatingSystem.current()
+    if (!currentOs.windows) { return }
+    from file("$buildDir/jpackage/chara/runtime/bin/zip.dll")
+    into file("$buildDir/jpackage/chara/")
 }
 
 application {
