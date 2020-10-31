@@ -42,6 +42,9 @@ jlink {
         def currentOs = org.gradle.internal.os.OperatingSystem.current()
         def imgType = currentOs.windows ? 'ico' : currentOs.macOsX ? 'icns' : 'png'
         icon = 'src/main/resources/chara.' + imgType
+        if (currentOs.windows) {
+            installerOptions += ['--resource-dir', "jpackage-resources/"]
+        }
     }
 }
 
