@@ -43,6 +43,7 @@ jlink {
         def imgType = currentOs.windows ? 'ico' : currentOs.macOsX ? 'icns' : 'png'
         icon = 'src/main/resources/chara.' + imgType
         if (currentOs.windows) {
+            jpackageHome = '../../jdk-16'
             installerOptions += ['--resource-dir', "jpackage-resources/"]
         }
     }
