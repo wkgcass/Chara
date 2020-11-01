@@ -108,6 +108,17 @@ public class FrameBasedAnimationHelper implements Updatable {
     }
 
     /**
+     * Set fps of this object
+     *
+     * @param fps fps
+     * @return <code>this</code>
+     */
+    public FrameBasedAnimationHelper setFps(double fps) {
+        this.fps = fps;
+        return this;
+    }
+
+    /**
      * Start to play with specified fps. If it's already started, the fps will be reset to the specified value.
      *
      * @param fps fps

@@ -165,4 +165,15 @@ public class Anima {
         helper.setEndFrame(endFrame);
         return this;
     }
+
+    /**
+     * Set fps for the animation
+     *
+     * @param fps fps
+     * @return <code>this</code>
+     */
+    public Anima setFps(double fps) {
+        helper.setFps(fps);
+        return this;
+    }
 }
