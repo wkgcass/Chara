@@ -67,14 +67,13 @@ clean-core:
 	cd core && $(CHRONIC) ./gradlew clean
 .PHONY: output-core
 output-core: output build-core
-	rm -rf ./output/chara
-	cp -r ./core/build/image ./output/chara
+	rm -rf ./output/image
+	cp -r ./core/build/image ./output/
 .PHONY: jpackage-core
 jpackage-core: output
 	cd core && $(CHRONIC) ./gradlew clean jpackagePost
-	rm -rf ./output/chara.app
-	rm -rf ./output/chara
-	cp -r ./core/build/jpackage/* ./output
+	rm -rf ./output/jpackage
+	cp -r ./core/build/jpackage ./output/
 
 .PHONY: kokori
 kokori: clean-kokori compile-kokori build-kokori output-kokori
