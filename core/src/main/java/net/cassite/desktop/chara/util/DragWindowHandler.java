@@ -6,38 +6,12 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class DragWindowHandler implements EventHandler<MouseEvent> {
-    private final Stage stage;
-    private double oldStageX;
-    private double oldStageY;
-    private double oldScreenX;
-    private double oldScreenY;
-
+public class DragWindowHandler extends DragHandler implements EventHandler<MouseEvent> {
     public DragWindowHandler(Stage stage) {
-        this.stage = stage;
-    }
-
-    @Override
-    public void handle(MouseEvent e) {
-        if (e.getEventType() == MouseEvent.MOUSE_PRESSED) {
-            pressed(e);
-        } else if (e.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-            dragged(e);
-        }
-    }
-
-    private void pressed(MouseEvent e) {
-        assert Logger.debug("mouse pressed ...");
-
-        this.oldStageX = stage.getX();
-        this.oldStageY = stage.getY();
-        oldScreenX = e.getScreenX();
-        oldScreenY = e.getScreenY();
-    }
-
-    protected void dragged(MouseEvent e) {
-        assert Logger.debug("mouse dragged ...");
-        stage.setX(e.getScreenX() - this.oldScreenX + this.oldStageX);
-        stage.setY(e.getScreenY() - this.oldScreenY + this.oldStageY);
+        super((xy) -> {
+                stage.setX(xy[0]);
+                stage.setY(xy[1]);
+            },
+            () -> new double[]{stage.getX(), stage.getY()});
     }
 }
