@@ -13,6 +13,7 @@ import net.cassite.desktop.chara.*;
 import net.cassite.desktop.chara.chara.Chara;
 import net.cassite.desktop.chara.chara.kokori.chat.KokoriChatBot;
 import net.cassite.desktop.chara.chara.kokori.i18n.KokoriI18n;
+import net.cassite.desktop.chara.chara.kokori.i18n.KokoriR18I18n;
 import net.cassite.desktop.chara.chara.kokori.join.ArmRightJoin;
 import net.cassite.desktop.chara.chara.kokori.join.EyeJoin;
 import net.cassite.desktop.chara.chara.kokori.join.HeadJoin;
@@ -76,6 +77,7 @@ public class Kokori implements Chara {
     private final MenuItem thingsSheHatesMenuItem = new MenuItem(KokoriI18n.thingsSheHatesMenuItem.get()[0]);
     private final MenuItem[] bondStoriesMenuItems = new MenuItem[5];
     private final double[] bondStoriesRequiredBondPoints = new double[5];
+    private final MenuItem expressionMenuItem = new MenuItem(KokoriI18n.expressionMenuItem.get()[0]);
 
     public Kokori(KokoriConsts kokoriConsts, AppCallback appCallback, Group parent, Menu characterMenu) {
         this.appCallback = appCallback;
@@ -127,6 +129,8 @@ public class Kokori implements Chara {
             thingsSheHatesMenuItem
         );
         characterMenu.getItems().addAll(bondStoriesMenuItems);
+        expressionMenuItem.setOnAction(e -> this.menuExpression());
+        characterMenu.getItems().add(expressionMenuItem);
         r18.initCharacterMenu(characterMenu);
 
         hairBack = new HairBack(root);
@@ -200,6 +204,21 @@ public class Kokori implements Chara {
         if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
             Alert.alert(KokoriI18n.bondPointTooLowWarning.get()[0]);
         }
+    }
+
+    public void resetAll() {
+        resetCharaPointsRelated();
+        resetMouth();
+        resetCheek();
+        resetHighlight();
+        eyeLeft.restorePosition();
+        eyeLeft.zoom(1);
+        eyeRight.restorePosition();
+        eyeRight.zoom(1);
+        armRight.moveToDefaultPosition();
+        armLeft.hideBow();
+        legLeft.loose();
+        headJoin.toDefaultPosition();
     }
 
     public void resetCharaPointsRelated() {
@@ -425,7 +444,78 @@ public class Kokori implements Chara {
     }
 
     @Override
-    public void keyPressed(KeyEvent keyEvent) {
+    public void keyPressed(KeyEvent e) {
+        if (e.isControlDown() && e.isShiftDown() && e.isAltDown()) {
+            Runnable toRun = null;
+            switch (e.getCode()) {
+                case Q:
+                    resetAll();
+                    toRun = () -> {
+                        eyeLeft.addHighlight();
+                        eyeRight.addHighlight();
+                        redCheek.hide();
+                        mouth.toHappy();
+                    };
+                    break;
+                case W:
+                    resetAll();
+                    toRun = () -> {
+                        eyeLeft.addHighlight();
+                        eyeRight.addHighlight();
+                        redCheek.show();
+                        mouth.toSad();
+                    };
+                    break;
+                case E:
+                    resetAll();
+                    toRun = () -> {
+                        eyeLeft.removeHighlight();
+                        eyeRight.removeHighlight();
+                        redCheek.hide();
+                        mouth.toSad();
+                    };
+                    break;
+                case R:
+                    resetAll();
+                    break;
+                case T:
+                    resetAll();
+                    toRun = () -> {
+                        eyeLeft.zoom(0.85);
+                        eyeRight.zoom(0.85);
+                        mouth.toOpen();
+                    };
+                    break;
+                case Y:
+                    if (Global.r18features) {
+                        resetAll();
+                        toRun = () -> {
+                            headJoin.tiltToRight();
+                            eyeLeft.removeHighlight();
+                            eyeRight.removeHighlight();
+                            redCheek.show();
+                            mouth.toHappy();
+                        };
+                    }
+                    break;
+                case U:
+                    if (Global.r18features) {
+                        resetAll();
+                        toRun = () -> {
+                            eyeLeft.zoom(0.85);
+                            eyeLeft.move(kokoriConsts.eyeLeftOriginalX, kokoriConsts.eyeLeftYMin);
+                            eyeRight.zoom(0.85);
+                            eyeRight.move(kokoriConsts.eyeRightOriginalX, kokoriConsts.eyeRightYMin);
+                            mouth.toOpen();
+                            redCheek.show();
+                        };
+                    }
+                    break;
+            }
+            if (toRun != null) {
+                Utils.delay("key-pressed", 200, toRun);
+            }
+        }
         // do nothing
     }
 
@@ -813,5 +903,13 @@ public class Kokori implements Chara {
             return;
         }
         appCallback.showMessage(KokoriWords.bondStories[lvl].select());
+    }
+
+    private void menuExpression() {
+        String manual = KokoriI18n.expressionManual.get()[0];
+        if (Global.r18features) {
+            manual += "\n" + KokoriR18I18n.r18ExpressionManual.get()[0];
+        }
+        Alert.alert(manual);
     }
 }

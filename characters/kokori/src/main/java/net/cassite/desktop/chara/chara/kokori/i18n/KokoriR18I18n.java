@@ -17,4 +17,13 @@ public class KokoriR18I18n {
         ("使用媚药")
         .setEn("Use love potion")
         .build();
+
+    public static final Words r18ExpressionManual = new WordsBuilder
+        ("" +
+            "  Y: 病娇\n" +
+            "  U: 高潮")
+        .setEn("" +
+            "  Y: yandere\n" +
+            "  U: orgasm")
+        .build();
 }

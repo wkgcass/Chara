@@ -13,10 +13,6 @@ public class KokoriI18n {
         ("关于名字")
         .setEn("About name")
         .build();
-    public static final Words aboutCookingMenuItem = new WordsBuilder
-        ("关于烹饪")
-        .setEn("About cooking")
-        .build();
     public static final Words thingsSheLikesMenuItem = new WordsBuilder
         ("喜欢的东西")
         .setEn("Things she likes")
@@ -29,9 +25,30 @@ public class KokoriI18n {
         ("羁绊故事")
         .setEn("Bond story")
         .build();
+    public static final Words expressionMenuItem = new WordsBuilder
+        ("表情")
+        .setEn("Expression")
+        .build();
 
     public static final Words bondPointTooLowWarning = new WordsBuilder
         ("当前羁绊值过低，继续互动可能引发灾难性后果")
         .setEn("The current bond point is too low, continuing to interact may cause catastrophic consequences")
+        .build();
+
+    public static final Words expressionManual = new WordsBuilder
+        ("" +
+            "使用Ctrl+Shift+Alt+下列按键：\n" +
+            "  Q: 开心\n" +
+            "  W: 害羞\n" +
+            "  E: 厌恶\n" +
+            "  R: 重置\n" +
+            "  T: 惊讶")
+        .setEn("" +
+            "Use Ctrl+Shift+Alt+ the following keys:\n" +
+            "  Q: happy\n" +
+            "  W: shy\n" +
+            "  E: disgust\n" +
+            "  R: Reset\n" +
+            "  T: surprised")
         .build();
 }
