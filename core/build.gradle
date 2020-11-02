@@ -36,7 +36,7 @@ jlink {
     launcher {
         name = 'chara'
         noConsole = true
-        jvmArgs = ['-Xmx450M', '-verbose:gc', '-Dr18Features=true', '-DebugFeatures=true']
+        jvmArgs = ['-verbose:gc']
     }
     jpackage {
         def currentOs = org.gradle.internal.os.OperatingSystem.current()

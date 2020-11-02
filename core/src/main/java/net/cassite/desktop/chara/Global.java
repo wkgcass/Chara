@@ -36,15 +36,29 @@ public class Global {
     /**
      * whether should enable R18 features
      */
-    public static final boolean r18features = System.getProperty("r18Features", "false").equals("true");
+    public static final boolean r18features;
     /**
      * whether should enable debug features
      */
-    public static final boolean debugFeatures = System.getProperty("ebugFeatures", "false").equals("true"); // -DebugFeatures=...
+    public static final boolean debugFeatures;
     /**
      * whether global screen enabled
      */
     public static final boolean globalScreenEnabled = Utils.isWindows(); // only enable for windows
+
+    static {
+        String r18 = System.getProperty("r18Features");
+        if (r18 == null) {
+            r18 = System.getenv("r18Features");
+        }
+        r18features = "true".equals(r18);
+
+        String debug = System.getProperty("ebugFeatures"); // -DebugFeatures=...
+        if (debug == null) {
+            debug = System.getenv("debugFeatures");
+        }
+        debugFeatures = "true".equals(debug);
+    }
 
     private Global() {
     }
