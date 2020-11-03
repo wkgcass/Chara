@@ -27,39 +27,66 @@ public class Global {
      * the model version number
      */
     public static int modelVersion;
-
     /**
      * the chara program default icon
      */
     public static Image charaDefaultIcon;
-
-    /**
-     * whether should enable R18 features
-     */
-    public static final boolean r18features;
-    /**
-     * whether should enable debug features
-     */
-    public static final boolean debugFeatures;
     /**
      * whether global screen enabled
      */
     public static final boolean globalScreenEnabled = Utils.isWindows(); // only enable for windows
 
-    static {
-        String r18 = System.getProperty("r18Features");
-        if (r18 == null) {
-            r18 = System.getenv("r18Features");
-        }
-        r18features = "true".equals(r18);
-
-        String debug = System.getProperty("ebugFeatures"); // -DebugFeatures=...
-        if (debug == null) {
-            debug = System.getenv("debugFeatures");
-        }
-        debugFeatures = "true".equals(debug);
-    }
+    private static Boolean r18Features = null;
+    private static Boolean debugFeatures = null;
 
     private Global() {
+    }
+
+    /**
+     * Whether should enable R18 features
+     *
+     * @return true to enable r18 features, false otherwise
+     */
+    public static boolean r18Features() {
+        if (r18Features == null) {
+            r18Features = false;
+        }
+        return r18Features;
+    }
+
+    /**
+     * Enable or disable r18 features
+     *
+     * @param b true to enable, false to disable
+     */
+    public static void setR18Features(boolean b) {
+        if (r18Features != null) {
+            throw new IllegalStateException("r18Features is already set: " + r18Features);
+        }
+        r18Features = b;
+    }
+
+    /**
+     * Whether should enable debug features
+     *
+     * @return true to enable debug features, false otherwise
+     */
+    public static boolean debugFeatures() {
+        if (debugFeatures == null) {
+            debugFeatures = false;
+        }
+        return debugFeatures;
+    }
+
+    /**
+     * Enable or disable debug features
+     *
+     * @param b true to enable, false to disable
+     */
+    public static void setDebugFeatures(boolean b) {
+        if (debugFeatures != null) {
+            throw new IllegalStateException("debugFeatures is already set: " + debugFeatures);
+        }
+        debugFeatures = b;
     }
 }

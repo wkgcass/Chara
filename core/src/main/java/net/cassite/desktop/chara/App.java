@@ -897,7 +897,7 @@ public class App {
         assert Logger.debug("key pressed: " + e.getCode());
         chara.keyPressed(e);
 
-        if (Global.debugFeatures) {
+        if (Global.debugFeatures()) {
             if (e.isControlDown() || e.isMetaDown()) {
                 if (e.getCode() == KeyCode.C) {
                     // copy, get debug info
