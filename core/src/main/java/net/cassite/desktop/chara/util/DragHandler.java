@@ -40,8 +40,6 @@ public class DragHandler implements EventHandler<MouseEvent> {
     }
 
     private void pressed(MouseEvent e) {
-        assert Logger.debug("mouse pressed ...");
-
         var xy = getter.get();
         this.oldNodeX = xy[0];
         this.oldNodeY = xy[1];
@@ -51,7 +49,6 @@ public class DragHandler implements EventHandler<MouseEvent> {
     }
 
     protected void dragged(MouseEvent e) {
-        assert Logger.debug("mouse dragged ...");
         double[] xy = new double[2];
         var offxy = offsetGetter.apply(e);
         xy[0] = offxy[0] - this.oldOffsetX + this.oldNodeX;
