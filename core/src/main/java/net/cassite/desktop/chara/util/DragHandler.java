@@ -9,6 +9,18 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * The drag handler<br>
+ * Usage example:
+ * <pre>
+ * var handler = new DragHandler(...);
+ * node.setOnMousePressed(handler);
+ * node.setOnMouseDragged(handler);
+ * </pre>
+ *
+ * @see #DragHandler(Consumer, Supplier)
+ * @see #DragHandler(Consumer, Supplier, Function)
+ */
 public class DragHandler implements EventHandler<MouseEvent> {
     private final Consumer<double[]> setter;
     private final Supplier<double[]> getter;
@@ -18,12 +30,25 @@ public class DragHandler implements EventHandler<MouseEvent> {
     private double oldOffsetX;
     private double oldOffsetY;
 
+    /**
+     * Constructor
+     *
+     * @param setter       the callback function to set x/w and y/h values
+     * @param getter       the callback function to retrieve x/w and y/h values
+     * @param offsetGetter the callback function to retrieve offset x/w and y/h for dragging
+     */
     public DragHandler(Consumer<double[]> setter, Supplier<double[]> getter, Function<MouseEvent, double[]> offsetGetter) {
         this.setter = setter;
         this.getter = getter;
         this.offsetGetter = offsetGetter;
     }
 
+    /**
+     * Constructor
+     *
+     * @param setter the callback function to set x/w and y/h values
+     * @param getter the callback function to retrieve x/w and y/h values
+     */
     public DragHandler(Consumer<double[]> setter, Supplier<double[]> getter) {
         this.setter = setter;
         this.getter = getter;
@@ -39,7 +64,12 @@ public class DragHandler implements EventHandler<MouseEvent> {
         }
     }
 
-    private void pressed(MouseEvent e) {
+    /**
+     * The function to run when pressed
+     *
+     * @param e mouse event
+     */
+    protected void pressed(MouseEvent e) {
         var xy = getter.get();
         this.oldNodeX = xy[0];
         this.oldNodeY = xy[1];
@@ -48,6 +78,11 @@ public class DragHandler implements EventHandler<MouseEvent> {
         oldOffsetY = offxy[1];
     }
 
+    /**
+     * The function to run when dragged
+     *
+     * @param e mouse event
+     */
     protected void dragged(MouseEvent e) {
         double[] xy = new double[2];
         var offxy = offsetGetter.apply(e);

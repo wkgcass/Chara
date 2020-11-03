@@ -27,8 +27,17 @@ import net.cassite.desktop.chara.util.Utils;
 
 import java.util.Objects;
 
+/**
+ * The stage unifies appearance across platforms, and provides accurate pane width/height
+ */
 public class UStage {
+    /**
+     * height of the title
+     */
     public static final double TITLE_HEIGHT = 24;
+    /**
+     * the border width if border exists
+     */
     public static final double NORMAL_BORDER_W = 0.85;
 
     private static final double RESIZE_ACTION_LENGTH = 15;
@@ -88,10 +97,18 @@ public class UStage {
     private final Line separator;
     private final Rectangle resizeBottomRight;
 
+    /**
+     * construct the stage with default parameters
+     */
     public UStage() {
         this(new UStageConfig());
     }
 
+    /**
+     * construct the stage with configuration
+     *
+     * @param config config
+     */
     public UStage(UStageConfig config) {
         stage = new Stage();
         stage.initStyle(StageStyle.TRANSPARENT);
@@ -302,18 +319,38 @@ public class UStage {
         root.getChildren().add(mainWindow);
     }
 
+    /**
+     * Set screen x position of the stage (i.e. title top left x position of screen)
+     *
+     * @param x screen x
+     */
     public void setStageX(double x) {
         stage.setX(x);
     }
 
+    /**
+     * Get screen x position of the stage (i.e. title top left x position of screen)
+     *
+     * @return screen x
+     */
     public double getStageX() {
         return stage.getX();
     }
 
+    /**
+     * Set screen y position of the stage (i.e. title top left y position of screen)
+     *
+     * @param y screen y
+     */
     public void setStageY(double y) {
         stage.setY(y);
     }
 
+    /**
+     * Get screen y position of the stage (i.e. title top left y position of screen)
+     *
+     * @return screen y
+     */
     public double getStageY() {
         return stage.getY();
     }
@@ -334,6 +371,11 @@ public class UStage {
         title.setLayoutY((TITLE_HEIGHT - titleTextHeight) / 2 + TEXT_Y_FIX);
     }
 
+    /**
+     * Set width of the root pane, including left border and right border
+     *
+     * @param paneWidth width
+     */
     public void setPaneWidth(double paneWidth) {
         this.backgroundPane.setPrefWidth(paneWidth);
         this.pane.setPrefWidth(paneWidth);
@@ -344,10 +386,20 @@ public class UStage {
         calculateTitlePosition(false);
     }
 
+    /**
+     * Get width of the root pane, including left border and right border
+     *
+     * @return pane width
+     */
     public double getPaneWidth() {
         return pane.getWidth();
     }
 
+    /**
+     * Set height of the root pane, not including the title, including the bottom border
+     *
+     * @param paneHeight height
+     */
     public void setPaneHeight(double paneHeight) {
         this.backgroundPane.setPrefHeight(paneHeight);
         this.pane.setPrefHeight(paneHeight);
@@ -356,61 +408,126 @@ public class UStage {
         calculateTitlePosition(false);
     }
 
+    /**
+     * Get height of the root pane, not including the title, including the bottom border
+     *
+     * @return pane height
+     */
     public double getPaneHeight() {
         return pane.getHeight();
     }
 
+    /**
+     * Get the property of pane width
+     *
+     * @return pane width property
+     * @see #setPaneWidth(double)
+     */
+    public ReadOnlyDoubleProperty paneWidth() {
+        return pane.widthProperty();
+    }
+
+    /**
+     * Get the property of pane height
+     *
+     * @return pane height property
+     * @see #setPaneHeight(double)
+     */
+    public ReadOnlyDoubleProperty paneHeight() {
+        return pane.heightProperty();
+    }
+
+    /**
+     * The stage is showing
+     *
+     * @return true if showing, false otherwise
+     */
     public boolean isShowing() {
         return stage.isShowing();
     }
 
+    /**
+     * Show the stage
+     */
     public void show() {
         stage.show();
     }
 
+    /**
+     * Hide the stage
+     */
     public void hide() {
         stage.hide();
     }
 
+    /**
+     * Move the stage to the center of screen
+     */
     public void centerOnScreen() {
         stage.centerOnScreen();
     }
 
+    /**
+     * Set title of the stage
+     *
+     * @param title title
+     */
     public void setTitle(String title) {
         this.title.setText(title);
         this.stage.setTitle(title);
         calculateTitlePosition(true);
     }
 
+    /**
+     * Get root pane.<br>
+     * All nodes should be put into this pane.
+     *
+     * @return the root pane
+     */
     public Pane getRootPane() {
         return pane;
     }
 
+    /**
+     * Request focus
+     */
     public void requestFocus() {
         stage.requestFocus();
     }
 
+    /**
+     * Check whether this stage is always on top
+     *
+     * @return true if always on top, false otherwise
+     */
     public boolean isAlwaysOnTop() {
         return stage.isAlwaysOnTop();
     }
 
+    /**
+     * Set the stage always on top or not
+     *
+     * @param alwaysOnTop true if always on top, false otherwise
+     */
     public void setAlwaysOnTop(boolean alwaysOnTop) {
         stage.setAlwaysOnTop(alwaysOnTop);
     }
 
-    public ReadOnlyDoubleProperty paneWidth() {
-        return pane.widthProperty();
-    }
-
-    public ReadOnlyDoubleProperty paneHeight() {
-        return pane.heightProperty();
-    }
-
+    /**
+     * Set the handler on close request
+     *
+     * @param handler the handler
+     */
     public void setOnCloseRequest(EventHandler<WindowEvent> handler) {
         stage.setOnCloseRequest(handler);
     }
 
-    public void setIcon(Image charaDefaultIcon) {
-        Utils.setIcon(stage, charaDefaultIcon);
+    /**
+     * Set icon of the stage
+     *
+     * @param icon icon
+     */
+    public void setIcon(Image icon) {
+        Utils.setIcon(stage, icon);
     }
 }

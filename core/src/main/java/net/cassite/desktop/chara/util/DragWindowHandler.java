@@ -6,7 +6,16 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+/**
+ * The handler for dragging a stage
+ * Usage example, see {@link DragHandler}
+ */
 public class DragWindowHandler extends DragHandler implements EventHandler<MouseEvent> {
+    /**
+     * Constructor
+     *
+     * @param stage the stage to be dragged
+     */
     public DragWindowHandler(Stage stage) {
         super((xy) -> {
                 stage.setX(xy[0]);

@@ -98,6 +98,11 @@ public class FontManager {
         return fontFamily;
     }
 
+    /**
+     * Get monospace font family. This method will initiate the monospace font family based on the current platform.
+     *
+     * @return the font family
+     */
     public static String getMonospaceFontFamily() {
         if (monospaceFontFamily != null) {
             return monospaceFontFamily;

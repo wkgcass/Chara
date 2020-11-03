@@ -4,12 +4,8 @@ package net.cassite.desktop.chara.util;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.PluginManager;
@@ -26,7 +22,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
@@ -256,6 +251,15 @@ public class Utils {
         }
     }
 
+    /**
+     * Load all jars matching the prefix in the zipFile and return the specified <code>Class</code> object.
+     *
+     * @param zipFile   zip file
+     * @param prefix    jar entry prefix
+     * @param classname name of the class to load
+     * @return <code>Class</code>
+     * @throws Exception any exception when loading
+     */
     public static Class<?> loadClassFromZipFile(ZipFile zipFile, String prefix, String classname) throws Exception {
         // try to directly load class
         try {
@@ -310,6 +314,14 @@ public class Utils {
         return urlClassLoader.loadClass(classname);
     }
 
+    /**
+     * Open <code>ZipFile</code> and retrieve inputStream from it.<br>
+     * When closing the inputStream, the opened zipfile will be closed as well.
+     *
+     * @param zipFilePath path to the zip file
+     * @param name        full name of the entry
+     * @return inputStream and closing it will close zipfile as well
+     */
     public static InputStream getEntryFromZipFile(String zipFilePath, String name) {
         ZipFile file;
         try {
@@ -335,6 +347,13 @@ public class Utils {
         }
     }
 
+    /**
+     * Retrieve inputStream from <code>ZipFile</code>
+     *
+     * @param zipFile zip file
+     * @param name    full name of the entry
+     * @return inputStream
+     */
     public static InputStream getEntryFromZipFile(ZipFile zipFile, String name) {
         var entry = zipFile.getEntry(name);
         if (entry == null) {
@@ -349,6 +368,12 @@ public class Utils {
         }
     }
 
+    /**
+     * Set icon on a stage
+     *
+     * @param stage stage
+     * @param icon  icon
+     */
     public static void setIcon(Stage stage, Image icon) {
         if (icon == null) {
             return; // do not set if not found
