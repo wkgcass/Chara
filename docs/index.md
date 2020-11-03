@@ -86,10 +86,16 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 <details><summary>别点我</summary>
 
+需要将r18插件放置在`~/.chara/plugin/`（`%userprofile%\.chara\plugin`）目录中，并在启动时勾选加载才可启用r18特性。<br>
+
+<details><summary>别点我</summary>
+
 请使用Chrome浏览器查看。<br>
 
 <video autoplay loop muted src="https://github.com/wkgcass/Chara-bundle/raw/main/readme-bundle/kokori-r18.webm" type="video/webm" height="352">
 </video>
+
+</details>
 
 </details>
 
