@@ -2,7 +2,6 @@
 
 package net.cassite.desktop.chara.graphic;
 
-import javafx.application.Platform;
 import net.cassite.desktop.chara.ThreadUtils;
 
 /**

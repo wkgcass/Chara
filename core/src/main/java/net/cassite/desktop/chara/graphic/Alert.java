@@ -12,8 +12,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.cassite.desktop.chara.util.StageUtils;
 import net.cassite.desktop.chara.manager.FontManager;
+import net.cassite.desktop.chara.util.StageUtils;
 import net.cassite.desktop.chara.util.Utils;
 
 import java.nio.charset.StandardCharsets;

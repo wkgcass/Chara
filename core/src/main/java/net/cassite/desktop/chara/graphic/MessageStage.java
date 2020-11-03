@@ -9,8 +9,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.Global;
-import net.cassite.desktop.chara.util.*;
 import net.cassite.desktop.chara.ThreadUtils;
+import net.cassite.desktop.chara.util.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
