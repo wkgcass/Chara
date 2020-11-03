@@ -136,6 +136,14 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 默认使用天行机器人，点击右键菜单中的按钮可切换天行图灵。（天行图灵免费额度较低）
 
+## debug
+
+启用debug特性。将该插件放置在`~/.chara/plugin/`（`%userprofile%\.chara\plugin`）目录中并在启动时勾选加载才可启用debug特性。
+
+## r18
+
+启用r18特性。将该插件放置在`~/.chara/plugin/`（`%userprofile%\.chara\plugin`）目录中并在启动时勾选加载才可启用r18特性。
+
 # 开发文档
 
 * [如何开发一个新角色](how-to-develop-a-new-character.md)
