@@ -378,6 +378,7 @@ public class UStage {
 
     public void setTitle(String title) {
         this.title.setText(title);
+        this.stage.setTitle(title);
         calculateTitlePosition(true);
     }
 
