@@ -170,7 +170,7 @@ public class Utils {
             }
         }
         ConfigManager.saveNow();
-        PluginManager.get().release();
+        Platform.runLater(() -> PluginManager.get().release());
         ThreadUtils.get().shutdownNow();
         try {
             Resolver.getDefault().stop();
