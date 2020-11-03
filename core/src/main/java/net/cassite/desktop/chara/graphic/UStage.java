@@ -2,8 +2,10 @@
 
 package net.cassite.desktop.chara.graphic;
 
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
@@ -14,12 +16,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
+import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import net.cassite.desktop.chara.util.DragHandler;
 import net.cassite.desktop.chara.util.DragWindowHandler;
 import net.cassite.desktop.chara.util.Utils;
 
@@ -27,8 +29,9 @@ import java.util.Objects;
 
 public class UStage {
     public static final double TITLE_HEIGHT = 24;
-    public static final double BORDER_W = 0.85;
+    public static final double NORMAL_BORDER_W = 0.85;
 
+    private static final double RESIZE_ACTION_LENGTH = 15;
     private static final double TITLE_TEXT_SIZE = 13;
     private static final double TEXT_Y_FIX = 0.5;
     private static final double STAGE_CORNER_RADIUS_PIXELS = 4;
@@ -63,52 +66,117 @@ public class UStage {
         FOCUSED_BORDER_COLOR,
         BorderStrokeStyle.SOLID,
         TITLE_CORNER_RADII,
-        new BorderWidths(BORDER_W, BORDER_W, 0, BORDER_W)
+        new BorderWidths(NORMAL_BORDER_W, NORMAL_BORDER_W, 0, NORMAL_BORDER_W)
     ));
-    private static final Border LOSE_FOCUS_TITLE_BORDER = new Border(new BorderStroke(
+    private final Border LOSE_FOCUS_TITLE_BORDER = new Border(new BorderStroke(
         LOSE_FOCUS_BORDER_COLOR,
         BorderStrokeStyle.SOLID,
         TITLE_CORNER_RADII,
-        new BorderWidths(BORDER_W, BORDER_W, 0, BORDER_W)
-    ));
-    private static final Border FOCUSED_PANE_BORDER = new Border(new BorderStroke(
-        FOCUSED_BORDER_COLOR,
-        BorderStrokeStyle.SOLID,
-        PANE_CORNER_RADII,
-        new BorderWidths(0, BORDER_W, BORDER_W, BORDER_W)
-    ));
-    private static final Border LOSE_FOCUS_PANE_BORDER = new Border(new BorderStroke(
-        LOSE_FOCUS_BORDER_COLOR,
-        BorderStrokeStyle.SOLID,
-        PANE_CORNER_RADII,
-        new BorderWidths(0, BORDER_W, BORDER_W, BORDER_W)
+        new BorderWidths(NORMAL_BORDER_W, NORMAL_BORDER_W, 0, NORMAL_BORDER_W)
     ));
 
+    private final double BORDER_W;
+    private final Border FOCUSED_PANE_BORDER;
+    private final Border LOSE_FOCUS_PANE_BORDER;
+
     private final Stage stage;
+    private final Group mainWindow = new Group();
+    private final Pane backgroundPane;
     private final Pane pane;
     private final Pane titlePane;
     private final Label title;
     private final Line separator;
+    private final Rectangle resizeBottomRight;
 
     public UStage() {
+        this(new UStageConfig());
+    }
+
+    public UStage(UStageConfig config) {
         stage = new Stage();
         stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setResizable(false);
+        stage.setResizable(config.resizable);
         Group root = new Group();
         Scene scene = new Scene(root);
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
 
-        pane = new Pane();
-        pane.setLayoutX(0);
-        pane.setLayoutY(TITLE_HEIGHT - BORDER_W);
-        pane.setBackground(new Background(new BackgroundFill(
+        // initiate constants
+        if (config.noBorder) {
+            BORDER_W = 0;
+        } else {
+            BORDER_W = NORMAL_BORDER_W;
+        }
+        FOCUSED_PANE_BORDER = new Border(new BorderStroke(
+            FOCUSED_BORDER_COLOR,
+            BorderStrokeStyle.SOLID,
+            PANE_CORNER_RADII,
+            new BorderWidths(0, BORDER_W, BORDER_W, BORDER_W)
+        ));
+        LOSE_FOCUS_PANE_BORDER = new Border(new BorderStroke(
+            LOSE_FOCUS_BORDER_COLOR,
+            BorderStrokeStyle.SOLID,
+            PANE_CORNER_RADII,
+            new BorderWidths(0, BORDER_W, BORDER_W, BORDER_W)
+        ));
+
+        backgroundPane = new Pane();
+        backgroundPane.setLayoutX(0);
+        backgroundPane.setLayoutY(TITLE_HEIGHT);
+        backgroundPane.setBackground(new Background(new BackgroundFill(
             PANE_BACKGROUND_COLOR,
             PANE_CORNER_RADII,
             Insets.EMPTY
         )));
-        pane.setBorder(FOCUSED_PANE_BORDER);
-        root.getChildren().add(pane);
+        backgroundPane.setBorder(FOCUSED_PANE_BORDER);
+        mainWindow.getChildren().add(backgroundPane);
+
+        pane = new Pane();
+        pane.setBorder(Border.EMPTY);
+        pane.setBackground(Background.EMPTY);
+        pane.setLayoutX(0);
+        pane.setLayoutY(0);
+        {
+            pane.layoutBoundsProperty().addListener((ob, old, now) -> {
+                Rectangle recMain = new Rectangle();
+                recMain.setStrokeWidth(0);
+                recMain.setX(BORDER_W);
+                recMain.setY(0);
+                recMain.setWidth(now.getWidth() - BORDER_W * 2);
+                recMain.setHeight(now.getHeight() - STAGE_CORNER_RADIUS_PIXELS);
+
+                Rectangle recBot = new Rectangle();
+                recBot.setStrokeWidth(0);
+                recBot.setX(STAGE_CORNER_RADIUS_PIXELS);
+                recBot.setY(now.getHeight() - STAGE_CORNER_RADIUS_PIXELS);
+                recBot.setWidth(now.getWidth() - STAGE_CORNER_RADIUS_PIXELS * 2);
+                recBot.setHeight(STAGE_CORNER_RADIUS_PIXELS - BORDER_W);
+
+                Arc arcLeft = new Arc();
+                arcLeft.setStrokeWidth(0);
+                arcLeft.setCenterX(BORDER_W + STAGE_CORNER_RADIUS_PIXELS);
+                arcLeft.setCenterY(now.getHeight() - BORDER_W - STAGE_CORNER_RADIUS_PIXELS);
+                arcLeft.setStartAngle(180);
+                arcLeft.setLength(90);
+                arcLeft.setRadiusX(STAGE_CORNER_RADIUS_PIXELS);
+                arcLeft.setRadiusY(STAGE_CORNER_RADIUS_PIXELS);
+                arcLeft.setType(ArcType.ROUND);
+
+                Arc arcRight = new Arc();
+                arcRight.setStrokeWidth(0);
+                arcRight.setCenterX(now.getWidth() - BORDER_W - STAGE_CORNER_RADIUS_PIXELS);
+                arcRight.setCenterY(now.getHeight() - BORDER_W - STAGE_CORNER_RADIUS_PIXELS);
+                arcRight.setStartAngle(270);
+                arcRight.setLength(90);
+                arcRight.setRadiusX(STAGE_CORNER_RADIUS_PIXELS);
+                arcRight.setRadiusY(STAGE_CORNER_RADIUS_PIXELS);
+                arcRight.setType(ArcType.ROUND);
+
+                Group group = new Group(recMain, recBot, arcLeft, arcRight);
+                pane.setClip(group);
+            });
+        }
+        backgroundPane.getChildren().add(pane);
 
         titlePane = new Pane();
         titlePane.setLayoutX(0);
@@ -160,7 +228,10 @@ public class UStage {
                     closeButtonClickRange.setFill(Color.TRANSPARENT);
 
                     closeButtonClickRange.setOnMousePressed(e -> closeButton.setFill(CLOSE_BUTTON_MOUSE_DOWN_COLOR));
-                    closeButtonClickRange.setOnMouseClicked(e -> stage.fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
+                    closeButtonClickRange.setOnMouseClicked(e -> {
+                        stage.fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST));
+                        closeButton.setFill(CLOSE_BUTTON_NORMAL_COLOR);
+                    });
                     closeButtonGroup.getChildren().addAll(closeButtonClickRange, closeButton);
                 }
                 controlButtonsPane.getChildren().add(closeButtonGroup);
@@ -181,7 +252,7 @@ public class UStage {
         var dragHandler = new DragWindowHandler(stage);
         titlePane.setOnMousePressed(dragHandler);
         titlePane.setOnMouseDragged(dragHandler);
-        root.getChildren().add(titlePane);
+        mainWindow.getChildren().add(titlePane);
 
         separator = new Line();
         separator.setStartX(0);
@@ -194,15 +265,41 @@ public class UStage {
             if (!Objects.equals(old, focused) && focused) {
                 titlePane.setBackground(TITLE_BACKGROUND);
                 titlePane.setBorder(FOCUSED_TITLE_BORDER);
-                root.getChildren().remove(separator);
-                pane.setBorder(FOCUSED_PANE_BORDER);
+                mainWindow.getChildren().remove(separator);
+                backgroundPane.setBorder(FOCUSED_PANE_BORDER);
             } else {
                 titlePane.setBackground(LOSE_FOCUS_TITLE_BACKGROUND);
                 titlePane.setBorder(LOSE_FOCUS_TITLE_BORDER);
-                root.getChildren().add(separator);
-                pane.setBorder(LOSE_FOCUS_PANE_BORDER);
+                mainWindow.getChildren().add(separator);
+                backgroundPane.setBorder(LOSE_FOCUS_PANE_BORDER);
             }
         });
+
+        // handle stage resizing
+        resizeBottomRight = new Rectangle();
+        resizeBottomRight.setWidth(RESIZE_ACTION_LENGTH);
+        resizeBottomRight.setHeight(RESIZE_ACTION_LENGTH);
+        resizeBottomRight.setFill(Color.TRANSPARENT);
+        resizeBottomRight.setStrokeWidth(0);
+        resizeBottomRight.setStroke(Color.TRANSPARENT);
+        resizeBottomRight.setMouseTransparent(false);
+        if (config.resizable) {
+            resizeBottomRight.setOnMouseMoved(e -> resizeBottomRight.setCursor(Cursor.NW_RESIZE));
+            resizeBottomRight.setOnMouseExited(e -> resizeBottomRight.setCursor(Cursor.DEFAULT));
+            var dragResizeHandler = new DragHandler(
+                xy -> {
+                    setPaneWidth(xy[0]);
+                    setPaneHeight(xy[1]);
+                },
+                () -> new double[]{backgroundPane.getWidth(), backgroundPane.getHeight()}
+            );
+            resizeBottomRight.setOnMousePressed(dragResizeHandler);
+            resizeBottomRight.setOnMouseDragged(dragResizeHandler);
+
+            mainWindow.getChildren().add(resizeBottomRight);
+        }
+
+        root.getChildren().add(mainWindow);
     }
 
     public void setStageX(double x) {
@@ -238,10 +335,12 @@ public class UStage {
     }
 
     public void setPaneWidth(double paneWidth) {
+        this.backgroundPane.setPrefWidth(paneWidth);
         this.pane.setPrefWidth(paneWidth);
         this.titlePane.setPrefWidth(paneWidth);
         this.separator.setEndX(paneWidth);
         this.stage.setWidth(paneWidth);
+        this.resizeBottomRight.setX(paneWidth - RESIZE_ACTION_LENGTH);
         calculateTitlePosition(false);
     }
 
@@ -250,13 +349,19 @@ public class UStage {
     }
 
     public void setPaneHeight(double paneHeight) {
+        this.backgroundPane.setPrefHeight(paneHeight);
         this.pane.setPrefHeight(paneHeight);
         this.stage.setHeight(paneHeight + TITLE_HEIGHT);
+        this.resizeBottomRight.setY(paneHeight + TITLE_HEIGHT - RESIZE_ACTION_LENGTH);
         calculateTitlePosition(false);
     }
 
     public double getPaneHeight() {
         return pane.getHeight();
+    }
+
+    public boolean isShowing() {
+        return stage.isShowing();
     }
 
     public void show() {
@@ -278,6 +383,26 @@ public class UStage {
 
     public Pane getRootPane() {
         return pane;
+    }
+
+    public void requestFocus() {
+        stage.requestFocus();
+    }
+
+    public boolean isAlwaysOnTop() {
+        return stage.isAlwaysOnTop();
+    }
+
+    public void setAlwaysOnTop(boolean alwaysOnTop) {
+        stage.setAlwaysOnTop(alwaysOnTop);
+    }
+
+    public ReadOnlyDoubleProperty paneWidth() {
+        return pane.widthProperty();
+    }
+
+    public ReadOnlyDoubleProperty paneHeight() {
+        return pane.heightProperty();
     }
 
     public void setOnCloseRequest(EventHandler<WindowEvent> handler) {
