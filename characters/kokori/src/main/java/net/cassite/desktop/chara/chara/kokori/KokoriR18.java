@@ -57,7 +57,7 @@ public class KokoriR18 {
     }
 
     public void initCharacterMenu(Menu characterMenu) {
-        if (Global.r18features) {
+        if (Global.r18Features()) {
             wantHMenuItem.setOnAction(e -> menuWantH());
             useLovePotionMenuItem.setOnAction(e -> menuUseLovePotion());
             characterMenu.getItems().addAll(wantHMenuItem);
@@ -75,7 +75,7 @@ public class KokoriR18 {
     }
 
     public void addLovePotion() {
-        if (!Global.r18features) {
+        if (!Global.r18Features()) {
             return;
         }
         if (ConfigManager.get().getIntValue(Consts.LOVE_POTION_COUNT) >= Consts.MAX_LOVE_POTION_COUNT) {
@@ -414,7 +414,7 @@ public class KokoriR18 {
     }
 
     public void menuWantH() {
-        if (!Global.r18features) {
+        if (!Global.r18Features()) {
             return;
         }
         if (kokori.state != Kokori.State.NORMAL) {
@@ -463,7 +463,7 @@ public class KokoriR18 {
     }
 
     public void menuUseLovePotion() {
-        if (!Global.r18features) {
+        if (!Global.r18Features()) {
             return;
         }
         if (kokori.state != Kokori.State.NORMAL) {

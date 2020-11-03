@@ -299,7 +299,7 @@ public class KokoriPersonality {
                     () ->
                         incPoints(POSITIVE_TRANS_TO_NEGATIVE_BOND_POINT_DECR, POSITIVE_DESIRE_POINT_INCR));
 
-                if (Global.r18features) {
+                if (Global.r18Features()) {
                     if (originalDesirePoint == 1) {
                         appCallback.showMessage(KokoriR18Words.cannotRestrain.select());
                     } else {

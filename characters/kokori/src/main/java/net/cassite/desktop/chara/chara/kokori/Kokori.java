@@ -233,7 +233,7 @@ public class Kokori implements Chara {
         if (mouth == null) {
             return; // not initialized yet
         }
-        if (personality.getDesirePoint() == 1 && Global.r18features) {
+        if (personality.getDesirePoint() == 1 && Global.r18Features()) {
             mouth.startAnimatingOpenAndShut();
         } else if (personality.getBondPoint() < kokoriConsts.badMood) {
             mouth.stopAnimatingOpenAndShut();
@@ -248,7 +248,7 @@ public class Kokori implements Chara {
         if (redCheek == null) {
             return; // not initialized yet
         }
-        if (Global.r18features) {
+        if (Global.r18Features()) {
             if (personality.getDesirePoint() < kokoriConsts.veryHighDesirePoint) {
                 redCheek.hide();
             } else {
@@ -263,7 +263,7 @@ public class Kokori implements Chara {
         if (eyeLeft == null || eyeRight == null) {
             return; // not initialized yet
         }
-        if (personality.getDesirePoint() == 1 && Global.r18features) {
+        if (personality.getDesirePoint() == 1 && Global.r18Features()) {
             eyeLeft.removeHighlight();
             eyeRight.removeHighlight();
         } else if (personality.getBondPoint() < kokoriConsts.reallyBadMood) {
@@ -361,7 +361,7 @@ public class Kokori implements Chara {
         if (!foo) {
             return;
         }
-        if (Global.r18features && personality.getDesirePoint() == 1) {
+        if (Global.r18Features() && personality.getDesirePoint() == 1) {
             lookAtLeftOrRight();
         } else {
             eyeLeft.restorePosition();
@@ -487,7 +487,7 @@ public class Kokori implements Chara {
                     };
                     break;
                 case Y:
-                    if (Global.r18features) {
+                    if (Global.r18Features()) {
                         resetAll();
                         toRun = () -> {
                             headJoin.tiltToRight();
@@ -499,7 +499,7 @@ public class Kokori implements Chara {
                     }
                     break;
                 case U:
-                    if (Global.r18features) {
+                    if (Global.r18Features()) {
                         resetAll();
                         toRun = () -> {
                             eyeLeft.zoom(0.85);
@@ -697,7 +697,7 @@ public class Kokori implements Chara {
             legLeft.tighten(legLeft::loose);
             dressFront.flutter();
             dressBack.flutter();
-            if (Global.r18features) {
+            if (Global.r18Features()) {
                 Utils.delay("click-crotch-happy", 1500, r18::startHavingSex);
             } else {
                 Utils.delay("click-crotch-happy", 1500, () -> {
@@ -835,7 +835,7 @@ public class Kokori implements Chara {
         if (Utils.random(0.001)) {
             r18.addLovePotion();
         }
-        if (Global.r18features && personality.getDesirePoint() == 1) {
+        if (Global.r18Features() && personality.getDesirePoint() == 1) {
             if (Utils.random(0.5)) {
                 lookAtLeftOrRight();
             }
@@ -850,7 +850,7 @@ public class Kokori implements Chara {
     @Override
     public void takeMessage(String msg) {
         if (state != State.NORMAL) {
-            if (!Global.debugFeatures || !msg.startsWith("::")) {
+            if (!Global.debugFeatures() || !msg.startsWith("::")) {
                 return;
             }
         }
@@ -907,7 +907,7 @@ public class Kokori implements Chara {
 
     private void menuExpression() {
         String manual = KokoriI18n.expressionManual.get()[0];
-        if (Global.r18features) {
+        if (Global.r18Features()) {
             manual += "\n" + KokoriR18I18n.r18ExpressionManual.get()[0];
         }
         Alert.alert(manual);

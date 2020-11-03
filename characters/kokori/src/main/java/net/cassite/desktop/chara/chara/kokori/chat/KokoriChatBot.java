@@ -67,7 +67,7 @@ public class KokoriChatBot {
     }
 
     private void runCommand(String cmd0) {
-        if (!Global.debugFeatures) {
+        if (!Global.debugFeatures()) {
             appCallback.showMessage(KokoriWords.idontknow.select());
             return;
         }
