@@ -16,6 +16,7 @@ public class FontManager {
     }
 
     private static String fontFamily;
+    private static String monospaceFontFamily;
 
     /**
      * Register a new font
@@ -40,6 +41,15 @@ public class FontManager {
     }
 
     /**
+     * Check current default monospace font family. This method will not try to initated the default monospace font family, so you may get a nul lvalue.
+     *
+     * @return default monospace font family or null
+     */
+    public static String peekDefaultMonospaceFontFamily() {
+        return monospaceFontFamily;
+    }
+
+    /**
      * Set or replace the default font family.
      *
      * @param fontFamily the font family to set
@@ -51,6 +61,20 @@ public class FontManager {
             Logger.info("font family is set to " + fontFamily);
         }
         FontManager.fontFamily = fontFamily;
+    }
+
+    /**
+     * Set or replace the default monospace font family.
+     *
+     * @param monospaceFontFamily the monspace font family to set
+     */
+    public static void setDefaultMonospaceFontFamily(String monospaceFontFamily) {
+        if (FontManager.monospaceFontFamily != null) {
+            Logger.warn("replacing default monospace font family from " + FontManager.monospaceFontFamily + " to " + monospaceFontFamily);
+        } else {
+            Logger.info("monospace font family is set to " + monospaceFontFamily);
+        }
+        FontManager.monospaceFontFamily = monospaceFontFamily;
     }
 
     /**
@@ -72,5 +96,21 @@ public class FontManager {
         }
         Logger.info("font family set to: " + fontFamily);
         return fontFamily;
+    }
+
+    public static String getMonospaceFontFamily() {
+        if (monospaceFontFamily != null) {
+            return monospaceFontFamily;
+        }
+        Logger.info("all available font families: " + Font.getFamilies());
+        if (Utils.isMac()) {
+            monospaceFontFamily = "Monaco";
+        } else if (Utils.isWindows()) {
+            monospaceFontFamily = "Consolas";
+        } else {
+            monospaceFontFamily = "WenQuanYi Zen Hei Mono";
+        }
+        Logger.info("monospace font family set to: " + monospaceFontFamily);
+        return monospaceFontFamily;
     }
 }

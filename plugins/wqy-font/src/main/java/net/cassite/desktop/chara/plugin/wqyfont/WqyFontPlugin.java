@@ -8,7 +8,7 @@ import net.cassite.desktop.chara.plugin.Plugin;
 import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.ResourceHandler;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class WqyFontPlugin implements Plugin {
@@ -24,11 +24,15 @@ public class WqyFontPlugin implements Plugin {
 
     @Override
     public List<ResourceHandler> resourceHandlers() {
-        return Collections.singletonList(
+        return Arrays.asList(
             new ResourceHandler("font/wqy-microhei.ttc", (inputStream, cb) -> {
                 FontManager.registerFont(inputStream);
                 FontManager.setDefaultFontFamily("WenQuanYi Micro Hei");
-                Logger.info("current font families list: " + Font.getFamilies());
+                cb.succeeded(null);
+            }),
+            new ResourceHandler("font/wqy-microhei-mono.ttf", (inputStream, cb) -> {
+                FontManager.registerFont(inputStream);
+                FontManager.setDefaultMonospaceFontFamily("WenQuanYi Micro Hei Mono");
                 cb.succeeded(null);
             })
         );
@@ -37,6 +41,7 @@ public class WqyFontPlugin implements Plugin {
     @Override
     public void launch() {
         // do nothing
+        Logger.info("current font families list: " + Font.getFamilies());
     }
 
     @Override
