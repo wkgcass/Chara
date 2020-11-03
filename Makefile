@@ -28,17 +28,17 @@ clean-characters: clean-kokori
 output-characters: output-kokori
 
 .PHONY: plugins
-plugins: dev-plugin tianxing-chatbot-plugin wqy-font-plugin
+plugins: dev-plugin console-plugin tianxing-chatbot-plugin wqy-font-plugin
 .PHONY: compile-plugins
-compile-plugins: compile-dev-plugin compile-tianxing-chatbot-plugin compile-wqy-font-plugin
+compile-plugins: compile-dev-plugin compile-console-plugin compile-tianxing-chatbot-plugin compile-wqy-font-plugin
 .PHONY: build-plugins
-build-plugins: build-dev-plugin build-tianxing-chatbot-plugin build-wqy-font-plugin
+build-plugins: build-dev-plugin build-console-plugin build-tianxing-chatbot-plugin build-wqy-font-plugin
 .PHONY: clean-plugins
-clean-plugins: clean-dev-plugin clean-tianxing-chatbot-plugin clean-wqy-font-plugin
+clean-plugins: clean-dev-plugin clean-console-plugin clean-tianxing-chatbot-plugin clean-wqy-font-plugin
 .PHONY: output-plugins
-output-plugins: output-dev-plugin output-tianxing-chatbot-plugin output-wqy-font-plugin
+output-plugins: output-dev-plugin output-console-plugin output-tianxing-chatbot-plugin output-wqy-font-plugin
 .PHONY: deploy-plugins
-deploy-plugins: deploy-dev-plugin deploy-tianxing-chatbot-plugin deploy-wqy-font-plugin
+deploy-plugins: deploy-dev-plugin deploy-console-plugin deploy-tianxing-chatbot-plugin deploy-wqy-font-plugin
 
 CHRONIC := $(shell if [[ ! -z "`which chronic`" ]]; then echo "chronic"; fi)
 
@@ -109,6 +109,25 @@ output-dev-plugin: output build-dev-plugin
 .PHONY: deploy-dev-plugin
 deploy-dev-plugin: output-dev-plugin home-chara
 	cp output/dev.plugin ~/.chara/plugin/
+
+.PHONY: console-plugin
+console-plugin: clean-console-plugin compile-console-plugin build-console-plugin output-console-plugin deploy-console-plugin
+.PHONY: compile-console-plugin
+compile-console-plugin: compile-core
+	cd plugins/console/ && $(CHRONIC) ./gradlew jar
+.PHONY: build-console-plugin
+build-console-plugin: compile-core
+	cd plugins/console/ && $(CHRONIC) ./build-plugin.sh
+.PHONY: clean-console-plugin
+clean-console-plugin:
+	cd plugins/console/ && $(CHRONIC) ./gradlew clean
+	cd plugins/console/plugin/ && rm -f *.plugin
+.PHONY: output-console-plugin
+output-console-plugin: output build-console-plugin
+	cp plugins/console/plugin/*.plugin output/
+.PHONY: deploy-console-plugin
+deploy-console-plugin: output-console-plugin home-chara
+	cp output/console.plugin ~/.chara/plugin/
 
 .PHONY: tianxing-chatbot-plugin
 tianxing-chatbot-plugin: clean-tianxing-chatbot-plugin compile-tianxing-chatbot-plugin build-tianxing-chatbot-plugin output-tianxing-chatbot-plugin deploy-tianxing-chatbot-plugin
