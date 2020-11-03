@@ -28,17 +28,17 @@ clean-characters: clean-kokori
 output-characters: output-kokori
 
 .PHONY: plugins
-plugins: dev-plugin console-plugin tianxing-chatbot-plugin wqy-font-plugin
+plugins: dev-plugin console-plugin tianxing-chatbot-plugin wqy-font-plugin r18-plugin debug-plugin
 .PHONY: compile-plugins
-compile-plugins: compile-dev-plugin compile-console-plugin compile-tianxing-chatbot-plugin compile-wqy-font-plugin
+compile-plugins: compile-dev-plugin compile-console-plugin compile-tianxing-chatbot-plugin compile-wqy-font-plugin compile-r18-plugin compile-debug-plugin
 .PHONY: build-plugins
-build-plugins: build-dev-plugin build-console-plugin build-tianxing-chatbot-plugin build-wqy-font-plugin
+build-plugins: build-dev-plugin build-console-plugin build-tianxing-chatbot-plugin build-wqy-font-plugin build-r18-plugin build-debug-plugin
 .PHONY: clean-plugins
-clean-plugins: clean-dev-plugin clean-console-plugin clean-tianxing-chatbot-plugin clean-wqy-font-plugin
+clean-plugins: clean-dev-plugin clean-console-plugin clean-tianxing-chatbot-plugin clean-wqy-font-plugin clean-r18-plugin clean-debug-plugin
 .PHONY: output-plugins
-output-plugins: output-dev-plugin output-console-plugin output-tianxing-chatbot-plugin output-wqy-font-plugin
+output-plugins: output-dev-plugin output-console-plugin output-tianxing-chatbot-plugin output-wqy-font-plugin output-r18-plugin output-debug-plugin
 .PHONY: deploy-plugins
-deploy-plugins: deploy-dev-plugin deploy-console-plugin deploy-tianxing-chatbot-plugin deploy-wqy-font-plugin
+deploy-plugins: deploy-dev-plugin deploy-console-plugin deploy-tianxing-chatbot-plugin deploy-wqy-font-plugin deploy-r18-plugin deploy-debug-plugin
 
 CHRONIC := $(shell if [[ ! -z "`which chronic`" ]]; then echo "chronic"; fi)
 
@@ -166,3 +166,41 @@ output-wqy-font-plugin: output build-wqy-font-plugin
 .PHONY: deploy-wqy-font-plugin
 deploy-wqy-font-plugin: output-wqy-font-plugin home-chara
 	cp output/wqy-font.plugin ~/.chara/plugin/
+
+.PHONY: r18-plugin
+r18-plugin: clean-r18-plugin compile-r18-plugin build-r18-plugin output-r18-plugin deploy-r18-plugin
+.PHONY: compile-r18-plugin
+compile-r18-plugin: compile-core
+	cd plugins/r18/ && $(CHRONIC) ./gradlew jar
+.PHONY: build-r18-plugin
+build-r18-plugin: compile-core
+	cd plugins/r18/ && $(CHRONIC) ./build-plugin.sh
+.PHONY: clean-r18-plugin
+clean-r18-plugin:
+	cd plugins/r18/ && $(CHRONIC) ./gradlew clean
+	cd plugins/r18/plugin/ && rm -f *.plugin
+.PHONY: output-r18-plugin
+output-r18-plugin: output build-r18-plugin
+	cp plugins/r18/plugin/*.plugin output/
+.PHONY: deploy-r18-plugin
+deploy-r18-plugin: output-r18-plugin home-chara
+	cp output/r18.plugin ~/.chara/plugin/
+
+.PHONY: debug-plugin
+debug-plugin: clean-debug-plugin compile-debug-plugin build-debug-plugin output-debug-plugin deploy-debug-plugin
+.PHONY: compile-debug-plugin
+compile-debug-plugin: compile-core
+	cd plugins/debug/ && $(CHRONIC) ./gradlew jar
+.PHONY: build-debug-plugin
+build-debug-plugin: compile-core
+	cd plugins/debug/ && $(CHRONIC) ./build-plugin.sh
+.PHONY: clean-debug-plugin
+clean-debug-plugin:
+	cd plugins/debug/ && $(CHRONIC) ./gradlew clean
+	cd plugins/debug/plugin/ && rm -f *.plugin
+.PHONY: output-debug-plugin
+output-debug-plugin: output build-debug-plugin
+	cp plugins/debug/plugin/*.plugin output/
+.PHONY: deploy-debug-plugin
+deploy-debug-plugin: output-debug-plugin home-chara
+	cp output/debug.plugin ~/.chara/plugin/
