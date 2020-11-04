@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'net.cassite.desktop.chara'
-version '1.0.0'
+version loadVersion()
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -67,6 +67,20 @@ dependencies {
     compile files('../vproxy.jar')
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+def loadVersion() {
+    def PREFIX = "public static final String VERSION = \""
+    def SUFFIX = "\"; // _THE_VERSION_"
+    def ver = file(projectDir.getAbsolutePath() + "/src/main/java/net/cassite/desktop/chara/util/Consts.java")
+    def lines = ver.getText().split("\n")
+    for (def line : lines) {
+        line = line.trim()
+        if (line.startsWith(PREFIX) && line.endsWith(SUFFIX)) {
+            return line.substring(PREFIX.length(), line.length() - SUFFIX.length())
+        }
+    }
+    return "unknown"
 }
 
 def loadJnativeHookVersion() {

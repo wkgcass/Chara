@@ -21,7 +21,7 @@ public class DebugPlugin implements Plugin {
 
     @Override
     public int version() {
-        return 1000000;
+        return 1000000; // _THE_VERSION_
     }
 
     @Override
