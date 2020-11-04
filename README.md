@@ -83,5 +83,6 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 # 开发文档
 
+* [基础模块javadoc生成脚本](docs/generate-javadoc.sh)
 * [如何开发一个新角色](docs/how-to-develop-a-new-character.md)
 * [如何开发一个插件](docs/how-to-develop-a-new-plugin.md)

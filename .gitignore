@@ -8,3 +8,4 @@ out/
 vproxy.jar
 .log
 output/
+docs/javadoc
