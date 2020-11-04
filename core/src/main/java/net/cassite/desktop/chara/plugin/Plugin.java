@@ -22,6 +22,19 @@ public interface Plugin {
     int version();
 
     /**
+     * Get priority of the plugin.<br>
+     * Greater the priority is, earlier the plugin is launched.<br>
+     * Also, greater the priority is, later the plugin is released.<br>
+     * Default priority is 0, most plugins may ignore this method.<br>
+     * Note: the priorities won't effect the plugins constructing process.
+     *
+     * @return priority of the plugin
+     */
+    default double priority() {
+        return 0;
+    }
+
+    /**
      * Get resource handlers of the plugin<br>
      * The list will be used on the startup loading bar.
      *

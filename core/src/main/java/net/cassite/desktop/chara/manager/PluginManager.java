@@ -32,7 +32,8 @@ import java.util.zip.ZipFile;
 
 public class PluginManager {
     private static final PluginManager instance = new PluginManager();
-    private final Map<String, Plugin> plugins = new LinkedHashMap<>();
+    private final Map<String, Plugin> plugins = new HashMap<>();
+    private final LinkedList<Plugin> pluginsOrderedList = new LinkedList<>();
 
     private PluginManager() {
     }
@@ -42,7 +43,7 @@ public class PluginManager {
     }
 
     public Collection<Plugin> getPlugins() {
-        return plugins.values();
+        return Collections.unmodifiableList(pluginsOrderedList);
     }
 
     public void load(Runnable cb) {
@@ -168,14 +169,18 @@ public class PluginManager {
             if (ThreadUtils.get().isShutdown()) {
                 return;
             }
-            // launch all plugins
+            // release zipFiles
             for (var tup : allPlugins) {
-                tup.left.launch();
-                Logger.info("plugin " + tup.left.name() + " loaded");
                 try {
                     tup.right.close();
                 } catch (IOException ignore) {
                 }
+            }
+            // launch all plugins
+            pluginsOrderedList.sort((a, b) -> (int) (b.priority() - a.priority()));
+            for (var plugin : pluginsOrderedList) {
+                plugin.launch();
+                Logger.info("plugin " + plugin.name() + " loaded");
             }
             // callback
             cb.run();
@@ -232,6 +237,7 @@ public class PluginManager {
 
         // register
         plugins.put(name, plugin);
+        pluginsOrderedList.add(plugin);
 
         assert Logger.debug("plugin " + name + " pre-loaded");
         return new Tuple<>(plugin, zipFile);
@@ -325,9 +331,12 @@ public class PluginManager {
     }
 
     public void release() {
-        for (var p : plugins.values()) {
+        var ite = pluginsOrderedList.descendingIterator();
+        while (ite.hasNext()) {
+            var p = ite.next();
             p.release();
         }
         plugins.clear();
+        pluginsOrderedList.clear();
     }
 }

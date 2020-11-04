@@ -221,6 +221,11 @@ public class ConsolePlugin implements Plugin {
     }
 
     @Override
+    public double priority() {
+        return Double.MAX_VALUE;
+    }
+
+    @Override
     public List<ResourceHandler> resourceHandlers() {
         return Collections.emptyList();
     }
