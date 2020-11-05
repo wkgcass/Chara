@@ -425,37 +425,49 @@ public class KokoriR18 {
             return;
         }
 
+        var bond = personality.getBondPoint();
         var desire = personality.getDesirePoint();
-        if (desire != 1) {
-            var bond = personality.getBondPoint();
-            if (bond < 0.3) {
-                personality.incPoints(-0.05, -0.05);
-                appCallback.showMessage(KokoriR18Words.reject1.select());
-                return;
-            }
-            if (bond < 0.6) {
-                personality.incPoints(-0.01, -0.01);
-                appCallback.showMessage(KokoriR18Words.reject2.select());
-                return;
-            }
-            if (bond < 0.85) {
-                personality.incPoints(0.0001, 0.005);
-                appCallback.showMessage(KokoriR18Words.reject3.select());
-                return;
-            }
-
+        if (ConfigManager.get().getBoolValue(Consts.PROPOSING_ACCEPTED)) {
             if (desire < 0.8) {
-                personality.incPoints(0.0005, 0.01);
-                appCallback.showMessage(KokoriR18Words.reject4.select());
-                Utils.shortDelay(kokori.redCheek::show);
-                Utils.delay("menu-want-h-dont-want-now", 1500, kokori::resetCheek);
-                return;
+                appCallback.showMessage(KokoriR18Words.allowSex.select());
+            } else {
+                if (desire == 1) {
+                    appCallback.showMessage(KokoriR18Words.cannotRestrain.select());
+                } else {
+                    appCallback.showMessage(KokoriR18Words.wantSex.select());
+                }
             }
-        }
-        if (desire == 1) {
-            appCallback.showMessage(KokoriR18Words.cannotRestrain.select());
         } else {
-            appCallback.showMessage(KokoriR18Words.wantSex.select());
+            if (desire != 1) {
+                if (bond < 0.3) {
+                    personality.incPoints(-0.05, -0.05);
+                    appCallback.showMessage(KokoriR18Words.reject1.select());
+                    return;
+                }
+                if (bond < 0.6) {
+                    personality.incPoints(-0.01, -0.01);
+                    appCallback.showMessage(KokoriR18Words.reject2.select());
+                    return;
+                }
+                if (bond < 0.85) {
+                    personality.incPoints(0.0001, 0.005);
+                    appCallback.showMessage(KokoriR18Words.reject3.select());
+                    return;
+                }
+
+                if (desire < 0.8) {
+                    personality.incPoints(0.0005, 0.01);
+                    appCallback.showMessage(KokoriR18Words.reject4.select());
+                    Utils.shortDelay(kokori.redCheek::show);
+                    Utils.delay("menu-want-h-dont-want-now", 1500, kokori::resetCheek);
+                    return;
+                }
+            }
+            if (desire == 1) {
+                appCallback.showMessage(KokoriR18Words.cannotRestrain.select());
+            } else {
+                appCallback.showMessage(KokoriR18Words.wantSex.select());
+            }
         }
         personality.setDesirePoint(0);
         Utils.shortDelay(kokori.redCheek::show);

@@ -32,20 +32,37 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 # 目前实现的角色
 
-## 心璃
-
-[<img src="docs/readme-bundle/kokori.png" width="128px" height="128px">](https://github.com/wkgcass/Chara/tree/master/characters/kokori)
-
-中文名：心璃  
-英文名：Kokori  
-日文名：心(ココ)璃(リ)  
-
-设定：wkgcass  
-[原画](https://www.pixiv.net/artworks/85094809)：wkgcass  
-模型：wkgcass  
-编码：wkgcass
-
-一句话人物概述：神社的巫女，外表柔弱内心坚强的小姐姐，少量病娇属性。
+<table>
+<thead>
+  <tr>
+   <th>形象</th>
+   <th>简述</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+   <td>
+<a href="https://github.com/wkgcass/Chara/tree/master/characters/kokori"><img src="docs/readme-bundle/kokori.png" width="128px" height="128px"></a>
+   </td>
+   <td>
+<table>
+<tbody>
+  <tr><td> 人物 </td></tr>
+  <tr><td> 中文名 </td> <td> 心璃 </td></tr>
+  <tr><td> 英文名 </td> <td> Kokori </td></tr>
+  <tr><td> 日文名 </td> <td> 心(ココ)璃(リ) </td></tr>
+  <tr><td> 关键字 </td> <td> 巫女 温柔 病娇 </td></tr>
+  <tr><td> 作者 </td></tr>
+  <tr><td> 设定 </td> <td> wkgcass </td></tr>
+  <tr><td><a href="https://www.pixiv.net/artworks/85094809"> 原画 </a></td> <td> wkgcass </td></tr>
+  <tr><td> 模型 </td> <td> wkgcass </td></tr>
+  <tr><td> 编码 </td> <td> wkgcass </td></tr>
+</tbody>
+</table>
+   </td>
+  </tr> <!-- end kokori -->
+</tbody>
+</table>
 
 # 目前实现的插件
 

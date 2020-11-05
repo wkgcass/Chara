@@ -29,6 +29,10 @@ public class KokoriI18n {
         ("表情")
         .setEn("Expression")
         .build();
+    public static final Words proposeMenuItem = new WordsBuilder
+        ("表白")
+        .setEn("Profess")
+        .build();
 
     public static final Words bondPointTooLowWarning = new WordsBuilder
         ("当前羁绊值过低，继续互动可能引发灾难性后果")
@@ -38,17 +42,19 @@ public class KokoriI18n {
     public static final Words expressionManual = new WordsBuilder
         ("" +
             "使用Ctrl+Shift+Alt+下列按键：\n" +
-            "  Q: 开心\n" +
-            "  W: 害羞\n" +
-            "  E: 厌恶\n" +
+            "  H: 开心\n" +
+            "  S: 害羞\n" +
+            "  A: 伤心\n" +
+            "  D: 厌恶\n" +
             "  R: 重置\n" +
-            "  T: 惊讶")
+            "  P: 惊讶")
         .setEn("" +
             "Use Ctrl+Shift+Alt+ the following keys:\n" +
-            "  Q: happy\n" +
-            "  W: shy\n" +
-            "  E: disgust\n" +
+            "  H: happy\n" +
+            "  S: shy\n" +
+            "  A: sad\n" +
+            "  D: disgust\n" +
             "  R: Reset\n" +
-            "  T: surprised")
+            "  P: surprised")
         .build();
 }

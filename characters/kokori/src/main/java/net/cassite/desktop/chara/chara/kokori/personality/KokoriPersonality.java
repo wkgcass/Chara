@@ -6,6 +6,7 @@ import net.cassite.desktop.chara.AppCallback;
 import net.cassite.desktop.chara.CharaPoints;
 import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.ThreadUtils;
+import net.cassite.desktop.chara.chara.kokori.util.Consts;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.model.kokori.KokoriConsts;
 import net.cassite.desktop.chara.util.Logger;
@@ -91,15 +92,24 @@ public class KokoriPersonality {
             autoBondIncreasingFuture = null;
             double incBondDelta;
             double incDesireDelta;
-            if (bondPoint > 0.8) {
-                incBondDelta = AUTO_BOND_POINT_DECR;
-            } else {
-                incBondDelta = AUTO_BOND_POINT_INCR;
-            }
-            if (desirePoint > 0.8 || desirePoint < 0.2) {
-                incDesireDelta = 0;
-            } else {
+            if (ConfigManager.get().getBoolValue(Consts.PROPOSING_ACCEPTED)) {
+                incBondDelta = AUTO_BOND_POINT_INCR * 5;
                 incDesireDelta = AUTO_DESIRE_POINT_INCR;
+            } else {
+                if (bondPoint > 0.8) {
+                    incBondDelta = AUTO_BOND_POINT_DECR;
+                } else {
+                    incBondDelta = AUTO_BOND_POINT_INCR;
+                }
+                if (ConfigManager.get().getIntValue(Consts.ORGASM_COUNT) > 0) {
+                    incDesireDelta = AUTO_DESIRE_POINT_INCR;
+                } else {
+                    if (desirePoint > 0.8 || desirePoint < 0.2) {
+                        incDesireDelta = 0;
+                    } else {
+                        incDesireDelta = AUTO_DESIRE_POINT_INCR;
+                    }
+                }
             }
             incPoints(incBondDelta, incDesireDelta);
             rescheduleAutoCharaPointsIncreasingDecreasing();
@@ -310,7 +320,7 @@ public class KokoriPersonality {
                 }
                 return 1;
             } else {
-                Logger.info("touch crotch rand to negative");
+                Logger.info("touch crotch as to negative");
                 negativeInteraction(1, () ->
                     incPoints(NEGATIVE_BOND_POINT_DECR_BASE, POSITIVE_DESIRE_POINT_INCR));
 

@@ -5,7 +5,7 @@
 ## 背景设定
 
 在一个有「灵」存在的世界的一名「普通」巫女，和同伴们守护世界上最大的「灵脉」。  
-在十年前出现的世界性变故「冲击」中存活。「冲击」产生的「模因」让她不得不独自一人进行对「灵脉」的观测和守护。  
+在世界性灾难「冲击」中存活。「冲击」产生的「模因」让她不得不独自一人进行对「灵脉」的观测和守护。  
 长期独处而积存的孤独感被她尽数埋藏在心底。而和「你」的接触却让这感情流出，使她病娇的一面开始显现...
 
 ## 功能
@@ -29,8 +29,13 @@
 | `::repeat:{}`                      | 让心璃说出你输入的内容                   |
 | `::get:bond_point`                 | 输出当前羁绊值                           |
 | `::get:desire_point`               | 输出当前欲望值                           |
+| `::get:proposing_accepted`         | 获取当前是否接受了求婚                   |
+| `::get:proposing_count`            | 获取求婚次数                             |
 | `::set:bond_point:{}`              | 设置羁绊值                               |
 | `::set:desire_point:{}`            | 设置欲望值                               |
+| `::set:proposing_count:{}`         | 设置求婚次数                             |
+| `::set:proposing_accepted:{}`      | 设置当前是否接受了求婚 (true/false)      |
+| `::set:propose_menu_item:{}`       | 设置求婚按钮是否可用 (enabled/disabled)  |
 | `::animate:rune:show`              | 显示符咒                                 |
 | `::animate:red_cheek:show`         | 脸红                                     |
 | `::animate:red_cheek:hide`         | 取消脸红                                 |
@@ -57,3 +62,9 @@
 | `::animate:leg_left:loose`         | 左腿放松                                 |
 | `::action:sex`                     | 执行一次sex动作                          |
 | `::sys:love_potion:add`            | 添加一瓶媚药                             |
+| `::sys:get:sex_count`              | 获取做爱次数                             |
+| `::sys:get:bad_sex_count`          | 获取负面的做爱次数                       |
+| `::sys:get:normal_sex_count`       | 获取普通做爱次数                         |
+| `::sys:get:orgasm_count`           | 获取高潮次数                             |
+| `::sys:get:sex_total_time`         | 获取做爱总时长(ms)                       |
+| `::sys:get:love_potion_used`       | 当前是否使用了媚药                       |

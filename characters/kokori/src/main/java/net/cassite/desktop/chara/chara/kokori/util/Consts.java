@@ -8,6 +8,9 @@ public class Consts {
     private Consts() {
     }
 
+    public static final Key<Boolean> PROPOSING_ACCEPTED = Key.of("proposing_accepted", Boolean.class);
+    public static final Key<Integer> PROPOSING_COUNT = Key.of("proposing_count", Integer.class);
+
     public static final Key<Integer> LOVE_POTION_COUNT = Key.of("love_potion_count", Integer.class);
     public static final Key<Boolean> LOVE_POTION_USED = Key.of("love_potion_used", Boolean.class);
     public static final Key<Integer> SEX_COUNT = Key.of("sex_count", Integer.class);

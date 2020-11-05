@@ -9,9 +9,24 @@ public class KokoriR18Words {
     private KokoriR18Words() {
     }
 
+    public static final WordsSelector thingsLikesR18 = new WordsBuilder
+        ("我最喜欢的当然...是...你...哦～\u2665",
+            "无论是白天还是黑夜，无论是现实还是梦境，我脑中想的全部都是你哦\u2665",
+            "特别是夜深人静的时候，我真的控制不住我自己！我好想要，好想要你的全部！",
+            "啊！光是想着和你在一起我就已经快要高潮了！")
+        .build();
+    public static final WordsSelector thingsHatesR18 = new WordsBuilder
+        ("呐～如果，我是说如果哦～",
+            "如果某一天你不再爱我，你知道会发生什么事情吗？",
+            "呵呵呵呵呵呵，即使你不再爱我，我也会永远爱着你哦～",
+            "但是，很早以前就说过的吧？你的一切都是我的哦\u2665",
+            "所以说，即使你的心不在这里，你的身体也要留下来哦～",
+            "呵呵呵呵呵呵～\u2665")
+        .build();
+
     public static final WordsSelector reject1 = new WordsBuilder
         ("你真是个变态")
-        .setEn("")
+        .setEn("You are such a psychopath")
         .build();
     public static final WordsSelector reject2 = new WordsBuilder
         ("诶？你在说什么啊！？")
@@ -47,6 +62,12 @@ public class KokoriR18Words {
                 "请对我温柔一点哦～\u2665")
             .setEn("You want sex?",
                 "Please be gentle with me~\u2665")
+            .build()
+    );
+    public static final WordsSelector allowSex = new WordsSelector(
+        new WordsBuilder
+            ("虽然我现在还不是很想要，但是为了你我随时都可以哦～",
+                "我的身体全部都是你的～\u2665")
             .build()
     );
     public static final WordsSelector cannotRestrain = new WordsSelector(

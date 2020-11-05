@@ -21,9 +21,9 @@ public class KokoriR18I18n {
     public static final Words r18ExpressionManual = new WordsBuilder
         ("" +
             "  Y: 病娇\n" +
-            "  U: 高潮")
+            "  O: 高潮")
         .setEn("" +
             "  Y: yandere\n" +
-            "  U: orgasm")
+            "  O: orgasm")
         .build();
 }

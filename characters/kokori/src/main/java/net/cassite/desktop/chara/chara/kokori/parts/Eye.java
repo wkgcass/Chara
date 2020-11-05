@@ -11,13 +11,7 @@ public interface Eye {
 
     void removeHighlight();
 
-    void beginAnimatingPupilColor();
-
-    void stopAnimatingPupilColor();
-
     void zoom(double ratio);
-
-    void resetPupilColor();
 
     void track(double x, double y);
 

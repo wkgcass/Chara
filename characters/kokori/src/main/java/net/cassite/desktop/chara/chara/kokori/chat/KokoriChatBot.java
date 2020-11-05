@@ -9,10 +9,12 @@ import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.chara.kokori.Kokori;
 import net.cassite.desktop.chara.chara.kokori.personality.KokoriPersonality;
 import net.cassite.desktop.chara.chara.kokori.personality.KokoriWords;
+import net.cassite.desktop.chara.chara.kokori.util.Consts;
 import net.cassite.desktop.chara.chat.Chatbot;
 import net.cassite.desktop.chara.graphic.Alert;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.manager.ChatbotManager;
+import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.util.Logger;
 
 import java.util.function.Consumer;
@@ -79,11 +81,18 @@ public class KokoriChatBot {
                 return;
             } else if (cmd.startsWith("get:")) {
                 cmd = cmd.substring("get:".length());
+                //noinspection IfCanBeSwitch
                 if (cmd.equals("bond_point")) {
                     appCallback.showMessage(String.format("%.3f", personality.getBondPoint()));
                     return;
                 } else if (cmd.equals("desire_point")) {
                     appCallback.showMessage(String.format("%.3f", personality.getDesirePoint()));
+                    return;
+                } else if (cmd.equals("proposing_accepted")) {
+                    appCallback.showMessage("" + ConfigManager.get().getBoolValue(Consts.PROPOSING_ACCEPTED));
+                    return;
+                } else if (cmd.equals("proposing_count")) {
+                    appCallback.showMessage("" + ConfigManager.get().getIntValue(Consts.PROPOSING_COUNT));
                     return;
                 }
             } else if (cmd.startsWith("set:")) {
@@ -111,6 +120,37 @@ public class KokoriChatBot {
                     }
                     assert Logger.debug("setting desire point to " + d);
                     personality.setDesirePoint(d);
+                    return;
+                } else if (cmd.startsWith("proposing_count:")) {
+                    cmd = cmd.substring("proposing_count:".length());
+                    int n;
+                    try {
+                        n = Integer.parseInt(cmd);
+                    } catch (NumberFormatException e) {
+                        Alert.alert("not a number");
+                        return;
+                    }
+                    ConfigManager.get().setIntValue(Consts.PROPOSING_COUNT, n);
+                    return;
+                } else if (cmd.startsWith("proposing_accepted:")) {
+                    cmd = cmd.substring("proposing_accepted:".length());
+                    if (cmd.equals("true")) {
+                        kokori.setProposeAccepted(true);
+                    } else if (cmd.equals("false")) {
+                        kokori.setProposeAccepted(false);
+                    } else {
+                        Alert.alert("not bool");
+                    }
+                    return;
+                } else if (cmd.startsWith("propose_menu_item:")) {
+                    cmd = cmd.substring("propose_menu_item:".length());
+                    if (cmd.equals("enabled")) {
+                        kokori.setProposeMenuItemDisabled(false);
+                    } else if (cmd.equals("disabled")) {
+                        kokori.setProposeMenuItemDisabled(true);
+                    } else {
+                        Alert.alert("must be enabled or disabled");
+                    }
                     return;
                 }
             } else if (cmd.startsWith("animate:")) {
@@ -211,7 +251,29 @@ public class KokoriChatBot {
                 }
             } else if (cmd.startsWith("sys:")) {
                 cmd = cmd.substring("sys:".length());
-                if (cmd.equals("love_potion:add")) {
+                if (cmd.startsWith("get:")) {
+                    cmd = cmd.substring("get:".length());
+                    //noinspection IfCanBeSwitch
+                    if (cmd.equals("sex_count")) {
+                        appCallback.showMessage("" + ConfigManager.get().getIntValue(Consts.SEX_COUNT));
+                        return;
+                    } else if (cmd.equals("bad_sex_count")) {
+                        appCallback.showMessage("" + ConfigManager.get().getIntValue(Consts.BAD_SEX_COUNT));
+                        return;
+                    } else if (cmd.equals("normal_sex_count")) {
+                        appCallback.showMessage("" + ConfigManager.get().getIntValue(Consts.NORMAL_SEX_COUNT));
+                        return;
+                    } else if (cmd.equals("orgasm_count")) {
+                        appCallback.showMessage("" + ConfigManager.get().getIntValue(Consts.ORGASM_COUNT));
+                        return;
+                    } else if (cmd.equals("sex_total_time")) {
+                        appCallback.showMessage("" + ConfigManager.get().getIntValue(Consts.SEX_TOTAL_TIME));
+                        return;
+                    } else if (cmd.equals("love_potion_used")) {
+                        appCallback.showMessage("" + ConfigManager.get().getBoolValue(Consts.LOVE_POTION_USED));
+                        return;
+                    }
+                } else if (cmd.equals("love_potion:add")) {
                     kokori.r18.addLovePotion();
                     return;
                 }
@@ -220,7 +282,7 @@ public class KokoriChatBot {
         });
     }
 
-    private boolean handleSpecialMessage(String msg) {
+    private boolean handleSpecialMessage(@SuppressWarnings("unused") String msg) {
         return false;
     }
 }

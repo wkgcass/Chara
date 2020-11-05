@@ -41,18 +41,6 @@ public class EyeJoin {
         eye.restorePosition();
     }
 
-    public void beginAnimatingPupilColor() {
-        eye.beginAnimatingPupilColor();
-    }
-
-    public void stopAnimatingPupilColor() {
-        eye.stopAnimatingPupilColor();
-    }
-
-    public void resetPupilColor() {
-        eye.resetPupilColor();
-    }
-
     public void zoom(double ratio) {
         eye.zoom(ratio);
     }

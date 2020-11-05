@@ -4,6 +4,7 @@ package net.cassite.desktop.chara.chara.kokori;
 
 import javafx.application.Platform;
 import javafx.scene.Group;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.Clipboard;
@@ -19,9 +20,11 @@ import net.cassite.desktop.chara.chara.kokori.join.EyeJoin;
 import net.cassite.desktop.chara.chara.kokori.join.HeadJoin;
 import net.cassite.desktop.chara.chara.kokori.parts.*;
 import net.cassite.desktop.chara.chara.kokori.personality.KokoriPersonality;
+import net.cassite.desktop.chara.chara.kokori.personality.KokoriR18Words;
 import net.cassite.desktop.chara.chara.kokori.personality.KokoriWords;
 import net.cassite.desktop.chara.chara.kokori.special.DontWantToSeeYouException;
 import net.cassite.desktop.chara.chara.kokori.special.ModelFileNotFoundException;
+import net.cassite.desktop.chara.chara.kokori.util.Consts;
 import net.cassite.desktop.chara.control.ClickHandler;
 import net.cassite.desktop.chara.graphic.Alert;
 import net.cassite.desktop.chara.i18n.I18nConsts;
@@ -78,6 +81,7 @@ public class Kokori implements Chara {
     private final MenuItem[] bondStoriesMenuItems = new MenuItem[5];
     private final double[] bondStoriesRequiredBondPoints = new double[5];
     private final MenuItem expressionMenuItem = new MenuItem(KokoriI18n.expressionMenuItem.get()[0]);
+    private final CheckMenuItem proposeMenuItem = new CheckMenuItem(KokoriI18n.proposeMenuItem.get()[0]);
 
     public Kokori(KokoriConsts kokoriConsts, AppCallback appCallback, Group parent, Menu characterMenu) {
         this.appCallback = appCallback;
@@ -131,6 +135,9 @@ public class Kokori implements Chara {
         characterMenu.getItems().addAll(bondStoriesMenuItems);
         expressionMenuItem.setOnAction(e -> this.menuExpression());
         characterMenu.getItems().add(expressionMenuItem);
+        proposeMenuItem.setOnAction(e -> this.propose());
+        proposeMenuItem.setDisable(true);
+        proposeMenuItem.setSelected(ConfigManager.get().getBoolValue(Consts.PROPOSING_ACCEPTED));
         r18.initCharacterMenu(characterMenu);
 
         hairBack = new HairBack(root);
@@ -248,12 +255,8 @@ public class Kokori implements Chara {
         if (redCheek == null) {
             return; // not initialized yet
         }
-        if (Global.r18Features()) {
-            if (personality.getDesirePoint() < kokoriConsts.veryHighDesirePoint) {
-                redCheek.hide();
-            } else {
-                redCheek.show();
-            }
+        if (Global.r18Features() && personality.getDesirePoint() >= kokoriConsts.veryHighDesirePoint) {
+            redCheek.show();
         } else {
             redCheek.hide();
         }
@@ -277,10 +280,18 @@ public class Kokori implements Chara {
 
     private void resetMenuItems() {
         double bondPoint = personality.getBondPoint();
+        thingsSheLikesMenuItem.setDisable(bondPoint < 0.7);
         for (int i = 0; i < bondStoriesMenuItems.length; ++i) {
             var menuItem = bondStoriesMenuItems[i];
             var required = bondStoriesRequiredBondPoints[i];
             menuItem.setDisable(bondPoint < required);
+        }
+        if (bondPoint < 0.85) {
+            characterMenu.getItems().remove(proposeMenuItem);
+        } else {
+            if (!characterMenu.getItems().contains(proposeMenuItem)) {
+                characterMenu.getItems().add(proposeMenuItem);
+            }
         }
     }
 
@@ -448,7 +459,7 @@ public class Kokori implements Chara {
         if (e.isControlDown() && e.isShiftDown() && e.isAltDown()) {
             Runnable toRun = null;
             switch (e.getCode()) {
-                case Q:
+                case H: // Happy
                     resetAll();
                     toRun = () -> {
                         eyeLeft.addHighlight();
@@ -457,7 +468,7 @@ public class Kokori implements Chara {
                         mouth.toHappy();
                     };
                     break;
-                case W:
+                case S: // Shy
                     resetAll();
                     toRun = () -> {
                         eyeLeft.addHighlight();
@@ -466,7 +477,14 @@ public class Kokori implements Chara {
                         mouth.toSad();
                     };
                     break;
-                case E:
+                case A: // sAd
+                    resetAll();
+                    toRun = () -> {
+                        //noinspection Convert2MethodRef
+                        mouth.toSad();
+                    };
+                    break;
+                case D: // Disgust
                     resetAll();
                     toRun = () -> {
                         eyeLeft.removeHighlight();
@@ -475,10 +493,10 @@ public class Kokori implements Chara {
                         mouth.toSad();
                     };
                     break;
-                case R:
+                case R: // Reset
                     resetAll();
                     break;
-                case T:
+                case P: // surPrised
                     resetAll();
                     toRun = () -> {
                         eyeLeft.zoom(0.85);
@@ -486,11 +504,11 @@ public class Kokori implements Chara {
                         mouth.toOpen();
                     };
                     break;
-                case Y:
+                case Y: // Yandere
                     if (Global.r18Features()) {
                         resetAll();
                         toRun = () -> {
-                            headJoin.tiltToRight();
+                            headJoin.tiltToLeft();
                             eyeLeft.removeHighlight();
                             eyeRight.removeHighlight();
                             redCheek.show();
@@ -498,14 +516,16 @@ public class Kokori implements Chara {
                         };
                     }
                     break;
-                case U:
+                case O: // Orgasm
                     if (Global.r18Features()) {
                         resetAll();
                         toRun = () -> {
                             eyeLeft.zoom(0.85);
                             eyeLeft.move(kokoriConsts.eyeLeftOriginalX, kokoriConsts.eyeLeftYMin);
+                            eyeLeft.removeHighlight();
                             eyeRight.zoom(0.85);
                             eyeRight.move(kokoriConsts.eyeRightOriginalX, kokoriConsts.eyeRightYMin);
+                            eyeRight.removeHighlight();
                             mouth.toOpen();
                             redCheek.show();
                         };
@@ -553,43 +573,17 @@ public class Kokori implements Chara {
         }
     }
 
-    private int eyeRightState = 0; // 0: normal, 1: changing color, 2: color selected
-
     @SuppressWarnings("DuplicatedCode")
     private void clickEyeRight(double x, double y) {
         assert Logger.debug("click eye right");
         eyeRight.blink();
-        if (eyeRightState == 0) {
-            eyeRightState = 1;
-            eyeRight.beginAnimatingPupilColor();
-        } else if (eyeRightState == 1) {
-            eyeRightState = 2;
-            eyeRight.stopAnimatingPupilColor();
-        } else {
-            eyeRightState = 0;
-            eyeRight.resetPupilColor();
-        }
-
         personality.touchEye();
     }
-
-    private int eyeLeftState = 0; // 0: normal, 1: changing color, 2: color selected
 
     @SuppressWarnings("DuplicatedCode")
     private void clickEyeLeft(double x, double y) {
         assert Logger.debug("click eye left");
         eyeLeft.blink();
-        if (eyeLeftState == 0) {
-            eyeLeftState = 1;
-            eyeLeft.beginAnimatingPupilColor();
-        } else if (eyeLeftState == 1) {
-            eyeLeftState = 2;
-            eyeLeft.stopAnimatingPupilColor();
-        } else {
-            eyeLeftState = 0;
-            eyeLeft.resetPupilColor();
-        }
-
         personality.touchEye();
     }
 
@@ -826,11 +820,9 @@ public class Kokori implements Chara {
             Utils.randomDelay(armRight::runeFlow);
         }
         if (Utils.random(0.006)) {
-            Utils.randomDelay(() -> {
-                if (!armRight.runeIsVisible() && !armRight.arrowIsVisible()) {
-                    armRight.showRune();
-                }
-            });
+            if (!armRight.runeIsVisible() && !armRight.arrowIsVisible()) {
+                armRight.showRune();
+            }
         }
         if (Utils.random(0.001)) {
             r18.addLovePotion();
@@ -838,6 +830,11 @@ public class Kokori implements Chara {
         if (Global.r18Features() && personality.getDesirePoint() == 1) {
             if (Utils.random(0.5)) {
                 lookAtLeftOrRight();
+            }
+        }
+        if (Utils.random(0.006)) {
+            if (!ConfigManager.get().getBoolValue(Consts.PROPOSING_ACCEPTED) && personality.getBondPoint() >= 0.85) {
+                proposeMenuItem.setDisable(false);
             }
         }
     }
@@ -888,11 +885,66 @@ public class Kokori implements Chara {
         if (preInteractionCheckFail()) {
             return;
         }
-        appCallback.showMessage(KokoriWords.thingsLikes.select());
+        if (personality.getBondPoint() < 0.7) {
+            return;
+        }
+        if (personality.getBondPoint() < 0.8) {
+            appCallback.showMessage(KokoriWords.thingsLikes1.select());
+        } else if (personality.getBondPoint() < 0.85) {
+            appCallback.showMessage(KokoriWords.thingsLikes2.select());
+        } else {
+            if (!ConfigManager.get().getBoolValue(Consts.PROPOSING_ACCEPTED)) {
+                appCallback.showMessage(KokoriWords.thingsLikes3.select());
+            } else {
+                eyeLeft.removeHighlight();
+                eyeRight.removeHighlight();
+                headJoin.tiltToLeft();
+                mouth.toHappy();
+                redCheek.show();
+                Utils.delay("things-likes-4", 20_000, this::resetAll);
+
+                double r18probability = 0;
+                if (Global.r18Features()) {
+                    r18probability = 0.5;
+                }
+                if (!Utils.random(r18probability)) {
+                    armRight.tighten();
+                    appCallback.showMessage(KokoriWords.thingsLikes4.select());
+                } else {
+                    armRight.protectCrotch();
+                    appCallback.showMessage(KokoriR18Words.thingsLikesR18.select());
+                }
+            }
+        }
     }
 
     private void menuThingsSheHates() {
-        appCallback.showMessage(KokoriWords.thingsHates.select());
+        var bond = personality.getBondPoint();
+        if (bond < kokoriConsts.reallyBadMood) {
+            appCallback.showMessage(KokoriWords.thingsHates1.select());
+            return;
+        }
+        if (bond < kokoriConsts.badMood) {
+            appCallback.showMessage(KokoriWords.thingsHates2.select());
+            return;
+        }
+        if (bond < 0.7) {
+            appCallback.showMessage(KokoriWords.thingsHates3.select());
+            return;
+        }
+        if (!ConfigManager.get().getBoolValue(Consts.PROPOSING_ACCEPTED)) {
+            appCallback.showMessage(KokoriWords.thingsHates4.select());
+        } else {
+            double r18probability = 0;
+            if (Global.r18Features()) {
+                r18probability = 0.5;
+            }
+            if (Utils.random(r18probability)) {
+                appCallback.showMessage(KokoriWords.thingsHates5.select());
+            } else {
+                appCallback.showMessage(KokoriR18Words.thingsHatesR18.select());
+            }
+        }
     }
 
     private void menuBondStory(int lvl) {
@@ -911,5 +963,60 @@ public class Kokori implements Chara {
             manual += "\n" + KokoriR18I18n.r18ExpressionManual.get()[0];
         }
         Alert.alert(manual);
+    }
+
+    private void propose() {
+        if (ConfigManager.get().getBoolValue(Consts.PROPOSING_ACCEPTED)) {
+            return;
+        }
+        if (preInteractionCheckFail()) {
+            return;
+        }
+        var bondPoint = personality.getBondPoint();
+        if (bondPoint < 0.85) {
+            return;
+        }
+        int cnt = ConfigManager.get().getIntValue(Consts.PROPOSING_COUNT);
+        ConfigManager.get().setIntValue(Consts.PROPOSING_COUNT, cnt + 1);
+
+        double probability = (bondPoint - 0.75) * cnt; // minimum 0.1 * 0
+        if (Utils.random(probability)) {
+            setProposeAccepted(true);
+            redCheek.show();
+            mouth.toHappy();
+            Utils.delay("propose-accept", 10_000, () -> {
+                resetCheek();
+                resetMouth();
+            });
+            appCallback.showMessage(KokoriWords.acceptProposal.select());
+        } else {
+            proposeMenuItem.setDisable(true);
+            redCheek.show();
+            mouth.toSad();
+            Utils.delay("propose-reject", 10_000, () -> {
+                resetCheek();
+                resetMouth();
+            });
+            appCallback.showMessage(KokoriWords.rejectProposal.select());
+        }
+    }
+
+    public void setProposeAccepted(boolean accepted) {
+        ConfigManager.get().setBoolValue(Consts.PROPOSING_ACCEPTED, accepted);
+        if (accepted) {
+            proposeMenuItem.setSelected(true);
+            proposeMenuItem.setDisable(true);
+        } else {
+            proposeMenuItem.setSelected(false);
+        }
+    }
+
+    public void setProposeMenuItemDisabled(boolean disabled) {
+        if (!disabled) {
+            if (ConfigManager.get().getBoolValue(Consts.PROPOSING_ACCEPTED)) {
+                return;
+            }
+        }
+        proposeMenuItem.setDisable(disabled);
     }
 }
