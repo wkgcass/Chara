@@ -157,24 +157,40 @@ public class App {
         {
             double maxWidth = chara.data().imageWidth;
             double maxHeight = chara.data().imageHeight;
+            Logger.info("image size: [" + maxWidth + "," + maxHeight + "]");
 
+            double resultMaxWidth = 0;
+            double resultMaxHeight = 0;
             var screens = Screen.getScreens();
             for (Screen s : screens) {
                 var bounds = s.getBounds();
-                if (bounds.getWidth() * 1.1 < maxWidth) {
-                    maxWidth = bounds.getWidth() * 1.1;
+                Logger.info("screen bounds: [" + bounds.getWidth() + "," + bounds.getHeight() + "]*[" + s.getOutputScaleX() + "," + s.getOutputScaleY() + "]");
+                var widthLimit = bounds.getWidth() * 1.1 / s.getOutputScaleX();
+                var heightLimit = bounds.getHeight() * 1.1 / s.getOutputScaleY();
+
+                if (widthLimit > maxWidth) {
+                    widthLimit = maxWidth;
                 }
-                if (bounds.getHeight() * 1.1 < maxHeight) {
-                    maxHeight = bounds.getHeight() * 1.1;
+                if (heightLimit > maxHeight) {
+                    heightLimit = maxHeight;
+                }
+
+                if (widthLimit / chara.data().imageWidth * chara.data().imageHeight < heightLimit) {
+                    heightLimit = widthLimit / chara.data().imageWidth * chara.data().imageHeight;
+                } else {
+                    widthLimit = heightLimit / chara.data().imageHeight * chara.data().imageWidth;
+                }
+
+                if (resultMaxWidth < widthLimit) {
+                    resultMaxWidth = widthLimit;
+                }
+                if (resultMaxHeight < heightLimit) {
+                    resultMaxHeight = heightLimit;
                 }
             }
-            if (maxWidth / chara.data().imageWidth * chara.data().imageHeight < maxHeight) {
-                this.MAX_WIDTH = (int) maxWidth;
-                this.MAX_HEIGHT = (int) (maxWidth / chara.data().imageWidth * chara.data().imageHeight);
-            } else {
-                this.MAX_HEIGHT = (int) maxHeight;
-                this.MAX_WIDTH = (int) (maxHeight / chara.data().imageHeight * chara.data().imageWidth);
-            }
+            this.MAX_WIDTH = (int) resultMaxWidth;
+            this.MAX_HEIGHT = (int) resultMaxHeight;
+            Logger.info("calculated max width and max height: [" + this.MAX_WIDTH + "," + this.MAX_HEIGHT + "]");
         }
 
         // mouse circle
