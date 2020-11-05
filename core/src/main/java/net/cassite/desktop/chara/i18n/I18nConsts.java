@@ -109,6 +109,11 @@ public class I18nConsts {
         .setEn("Apply after rebooting this program")
         .build();
 
+    public static Words copyAllMenuItem = new WordsBuilder
+        ("复制全部")
+        .setEn("Copy all")
+        .build();
+
     public static final Words chatbotNotConfigured = new WordsBuilder
         ("聊天机器人尚未配置")
         .setEn("Chatbot is not configured yet")

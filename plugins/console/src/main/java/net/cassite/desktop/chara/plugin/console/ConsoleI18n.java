@@ -13,8 +13,4 @@ public class ConsoleI18n {
         ("控制台")
         .setEn("Console")
         .build();
-    public static Words copyAllMenuItem = new WordsBuilder
-        ("复制全部")
-        .setEn("Copy all")
-        .build();
 }
