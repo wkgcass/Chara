@@ -99,5 +99,6 @@ public class EyeRight extends AbstractEye implements Eye {
     @Override
     public void move(double relativeX, double relativeY) {
         eye.setPosition(relativeX - kokoriConsts.eyeRightOriginalX, relativeY - kokoriConsts.eyeRightOriginalY);
+        highlight.setPosition(relativeX - kokoriConsts.eyeRightOriginalX, relativeY - kokoriConsts.eyeRightOriginalY);
     }
 }
