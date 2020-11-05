@@ -686,19 +686,15 @@ public class App {
     private void mouseMove(NativeMouseEvent e) {
         double x = e.getX();
         double y = e.getY();
-        x -= primaryStage.getAbsoluteX();
-        y -= primaryStage.getAbsoluteY();
-        x = primaryStage.getImageXBySceneX(x);
-        y = primaryStage.getImageYBySceneY(y);
+        double sceneX = primaryStage.getSceneXByScreenX(x);
+        double sceneY = primaryStage.getSceneYByScreenY(y);
+        x = primaryStage.getImageXBySceneX(sceneX);
+        y = primaryStage.getImageYBySceneY(sceneY);
 
         // check mouse enter/leave
-        double mx = e.getX();
-        double my = e.getY();
-        double px = primaryStage.getAbsoluteX();
-        double py = primaryStage.getAbsoluteY();
         double w = primaryStage.getStage().getWidth();
         double h = primaryStage.getStage().getHeight();
-        if (mx < px || mx > px + w || my < py || my > py + h) {
+        if (sceneX < 0 || sceneX > w || sceneY < 0 || sceneY > h) {
             // leaves
             if (!mouseLeaves) {
                 mouseLeaves = true;
@@ -713,7 +709,7 @@ public class App {
             return;
         }
 
-        mouseCircleMove(e.getX() - primaryStage.getAbsoluteX(), e.getY() - primaryStage.getAbsoluteY());
+        mouseCircleMove(sceneX, sceneY);
         mouseMove(x, y);
     }
 

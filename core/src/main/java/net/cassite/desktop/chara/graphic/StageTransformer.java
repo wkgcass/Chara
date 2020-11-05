@@ -284,4 +284,32 @@ public class StageTransformer {
         y += getAddAbsoluteTop();
         return y;
     }
+
+    /**
+     * Get real x relative to the scene by screen x
+     *
+     * @param x screen x
+     * @return calculated real x
+     */
+    public double getSceneXByScreenX(double x) {
+        Screen screen = getScreen();
+        double offX = screen.getBounds().getMinX();
+        x = (x - offX) / screen.getOutputScaleX() + offX;
+        x -= getAbsoluteX();
+        return x;
+    }
+
+    /**
+     * Get real y relative to the scene by screen x
+     *
+     * @param y screen y
+     * @return calculated real y
+     */
+    public double getSceneYByScreenY(double y) {
+        Screen screen = getScreen();
+        double offY = screen.getBounds().getMinY();
+        y = (y - offY) / screen.getOutputScaleY() + offY;
+        y -= getAbsoluteY();
+        return y;
+    }
 }
