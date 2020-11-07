@@ -252,6 +252,16 @@ public class Utils {
     }
 
     /**
+     * Check whether the current platform scales coordinates.<br>
+     * The jnativehook provides different coordinates from jfx on some platforms when screen is scaled.
+     *
+     * @return true if the stage is scaled on the current platform, false otherwise
+     */
+    public static boolean isCoordinatesScaled() {
+        return isWindows();
+    }
+
+    /**
      * Load all jars matching the prefix in the zipFile and return the specified <code>Class</code> object.
      *
      * @param zipFile   zip file

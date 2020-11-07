@@ -164,9 +164,17 @@ public class App {
             var screens = Screen.getScreens();
             for (Screen s : screens) {
                 var bounds = s.getBounds();
-                Logger.info("screen bounds: [" + bounds.getWidth() + "," + bounds.getHeight() + "]*[" + s.getOutputScaleX() + "," + s.getOutputScaleY() + "]");
-                var widthLimit = bounds.getWidth() * 1.1 / s.getOutputScaleX();
-                var heightLimit = bounds.getHeight() * 1.1 / s.getOutputScaleY();
+                Logger.info("screen bounds: [" + bounds.getWidth() + "," + bounds.getHeight() + "]" +
+                    "*[" + s.getOutputScaleX() + "," + s.getOutputScaleY() + "]");
+                double widthLimit;
+                double heightLimit;
+                if (Utils.isCoordinatesScaled()) {
+                    widthLimit = bounds.getWidth() * 1.1 / s.getOutputScaleX();
+                    heightLimit = bounds.getHeight() * 1.1 / s.getOutputScaleY();
+                } else {
+                    widthLimit = bounds.getWidth() * 1.1;
+                    heightLimit = bounds.getHeight() * 1.1;
+                }
 
                 if (widthLimit > maxWidth) {
                     widthLimit = maxWidth;

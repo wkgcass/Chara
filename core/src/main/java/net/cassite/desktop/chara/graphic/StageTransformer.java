@@ -171,6 +171,8 @@ public class StageTransformer {
         ConfigManager.get().setCharacterRatio(scaleRatio);
     }
 
+    private Screen lastRetrievedScreen;
+
     /**
      * Retrieve the screen that is showing the stage.<br>
      * If not retrieved, the primary screen will return.
@@ -178,16 +180,30 @@ public class StageTransformer {
      * @return the showing screen or the primary screen
      */
     public Screen getScreen() {
-        Screen screen;
-        var ls = Screen.getScreensForRectangle(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-        if (ls.isEmpty()) {
-            assert Logger.debug("getScreenForRectangle return empty");
-            screen = Screen.getPrimary();
-        } else {
-            assert Logger.debug("getScreenForRectangle return " + ls.size());
-            screen = ls.get(0);
+        Screen s = getScreen(stage.getX() + stage.getWidth() / 2, stage.getY() + stage.getHeight() / 2);
+        if (s == null) {
+            if (lastRetrievedScreen == null) {
+                assert Logger.debug("getScreen returns primary");
+                return Screen.getPrimary();
+            }
+            assert Logger.debug("getScreen returns lastReturnedScreen: " + lastRetrievedScreen);
+            return lastRetrievedScreen;
         }
-        return screen;
+        lastRetrievedScreen = s;
+        return s;
+    }
+
+    private Screen getScreen(double x, double y) {
+        var screens = Screen.getScreens();
+        for (var s : screens) {
+            var bounds = s.getBounds();
+            if (bounds.contains(x, y)) {
+                assert Logger.debug("getScreen(" + x + "," + y + ")" + " returns " + s);
+                return s;
+            }
+        }
+        assert Logger.debug("getScreen(" + x + "," + y + ")" + " returns null");
+        return null;
     }
 
     /**
