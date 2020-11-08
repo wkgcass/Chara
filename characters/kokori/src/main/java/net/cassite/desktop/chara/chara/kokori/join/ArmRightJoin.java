@@ -124,6 +124,7 @@ public class ArmRightJoin {
 
     public void animateMoveToBack(Runnable cb) {
         if (isMovedToBack) {
+            cb.run();
             return;
         }
         isMovedToBack = true;
@@ -135,6 +136,7 @@ public class ArmRightJoin {
 
     public void animateMoveToFront(Runnable cb) {
         if (!isMovedToBack) {
+            cb.run();
             return;
         }
         isMovedToBack = false;
