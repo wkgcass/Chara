@@ -67,18 +67,18 @@ words目录中的文件用于在模型中扩充角色所说的语句。
 
 ```
 -----BEGIN WORDS-----
------BEGIN ZH-----
+-----BEGIN CS-----
 很高兴又和你见面了
------END ZH-----
+-----END CS-----
 -----BEGIN EN-----
 Glad to see you
 -----END EN-----
 -----END WORDS-----
 
 -----BEGIN WORDS-----
------BEGIN ZH-----
+-----BEGIN CS-----
 我就在这里哦～
------END ZH-----
+-----END CS-----
 -----BEGIN EN-----
 I'm right here~
 -----END EN-----

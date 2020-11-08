@@ -13,37 +13,37 @@ import java.util.Map;
 public class Words extends WordsSelector {
     private static final Locale locale = Locale.getDefault();
 
-    private final String[] zh;
+    private final String[] sc;
     private final String[] en;
 
     /**
      * Construct the object with different languages
      *
-     * @param zh chinese, not-null, may be used as the default language when all other languages are not set
+     * @param sc chinese, not-null, may be used as the default language when all other languages are not set
      * @param en english, nullable
      */
-    public Words(String[] zh, String[] en) {
+    public Words(String[] sc, String[] en) {
         this.en = en;
-        this.zh = zh;
+        this.sc = sc;
     }
 
     /**
      * Construct the object from a map
      *
-     * @param map a map in the form of <pre>{"ZH" -$gt; [...], "EN" -$gt; [...]}</pre>
+     * @param map a map in the form of <pre>{"CS" -$gt; [...], "EN" -$gt; [...]}</pre>
      * @return a constructed <code>Words</code> object
      */
     public static Words fromMap(Map<String, String[]> map) {
-        var zh = map.get("ZH");
+        var cs = map.get("CS");
         var en = map.get("EN");
-        if (zh == null) {
-            zh = en;
+        if (cs == null) {
+            cs = en;
             en = null;
         }
-        if (zh == null) {
+        if (cs == null) {
             return null;
         }
-        return new Words(zh, en);
+        return new Words(cs, en);
     }
 
     /**
@@ -52,16 +52,17 @@ public class Words extends WordsSelector {
      * @return the retrieved string array
      */
     public String[] get() {
-        assert Logger.debug("current locale = " + locale.getLanguage());
+        assert Logger.debug("current locale lang = " + locale.getLanguage() + ", region = " + locale.getCountry());
         String lang = locale.getLanguage();
+        String region = locale.getCountry();
 
         //noinspection SwitchStatementWithTooFewBranches
-        switch (lang) {
-            case "zh":
-                return zh;
+        switch (lang + "-" + region) {
+            case "zh-CN":
+                return sc;
             default:
                 if (en == null) {
-                    return zh;
+                    return sc;
                 }
                 return en;
         }

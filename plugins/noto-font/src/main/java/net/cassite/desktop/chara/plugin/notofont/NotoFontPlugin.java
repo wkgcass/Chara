@@ -36,13 +36,13 @@ public class NotoFontPlugin implements Plugin {
     public List<ResourceHandler> resourceHandlers() {
         List<ResourceHandler> ret = new LinkedList<>();
         Words words = new WordsBuilder
-            ("zh")
+            ("cs")
             .setEn("en")
             .build();
         String lang = words.get()[0];
         //noinspection SwitchStatementWithTooFewBranches
         switch (lang) {
-            case "zh":
+            case "cs":
                 ret.add(new ResourceHandler("font/NotoSansSC-Regular.otf", (inputStream, cb) -> {
                     FontManager.registerFont(inputStream);
                     FontManager.setDefaultFontFamily("Noto Sans SC Regular");

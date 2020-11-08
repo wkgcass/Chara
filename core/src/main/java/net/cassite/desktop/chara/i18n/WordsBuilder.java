@@ -6,7 +6,7 @@ package net.cassite.desktop.chara.i18n;
  * A builder for constructing {@link Words} object.
  */
 public class WordsBuilder {
-    private final String[] zh;
+    private final String[] cs;
     private String[] en;
 
     private String[] merge(String a, String... more) {
@@ -20,11 +20,11 @@ public class WordsBuilder {
      * Construct the builder with chinese language words.<br>
      * Or may be used as the default language when all other languages are not set.
      *
-     * @param zh   chinese, may be used as the default language when all other languages are not set
+     * @param cs   chinese, may be used as the default language when all other languages are not set
      * @param more more chinese strings
      */
-    public WordsBuilder(String zh, String... more) {
-        this.zh = merge(zh, more);
+    public WordsBuilder(String cs, String... more) {
+        this.cs = merge(cs, more);
     }
 
     /**
@@ -45,6 +45,6 @@ public class WordsBuilder {
      * @return <code>Words</code> object
      */
     public Words build() {
-        return new Words(zh, en);
+        return new Words(cs, en);
     }
 }
