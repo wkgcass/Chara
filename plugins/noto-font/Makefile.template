@@ -1,0 +1,18 @@
+.PHONY: noto-font-plugin
+noto-font-plugin: clean-noto-font-plugin compile-noto-font-plugin build-noto-font-plugin output-noto-font-plugin deploy-noto-font-plugin
+.PHONY: compile-noto-font-plugin
+compile-noto-font-plugin: compile-core
+	cd plugins/noto-font/ && $(CHRONIC) ./gradlew jar
+.PHONY: build-noto-font-plugin
+build-noto-font-plugin: compile-core
+	cd plugins/noto-font/ && $(CHRONIC) ./build-plugin.sh
+.PHONY: clean-noto-font-plugin
+clean-noto-font-plugin:
+	cd plugins/noto-font/ && $(CHRONIC) ./gradlew clean
+	cd plugins/noto-font/plugin/ && rm -f *.plugin
+.PHONY: output-noto-font-plugin
+output-noto-font-plugin: output build-noto-font-plugin
+	cp plugins/noto-font/plugin/*.plugin output/
+.PHONY: deploy-noto-font-plugin
+deploy-noto-font-plugin: output-noto-font-plugin home-chara
+	cp output/noto-font.plugin ~/.chara/plugin/
