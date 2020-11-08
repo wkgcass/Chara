@@ -227,12 +227,22 @@ public class KokoriWords {
         return highIntimacyConversationsFromModel;
     }
 
+    private static WordsSelector menuConversationsFromModel;
+
+    public static WordsSelector menuConversations() {
+        return menuConversationsFromModel;
+    }
+
     public static void setNormalConversationsFromModel(WordsSelector normalConversationsFromModel) {
         KokoriWords.normalConversationsFromModel = normalConversationsFromModel;
     }
 
     public static void setHighIntimacyConversationsFromModel(WordsSelector highIntimacyConversationsFromModel) {
         KokoriWords.highIntimacyConversationsFromModel = highIntimacyConversationsFromModel;
+    }
+
+    public static void setMenuConversationsFromModel(WordsSelector menuConversationsFromModel) {
+        KokoriWords.menuConversationsFromModel = menuConversationsFromModel;
     }
 
     public static void setOpeningFromModel(WordsSelector openingFromModel) {

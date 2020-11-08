@@ -13,6 +13,10 @@ public class KokoriI18n {
         ("关于名字")
         .setEn("About name")
         .build();
+    public static final Words conversationMenuItem = new WordsBuilder
+        ("对话")
+        .setEn("Conversation")
+        .build();
     public static final Words thingsSheLikesMenuItem = new WordsBuilder
         ("喜欢的东西")
         .setEn("Things she likes")

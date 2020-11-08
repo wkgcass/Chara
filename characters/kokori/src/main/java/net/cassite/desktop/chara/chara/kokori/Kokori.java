@@ -76,6 +76,7 @@ public class Kokori implements Chara {
 
     final Menu characterMenu;
     private final MenuItem aboutNameMenuItem = new MenuItem(KokoriI18n.aboutNameMenuItem.get()[0]);
+    private final MenuItem conversationMenuItem = new MenuItem(KokoriI18n.conversationMenuItem.get()[0]);
     private final MenuItem thingsSheLikesMenuItem = new MenuItem(KokoriI18n.thingsSheLikesMenuItem.get()[0]);
     private final MenuItem thingsSheHatesMenuItem = new MenuItem(KokoriI18n.thingsSheHatesMenuItem.get()[0]);
     private final MenuItem[] bondStoriesMenuItems = new MenuItem[5];
@@ -119,6 +120,7 @@ public class Kokori implements Chara {
         // menu
         this.characterMenu = characterMenu;
         aboutNameMenuItem.setOnAction(e -> this.menuAboutName());
+        conversationMenuItem.setOnAction(e -> this.conversation());
         thingsSheLikesMenuItem.setOnAction(e -> this.menuThingsSheLikes());
         thingsSheHatesMenuItem.setOnAction(e -> this.menuThingsSheHates());
         for (int i = 0; i < 5; ++i) {
@@ -129,6 +131,7 @@ public class Kokori implements Chara {
         }
         characterMenu.getItems().addAll(
             aboutNameMenuItem,
+            conversationMenuItem,
             thingsSheLikesMenuItem,
             thingsSheHatesMenuItem
         );
@@ -879,6 +882,13 @@ public class Kokori implements Chara {
 
     private void menuAboutName() {
         appCallback.showMessage(KokoriWords.aboutName.select());
+    }
+
+    private void conversation() {
+        if (preInteractionCheckFail()) {
+            return;
+        }
+        appCallback.showMessage(KokoriWords.menuConversations().select());
     }
 
     private void menuThingsSheLikes() {

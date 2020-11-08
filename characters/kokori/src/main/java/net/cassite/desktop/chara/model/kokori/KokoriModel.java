@@ -61,11 +61,13 @@ public class KokoriModel implements Model {
     public void init(ModelInitConfig conf) {
         WordsSelector normal = conf.getInteractionWordsSelectors().get("normal");
         WordsSelector high = conf.getInteractionWordsSelectors().get("high");
+        WordsSelector menu = conf.getInteractionWordsSelectors().get("menu");
         WordsSelector opening = conf.getInteractionWordsSelectors().get("opening");
         WordsSelector flirt = conf.getInteractionWordsSelectors().get("flirt");
 
         KokoriWords.setNormalConversationsFromModel(normal);
         KokoriWords.setHighIntimacyConversationsFromModel(high);
+        KokoriWords.setMenuConversationsFromModel(menu);
         KokoriWords.setOpeningFromModel(opening);
         KokoriWords.setFlirtFromModel(flirt);
 
