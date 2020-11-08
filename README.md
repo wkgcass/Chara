@@ -84,6 +84,12 @@ Chara是一款基于JavaFX的桌面人物软件。
 
 使用文泉驿字体。
 
+## noto-font
+
+使用Noto字体。
+
+注意，你可能需要自行根据语言/地区添加相应的字体文件和加载配置。
+
 ## tianxing-chatbot
 
 使用[天行机器人](https://www.tianapi.com/search/机器人)作为聊天机器人。
