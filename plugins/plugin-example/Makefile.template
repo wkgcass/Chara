@@ -1,0 +1,18 @@
+.PHONY: plugin-example-plugin
+plugin-example-plugin: clean-plugin-example-plugin compile-plugin-example-plugin build-plugin-example-plugin output-plugin-example-plugin deploy-plugin-example-plugin
+.PHONY: compile-plugin-example-plugin
+compile-plugin-example-plugin: compile-core
+	cd plugins/plugin-example/ && $(CHRONIC) ./gradlew jar
+.PHONY: build-plugin-example-plugin
+build-plugin-example-plugin: compile-core
+	cd plugins/plugin-example/ && $(CHRONIC) ./build-plugin.sh
+.PHONY: clean-plugin-example-plugin
+clean-plugin-example-plugin:
+	cd plugins/plugin-example/ && $(CHRONIC) ./gradlew clean
+	cd plugins/plugin-example/plugin/ && rm -f *.plugin
+.PHONY: output-plugin-example-plugin
+output-plugin-example-plugin: output build-plugin-example-plugin
+	cp plugins/plugin-example/plugin/*.plugin output/
+.PHONY: deploy-plugin-example-plugin
+deploy-plugin-example-plugin: output-plugin-example-plugin home-chara
+	cp output/plugin-example.plugin ~/.chara/plugin/
