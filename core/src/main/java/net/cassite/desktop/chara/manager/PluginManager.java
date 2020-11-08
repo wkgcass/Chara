@@ -33,7 +33,7 @@ import java.util.zip.ZipFile;
 public class PluginManager {
     private static final PluginManager instance = new PluginManager();
     private final Map<String, Plugin> plugins = new HashMap<>();
-    private final LinkedList<Plugin> pluginsOrderedList = new LinkedList<>();
+    private final LinkedList<FilePlugin> pluginsOrderedList = new LinkedList<>();
 
     private PluginManager() {
     }
@@ -43,7 +43,11 @@ public class PluginManager {
     }
 
     public Collection<Plugin> getPlugins() {
-        return Collections.unmodifiableList(pluginsOrderedList);
+        var ls = new ArrayList<Plugin>(pluginsOrderedList.size());
+        for (var e : pluginsOrderedList) {
+            ls.add(e.plugin);
+        }
+        return ls;
     }
 
     public void load(Runnable cb) {
@@ -177,10 +181,20 @@ public class PluginManager {
                 }
             }
             // launch all plugins
-            pluginsOrderedList.sort((a, b) -> (int) (b.priority() - a.priority()));
-            for (var plugin : pluginsOrderedList) {
-                plugin.launch();
-                Logger.info("plugin " + plugin.name() + " loaded");
+            pluginsOrderedList.sort((a, b) -> {
+                if (Utils.doubleEquals(a.plugin.priority(), b.plugin.priority(), 0.00001)) {
+                    // order by file name a -> z
+                    return b.file.getName().compareTo(b.file.getName());
+                }
+                if (a.plugin.priority() < b.plugin.priority()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
+            for (var fp : pluginsOrderedList) {
+                fp.plugin.launch();
+                Logger.info("plugin " + fp.plugin.name() + " loaded");
             }
             // callback
             cb.run();
@@ -237,7 +251,7 @@ public class PluginManager {
 
         // register
         plugins.put(name, plugin);
-        pluginsOrderedList.add(plugin);
+        pluginsOrderedList.add(new FilePlugin(file, plugin));
 
         assert Logger.debug("plugin " + name + " pre-loaded");
         return new Tuple<>(plugin, zipFile);
@@ -334,9 +348,19 @@ public class PluginManager {
         var ite = pluginsOrderedList.descendingIterator();
         while (ite.hasNext()) {
             var p = ite.next();
-            p.release();
+            p.plugin.release();
         }
         plugins.clear();
         pluginsOrderedList.clear();
+    }
+
+    private static class FilePlugin {
+        final File file;
+        final Plugin plugin;
+
+        private FilePlugin(File file, Plugin plugin) {
+            this.file = file;
+            this.plugin = plugin;
+        }
     }
 }
