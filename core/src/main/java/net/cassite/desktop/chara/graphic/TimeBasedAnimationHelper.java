@@ -56,6 +56,20 @@ public class TimeBasedAnimationHelper implements Updatable {
     }
 
     /**
+     * Set the finish callback, which will be called AND REMOVED when animation finishes
+     *
+     * @param finishCallback the callback function
+     * @return <code>this</code>
+     */
+    public TimeBasedAnimationHelper setFinishCallbackOnce(Runnable finishCallback) {
+        this.finishCallback = () -> {
+            this.finishCallback = null;
+            finishCallback.run();
+        };
+        return this;
+    }
+
+    /**
      * Reset the duration
      *
      * @param duration duration in millis

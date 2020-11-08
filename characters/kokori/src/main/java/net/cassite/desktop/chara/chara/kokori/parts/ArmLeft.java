@@ -5,6 +5,7 @@ package net.cassite.desktop.chara.chara.kokori.parts;
 import javafx.scene.Group;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
+import net.cassite.desktop.chara.chara.parts.AbstractPart;
 import net.cassite.desktop.chara.graphic.Div;
 import net.cassite.desktop.chara.graphic.Static;
 import net.cassite.desktop.chara.graphic.TimeBasedAnimationHelper;

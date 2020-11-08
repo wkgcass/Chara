@@ -10,6 +10,7 @@ module net.cassite.desktop.chara {
     requires vproxy;
     exports net.cassite.desktop.chara;
     exports net.cassite.desktop.chara.chara;
+    exports net.cassite.desktop.chara.chara.parts;
     exports net.cassite.desktop.chara.chat;
     exports net.cassite.desktop.chara.control;
     exports net.cassite.desktop.chara.css;

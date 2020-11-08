@@ -3,6 +3,7 @@
 package net.cassite.desktop.chara.chara.kokori.parts;
 
 import javafx.scene.Group;
+import net.cassite.desktop.chara.chara.parts.AbstractPart;
 import net.cassite.desktop.chara.graphic.Anima;
 import net.cassite.desktop.chara.util.Utils;
 

@@ -95,10 +95,7 @@ public class ArmRightJoin {
         targetElbowDeltaX = 0;
         targetElbowDeltaY = 0;
         animationHelper.setDuration(300);
-        animationHelper.setFinishCallback(() -> {
-            animationHelper.setFinishCallback(null);
-            cb.run();
-        });
+        animationHelper.setFinishCallbackOnce(cb);
         play();
     }
 
@@ -121,10 +118,7 @@ public class ArmRightJoin {
         targetElbowDeltaX = kokoriConsts.armRightJoin_protectCrotch_targetElbowDeltaX;
         targetElbowDeltaY = kokoriConsts.armRightJoin_protectCrotch_targetElbowDeltaY;
         animationHelper.setDuration(300);
-        animationHelper.setFinishCallback(() -> {
-            animationHelper.setFinishCallback(null);
-            cb.run();
-        });
+        animationHelper.setFinishCallbackOnce(cb);
         play();
     }
 

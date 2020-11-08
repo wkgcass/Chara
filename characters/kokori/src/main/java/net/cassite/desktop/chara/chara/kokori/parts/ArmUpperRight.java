@@ -3,9 +3,10 @@
 package net.cassite.desktop.chara.chara.kokori.parts;
 
 import javafx.scene.Group;
+import net.cassite.desktop.chara.chara.parts.AbstractPart;
 import net.cassite.desktop.chara.graphic.Static;
 
-public class ArmUpperRight extends AbstractPart{
+public class ArmUpperRight extends AbstractPart {
     public ArmUpperRight(Group parent) {
         super(parent);
 
