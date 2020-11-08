@@ -43,6 +43,9 @@ public class KokoriConsts {
     public final double armRightJoin_tighten_targetElbowAngle;
     public final double armRightJoin_tighten_targetElbowDeltaX;
     public final double armRightJoin_tighten_targetElbowDeltaY;
+    public final double armRightJoin_stretch_targetShoulderAngle;
+    public final double armRightJoin_stretch_targetShoulderDeltaX;
+    public final double armRightJoin_stretch_targetShoulderDeltaY;
     public final double headJoin_headRotate_x;
     public final double headJoin_headRotate_y;
     public final double headJoin_hairSideLeftRotate_x;
@@ -141,6 +144,9 @@ public class KokoriConsts {
         armRightJoin_tighten_targetElbowAngle = config.getDouble("armRightJoin.tighten.targetElbowAngle");
         armRightJoin_tighten_targetElbowDeltaX = config.getDouble("armRightJoin.tighten.targetElbowDeltaX") * scale;
         armRightJoin_tighten_targetElbowDeltaY = config.getDouble("armRightJoin.tighten.targetElbowDeltaY") * scale;
+        armRightJoin_stretch_targetShoulderAngle = config.getDouble("armRightJoin.stretch.targetShoulderAngle");
+        armRightJoin_stretch_targetShoulderDeltaX = config.getDouble("armRightJoin.stretch.targetShoulderDeltaX");
+        armRightJoin_stretch_targetShoulderDeltaY = config.getDouble("armRightJoin.stretch.targetShoulderDeltaY");
         headJoin_headRotate_x = config.getDouble("headJoin.headRotate.x") * scale;
         headJoin_headRotate_y = config.getDouble("headJoin.headRotate.y") * scale;
         headJoin_hairSideLeftRotate_x = config.getDouble("headJoin.hairSideLeftRotate.x") * scale;

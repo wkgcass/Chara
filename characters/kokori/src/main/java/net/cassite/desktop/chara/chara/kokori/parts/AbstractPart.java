@@ -7,12 +7,41 @@ import net.cassite.desktop.chara.graphic.Div;
 
 public class AbstractPart {
     protected final Div root = new Div();
+    private final Group parent;
 
     public AbstractPart(Group parent) {
+        this.parent = parent;
         parent.getChildren().add(root);
     }
 
     public Div getRoot() {
         return root;
+    }
+
+    public void reposition(boolean above, AbstractPart part) {
+        parent.getChildren().remove(root);
+        int index = 0;
+        boolean found = false;
+        if (part != null) {
+            for (var node : parent.getChildren()) {
+                if (node == part.root) {
+                    found = true;
+                    break;
+                }
+                ++index;
+            }
+        }
+        if (!found) {
+            if (above) {
+                parent.getChildren().add(root);
+            } else {
+                parent.getChildren().add(0, root);
+            }
+            return;
+        }
+        if (above) {
+            index += 1;
+        }
+        parent.getChildren().add(index, root);
     }
 }

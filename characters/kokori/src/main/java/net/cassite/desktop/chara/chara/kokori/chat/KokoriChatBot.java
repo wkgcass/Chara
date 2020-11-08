@@ -234,6 +234,16 @@ public class KokoriChatBot {
                 } else if ("arm_right:default".equals(cmd)) {
                     kokori.armRight.moveToDefaultPosition();
                     return;
+                } else if ("arm_right:stretch".equals(cmd)) {
+                    kokori.armRight.stretch(() -> {
+                    });
+                    return;
+                } else if ("arm_right:front".equals(cmd)) {
+                    kokori.armRight.moveToFront();
+                    return;
+                } else if ("arm_right:back".equals(cmd)) {
+                    kokori.armRight.moveToBack();
+                    return;
                 } else if ("leg_left:tighten".equals(cmd)) {
                     kokori.legLeft.tighten(() -> {
                     });

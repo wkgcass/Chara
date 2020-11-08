@@ -169,7 +169,7 @@ public class Kokori implements Chara {
 
         eyeLeft = new EyeJoin(eyeLeftPart, eyeSocketLeft, eyebrowLeft);
         eyeRight = new EyeJoin(eyeRightPart, eyeSocketRight, eyebrowRight);
-        armRight = new ArmRightJoin(kokoriConsts, armUpperRight, armForeRight, handRight);
+        armRight = new ArmRightJoin(kokoriConsts, armUpperRight, armForeRight, handRight, armLeft);
         headJoin = new HeadJoin(kokoriConsts, head, hair, hairSide, hairBack, eyeLeft, eyeRight, mouth, redCheek);
 
         // initiate handlers
@@ -226,6 +226,8 @@ public class Kokori implements Chara {
         eyeRight.restorePosition();
         eyeRight.zoom(1);
         armRight.moveToDefaultPosition();
+        armRight.animateMoveToFront(() -> {
+        });
         armLeft.hideBow();
         legLeft.loose();
         headJoin.toDefaultPosition();
@@ -460,86 +462,92 @@ public class Kokori implements Chara {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.isControlDown() && e.isShiftDown() && e.isAltDown()) {
-            Runnable toRun = null;
             switch (e.getCode()) {
                 case H: // Happy
-                    resetAll();
-                    toRun = () -> {
-                        eyeLeft.addHighlight();
-                        eyeRight.addHighlight();
-                        redCheek.hide();
-                        mouth.toHappy();
-                    };
+                    expressionHappy();
                     break;
                 case S: // Shy
-                    resetAll();
-                    toRun = () -> {
-                        eyeLeft.addHighlight();
-                        eyeRight.addHighlight();
-                        redCheek.show();
-                        mouth.toSad();
-                    };
+                    expressionShy();
                     break;
                 case A: // sAd
-                    resetAll();
-                    toRun = () -> {
-                        //noinspection Convert2MethodRef
-                        mouth.toSad();
-                    };
+                    expressionSad();
                     break;
                 case D: // Disgust
-                    resetAll();
-                    toRun = () -> {
-                        eyeLeft.removeHighlight();
-                        eyeRight.removeHighlight();
-                        redCheek.hide();
-                        mouth.toSad();
-                    };
+                    expressionDisgust();
                     break;
                 case R: // Reset
                     resetAll();
                     break;
                 case P: // surPrised
-                    resetAll();
-                    toRun = () -> {
-                        eyeLeft.zoom(0.85);
-                        eyeRight.zoom(0.85);
-                        mouth.toOpen();
-                    };
+                    expressionSurprised();
                     break;
                 case Y: // Yandere
                     if (Global.r18Features()) {
-                        resetAll();
-                        toRun = () -> {
-                            headJoin.tiltToLeft();
-                            eyeLeft.removeHighlight();
-                            eyeRight.removeHighlight();
-                            redCheek.show();
-                            mouth.toHappy();
-                        };
+                        expressionYandere();
                     }
                     break;
                 case O: // Orgasm
                     if (Global.r18Features()) {
-                        resetAll();
-                        toRun = () -> {
-                            eyeLeft.zoom(0.85);
-                            eyeLeft.move(kokoriConsts.eyeLeftOriginalX, kokoriConsts.eyeLeftYMin);
-                            eyeLeft.removeHighlight();
-                            eyeRight.zoom(0.85);
-                            eyeRight.move(kokoriConsts.eyeRightOriginalX, kokoriConsts.eyeRightYMin);
-                            eyeRight.removeHighlight();
-                            mouth.toOpen();
-                            redCheek.show();
-                        };
+                        expressionOrgasm();
                     }
                     break;
             }
-            if (toRun != null) {
-                Utils.delay("key-pressed", 200, toRun);
-            }
         }
         // do nothing
+    }
+
+    private void expressionHappy() {
+        eyeLeft.addHighlight();
+        eyeRight.addHighlight();
+        redCheek.hide();
+        mouth.toHappy();
+    }
+
+    private void expressionShy() {
+        eyeLeft.addHighlight();
+        eyeRight.addHighlight();
+        redCheek.show();
+        mouth.toSad();
+    }
+
+    private void expressionSad() {
+        mouth.toSad();
+    }
+
+    private void expressionDisgust() {
+        eyeLeft.removeHighlight();
+        eyeRight.removeHighlight();
+        redCheek.hide();
+        mouth.toSad();
+    }
+
+    private void expressionSurprised() {
+        eyeLeft.zoom(0.85);
+        eyeRight.zoom(0.85);
+        mouth.toOpen();
+    }
+
+    private void expressionYandere() {
+        headJoin.tiltToLeft();
+        eyeLeft.removeHighlight();
+        eyeRight.removeHighlight();
+        redCheek.show();
+        mouth.toHappy();
+        armRight.animateMoveToBack(armRight::tighten);
+        legLeft.tighten(() -> {
+        });
+    }
+
+    private void expressionOrgasm() {
+        eyeLeft.zoom(0.85);
+        eyeLeft.move(kokoriConsts.eyeLeftOriginalX, kokoriConsts.eyeLeftYMin);
+        eyeLeft.removeHighlight();
+        eyeRight.zoom(0.85);
+        eyeRight.move(kokoriConsts.eyeRightOriginalX, kokoriConsts.eyeRightYMin);
+        eyeRight.removeHighlight();
+        mouth.toOpen();
+        redCheek.show();
+        armRight.protectCrotch();
     }
 
     @Override
@@ -906,21 +914,20 @@ public class Kokori implements Chara {
             if (!ConfigManager.get().getBoolValue(Consts.PROPOSING_ACCEPTED)) {
                 appCallback.showMessage(KokoriWords.thingsLikes3.select());
             } else {
-                eyeLeft.removeHighlight();
-                eyeRight.removeHighlight();
-                headJoin.tiltToLeft();
-                mouth.toHappy();
-                redCheek.show();
                 Utils.delay("things-likes-4", 20_000, this::resetAll);
-
                 double r18probability = 0;
                 if (Global.r18Features()) {
                     r18probability = 0.5;
                 }
                 if (!Utils.random(r18probability)) {
-                    armRight.tighten();
+                    expressionYandere();
                     appCallback.showMessage(KokoriWords.thingsLikes4.select());
                 } else {
+                    eyeLeft.removeHighlight();
+                    eyeRight.removeHighlight();
+                    headJoin.tiltToLeft();
+                    mouth.toHappy();
+                    redCheek.show();
                     armRight.protectCrotch();
                     appCallback.showMessage(KokoriR18Words.thingsLikesR18.select());
                 }
