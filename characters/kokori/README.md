@@ -1,6 +1,6 @@
 # 心璃
 
-<img src="../../docs/readme-bundle/kokori.png" width="128px" height="128px">
+<img src="../../docs/readme-bundle/kokori.png" width="300px" height="300px">
 
 ## 背景设定
 

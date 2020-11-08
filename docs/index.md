@@ -113,7 +113,7 @@ Chara是一款基于JavaFX的桌面人物软件。
 <tbody>
   <tr>
    <td>
-<a href="https://github.com/wkgcass/Chara/tree/master/characters/kokori"><img src="readme-bundle/kokori.png" width="128px" height="128px"></a>
+<a href="https://github.com/wkgcass/Chara/tree/master/characters/kokori"><img src="readme-bundle/kokori.png" width="300px" height="300px"></a>
    </td>
    <td>
 <table>
