@@ -29,7 +29,7 @@ public class NotoFontPlugin implements Plugin {
 
     @Override
     public double priority() {
-        return GENERAL_FONT_PRIORITY;
+        return GENERAL_FONT_PRIORITY - 1; // load later than general font because it may not contain monospace font
     }
 
     @Override
@@ -45,8 +45,6 @@ public class NotoFontPlugin implements Plugin {
             case "cs":
                 ret.add(new ResourceHandler("font/NotoSansSC-Regular.otf", (inputStream, cb) -> {
                     FontManager.registerFont(inputStream);
-                    FontManager.setDefaultFontFamily("Noto Sans SC Regular");
-                    FontManager.setDefaultMonospaceFontFamily("Noto Mono for Powerline");
                     cb.succeeded(null);
                 }));
                 break;
@@ -58,8 +56,8 @@ public class NotoFontPlugin implements Plugin {
 
     @Override
     public void launch() {
-        // do nothing
         Logger.info("current font families list: " + Font.getFamilies());
+        FontManager.setDefaultFontFamily("Noto Sans SC Regular");
     }
 
     @Override

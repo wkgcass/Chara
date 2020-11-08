@@ -32,12 +32,10 @@ public class WqyFontPlugin implements Plugin {
         return Arrays.asList(
             new ResourceHandler("font/wqy-microhei.ttc", (inputStream, cb) -> {
                 FontManager.registerFont(inputStream);
-                FontManager.setDefaultFontFamily("WenQuanYi Micro Hei");
                 cb.succeeded(null);
             }),
             new ResourceHandler("font/wqy-microhei-mono.ttf", (inputStream, cb) -> {
                 FontManager.registerFont(inputStream);
-                FontManager.setDefaultMonospaceFontFamily("WenQuanYi Micro Hei Mono");
                 cb.succeeded(null);
             })
         );
@@ -45,8 +43,9 @@ public class WqyFontPlugin implements Plugin {
 
     @Override
     public void launch() {
-        // do nothing
         Logger.info("current font families list: " + Font.getFamilies());
+        FontManager.setDefaultFontFamily("WenQuanYi Micro Hei");
+        FontManager.setDefaultMonospaceFontFamily("WenQuanYi Micro Hei Mono");
     }
 
     @Override
