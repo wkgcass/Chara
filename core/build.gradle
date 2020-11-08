@@ -52,12 +52,30 @@ jlink {
     }
 }
 
-task jpackagePost(type: Copy) {
+task jpackageZipDLL(type: Copy) {
     dependsOn jpackage
     def currentOs = org.gradle.internal.os.OperatingSystem.current()
     if (!currentOs.windows) { return }
     from file("$buildDir/jpackage/chara/runtime/bin/zip.dll")
     into file("$buildDir/jpackage/chara/")
+}
+
+task jpackageExecInstaller {
+    dependsOn jpackageZipDLL
+    def currentOs = org.gradle.internal.os.OperatingSystem.current()
+    if (!currentOs.windows) {
+        return
+    }
+    doLast {
+        exec {
+            workingDir "$buildDir/jpackage"
+            commandLine 'jpackage.exe', '--name', 'chara', '--app-version', version, '--app-image', 'chara', '--type', 'msi', '--vendor', 'raven', '--win-dir-chooser', '--win-shortcut', '--win-menu-group', '--win-menu'
+        }
+    }
+}
+
+task jpackagePost {
+    dependsOn jpackageExecInstaller
 }
 
 application {
