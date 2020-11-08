@@ -20,6 +20,22 @@
 6. 少量R18功能
 7. 通过接入第三方chatbot进行对话
 
+## 表情快捷键
+
+可以在`右键菜单 -> 角色 -> 表情`中查看可用的表情快捷键：
+
+> 注意，做出表情时并不会重置上一个表情，可以使用“重置”快捷键进行表情的重置。
+
+| 快捷键                  | 表情 |
+| Ctrl+Shift+Alt+ H       | 开心 |
+| Ctrl+Shift+Alt+ S       | 害羞 |
+| Ctrl+Shift+Alt+ A       | 伤心 |
+| Ctrl+Shift+Alt+ D       | 厌恶 |
+| Ctrl+Shift+Alt+ R       | 重置 |
+| Ctrl+Shift+Alt+ P       | 惊讶 |
+| Ctrl+Shift+Alt+ Y (R18) | 病娇 |
+| Ctrl+Shift+Alt+ O (R18) | 高潮 |
+
 ## debug命令
 
 在聊天框中可以输入如下debug命令：
@@ -60,6 +76,9 @@
 | `::animate:arm_right:tighten`      | 收紧右臂                                 |
 | `::animate:arm_right:down`         | 右臂向下                                 |
 | `::animate:arm_right:default`      | 右臂回到原处                             |
+| `::animate:arm_right:stretch`      | 右臂伸展                                 |
+| `::animate:arm_right:front`        | 右臂置于身前                             |
+| `::animate:arm_right:back`         | 右臂置于身后                             |
 | `::animate:leg_left:tighten`       | 左腿收紧                                 |
 | `::animate:leg_left:loose`         | 左腿放松                                 |
 | `::action:sex`                     | 执行一次sex动作                          |
@@ -215,6 +234,8 @@
 | `exp-orgasm`            | R18                                      | ctrl+shift+alt+O      | -              | 动画            | 高潮表情                                                 |
 | -                       | -                                        | -                     | -              | -               | -                                                        |
 | `about-name`            | 无                                       | 点击关于名字菜单项    | -              | 对话            | 显示aboutName                                            |
+| -                       | -                                        | -                     | -              | -               | -                                                        |
+| `conversation`          | pre-i-check                              | 点击对话菜单项        | -              | 对话            | 显示menuConversations                                    |
 | -                       | -                                        | -                     | -              | -               | -                                                        |
 | `things-she-likes`      | pre-i-check && 羁绊值 < 0.7              | 点击喜欢的东西菜单项  | -              | 无              | -                                                        |
 | `things-she-likes`      | pre-i-check && else if 羁绊值 < 0.8      | 点击喜欢的东西菜单项  | -              | 对话            | 显示thingsLikes1                                         |
