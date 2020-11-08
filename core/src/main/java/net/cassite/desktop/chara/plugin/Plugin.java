@@ -65,4 +65,7 @@ public interface Plugin {
      * @return the "about" string of this plugin
      */
     String about();
+
+    int GENERAL_FONT_PRIORITY = 5000;
+    int GENERAL_PRE_PRIORITY = 1000;
 }

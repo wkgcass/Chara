@@ -23,6 +23,11 @@ public class WqyFontPlugin implements Plugin {
     }
 
     @Override
+    public double priority() {
+        return GENERAL_FONT_PRIORITY;
+    }
+
+    @Override
     public List<ResourceHandler> resourceHandlers() {
         return Arrays.asList(
             new ResourceHandler("font/wqy-microhei.ttc", (inputStream, cb) -> {
