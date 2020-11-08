@@ -28,17 +28,28 @@ clean-characters: clean-kokori
 output-characters: output-kokori
 
 .PHONY: plugins
-plugins: dev-plugin console-plugin tianxing-chatbot-plugin wqy-font-plugin r18-plugin debug-plugin
+plugins: dev-plugin console-plugin tianxing-chatbot-plugin \
+  wqy-font-plugin r18-plugin debug-plugin noto-font-plugin
 .PHONY: compile-plugins
-compile-plugins: compile-dev-plugin compile-console-plugin compile-tianxing-chatbot-plugin compile-wqy-font-plugin compile-r18-plugin compile-debug-plugin
+compile-plugins: compile-dev-plugin compile-console-plugin \
+  compile-tianxing-chatbot-plugin compile-wqy-font-plugin \
+  compile-r18-plugin compile-debug-plugin compile-noto-font-plugin
 .PHONY: build-plugins
-build-plugins: build-dev-plugin build-console-plugin build-tianxing-chatbot-plugin build-wqy-font-plugin build-r18-plugin build-debug-plugin
+build-plugins: build-dev-plugin build-console-plugin \
+  build-tianxing-chatbot-plugin build-wqy-font-plugin \
+  build-r18-plugin build-debug-plugin build-noto-font-plugin
 .PHONY: clean-plugins
-clean-plugins: clean-dev-plugin clean-console-plugin clean-tianxing-chatbot-plugin clean-wqy-font-plugin clean-r18-plugin clean-debug-plugin
+clean-plugins: clean-dev-plugin clean-console-plugin \
+  clean-tianxing-chatbot-plugin clean-wqy-font-plugin \
+  clean-r18-plugin clean-debug-plugin clean-noto-font-plugin
 .PHONY: output-plugins
-output-plugins: output-dev-plugin output-console-plugin output-tianxing-chatbot-plugin output-wqy-font-plugin output-r18-plugin output-debug-plugin
+output-plugins: output-dev-plugin output-console-plugin \
+  output-tianxing-chatbot-plugin output-wqy-font-plugin \
+  output-r18-plugin output-debug-plugin output-noto-font-plugin
 .PHONY: deploy-plugins
-deploy-plugins: deploy-dev-plugin deploy-console-plugin deploy-tianxing-chatbot-plugin deploy-wqy-font-plugin deploy-r18-plugin deploy-debug-plugin
+deploy-plugins: deploy-dev-plugin deploy-console-plugin \
+  deploy-tianxing-chatbot-plugin deploy-wqy-font-plugin \
+  deploy-r18-plugin deploy-debug-plugin deploy-noto-font-plugin
 
 CHRONIC := $(shell if [[ ! -z "`which chronic`" ]]; then echo "chronic"; fi)
 
