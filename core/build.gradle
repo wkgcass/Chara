@@ -69,7 +69,7 @@ task jpackageExecInstaller {
     doLast {
         exec {
             workingDir "$buildDir/jpackage"
-            commandLine 'jpackage.exe', '--name', 'chara', '--app-version', version, '--app-image', 'chara', '--type', 'msi', '--vendor', 'raven', '--win-dir-chooser', '--win-shortcut', '--win-menu-group', '--win-menu'
+            commandLine 'jpackage.exe', '--name', 'chara', '--app-version', version, '--app-image', 'chara', '--type', 'msi', '--vendor', 'raven', '--win-dir-chooser', '--win-shortcut', '--win-menu-group', 'chara', '--win-menu', '--win-upgrade-uuid', '06e53173-67da-4a7d-9ee7-efade373d4b8'
         }
     }
 }
