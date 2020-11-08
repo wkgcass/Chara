@@ -111,81 +111,31 @@ wqy-font.plugin +
 
 `git clone`本repo
 
-### 2. 创建工程根目录
+### 2. 初始化工程
 
-在`plugins/`目录下创建一个你的插件的子目录，作为工程根目录，例如`plugins/dev/`。
+在`plugins/`目录下执行`NEW_PLUGIN_PACKAGE_NAME="包名" NEW_PLUGIN_CLASS_PREFIX="类前缀" NEW_PLUGIN_NAME="插件名" ./new-plugin.sh`创建一个你的插件。例如`NEW_PLUGIN_PACKAGE_NAME="notofont" NEW_PLUGIN_CLASS_PREFIX="NotoFont" NEW_PLUGIN_NAME="noto-font" ./new-plugin.sh`。其中有如下规范：包名为全小写连续的字母，类前缀使用驼峰命名不包含Plugin后缀，插件名最好使用全小写并以中横线分割。
 
-后文会多次出现“插件名字”，这里统一用变量符号`${name}`代替。
+### 3. 基础依赖
 
-### 3. 使用gradle初始化
+从release页面下载最新版的[vproxy.jar](https://github.com/wkgcass/vproxy)，放置在仓库根目录，命名为`vproxy.jar`。
 
-推荐使用`gradle wrapper`
-可以直接从`dev`插件工程目录中，将这几个文件拷贝到你的目录里，然后做一些修改。
-
-* `gradle`: gradle wrapper相关文件
-* `gradlew`: linux/macos通过这个脚本使用gradlew
-* `gradlew.bat`: windows通过这个脚本使用gradlew
-* `build.gradle`: gradle配置文件1
-* `settings.gradle`: gradle配置文件2
-
-拷贝后，修改`settings.gradle`，将项目名称改为你的插件名称。修改`build.gradle`中的`archiveName`为合适的`jar`文件名。文件中其他参数视情
-况自行增删。
-
-### 4. 基础依赖
-
-首先从release页面下载最新版的[vproxy.jar](https://github.com/wkgcass/vproxy)，放置在仓库根目录，命名为`vproxy.jar`。
-
-在插件工程的`build.gradle`配置的`dependencies`中，需要确保有如下配置：
-
-1. `compile files('../../core/build/libs/chara.jar')`，用于加载基础框架依赖。
-2. `compile files('../../vproxy.jar')`，这是基础框架的依赖项，为了调试方便可以添加，打包时忽略即可
-3. `compile group: 'com.1stleg', name: 'jnativehook', version: '2.1.0'`，这是基础框架依赖的一部分，为了调试方便可以添加，打包时忽略即可
-
-在`build.gradle`配置的`javafx`中，需要确保有如下配置：
-
-1. `modules = ['javafx.controls', 'javafx.swing']`，这也是基础框架的依赖，为了调试方便可以添加
-
-### 5. 编译基础框架
+### 4. 编译基础框架
 
 进入`core`目录，运行`./gradlew clean jar`即可。
 
-### 6. 开发
+### 5. 开发
 
-在你的新工程中创建一个类，命名为`${Name}Plugin`，并`implements Plugin`（实现Plugin接口）。你需要实现这个类。
+在生成的`${Prefix}Plugin`中编写插件代码。可参考core模块的javadoc。
 
-在`launch()`函数中添加插件初始化时需要运行的代码。如果插件有额外资源分配的话，记得务必在`release()`中将资源释放。
+### 6. 运行和调试
 
-在源代码根目录（一般来说是`src/main/java`）中，创建一个`module-info.java`，在其中`exports`你的插件所在的包。
+通过自动生成的`Run`类，即可对整个App进行调试。
 
-### 7. 运行和调试
+### 7. 打包
 
-在你的新工程中创建一个包：`run.plugin.${name}`（例如`run.plugin.dev`）。  
-创建一个类`Run`。写入如下内容：
+在你的插件工程目录下，运行`./build-plugin.sh`即可打包插件，插件会在工程的`plugin/`目录中生成。
 
-```java
-package run.plugin.${name};
-
-import javafx.application.Application;
-import javafx.stage.Stage;
-import net.cassite.desktop.chara.Main;
-
-public class Run extends Application {
-    @Override
-    public void start(Stage primaryStage) {
-        new Main().start(primaryStage);
-    }
-}
-```
-
-然后在`module-info.java`中，把这个包也`exports`出来：`exports run.plugin.${name}`
-
-通过`Run`类，即可对整个App进行调试。
-
-### 8. 打包
-
-在你的工程目录下，`./gradlew clean jar`，jar包会在`build/libs/`目录中生成。
-
-### 9. 修改基础代码
+### 8. 修改基础代码
 
 有时候基础代码无法满足插件文件的需要，这时可以修改基础代码。
 在修改完毕后，在基础代码的工程根目录（也就是`core/`目录）中，运行`./gradlew jar`即可。
