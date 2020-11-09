@@ -4,16 +4,49 @@ package net.cassite.desktop.chara.plugin.notofont;
 
 import javafx.scene.text.Font;
 import net.cassite.desktop.chara.i18n.Words;
-import net.cassite.desktop.chara.i18n.WordsBuilder;
 import net.cassite.desktop.chara.manager.FontManager;
 import net.cassite.desktop.chara.plugin.Plugin;
 import net.cassite.desktop.chara.util.Logger;
 import net.cassite.desktop.chara.util.ResourceHandler;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 public class NotoFontPlugin implements Plugin {
+    private static final String LOCALE;
+    private static final FontInfo FONT_INFO;
+
+    static {
+        var map = new HashMap<String, FontInfo>();
+        // PUT NEW FONT CONFIGURATIONS HERE
+        {
+            map.put("zh-CN", new FontInfo("NotoSansSC-Regular.otf", "Noto Sans SC Regular"));
+        }
+
+        String locale = Words.getLocale();
+        LOCALE = locale;
+        FONT_INFO = map.get(locale);
+    }
+
+    private static class FontInfo {
+        final String entry;
+        final String family;
+        final String monoEntry;
+        final String monoFamily;
+
+        private FontInfo(String entry, String family) {
+            this(entry, family, null, null);
+        }
+
+        private FontInfo(String entry, String family, String monoEntry, String monoFamily) {
+            this.entry = entry;
+            this.family = family;
+            this.monoEntry = monoEntry;
+            this.monoFamily = monoFamily;
+        }
+    }
+
     public NotoFontPlugin() {
     }
 
@@ -36,29 +69,32 @@ public class NotoFontPlugin implements Plugin {
     @Override
     public List<ResourceHandler> resourceHandlers() {
         List<ResourceHandler> ret = new LinkedList<>();
-        Words words = new WordsBuilder
-            ("cs")
-            .setEn("en")
-            .build();
-        String lang = words.get()[0];
-        //noinspection SwitchStatementWithTooFewBranches
-        switch (lang) {
-            case "cs":
-                ret.add(new ResourceHandler("font/NotoSansSC-Regular.otf", (inputStream, cb) -> {
+        if (FONT_INFO == null) {
+            Logger.error("The plugin does not contain your locale: " + LOCALE);
+        } else {
+            ret.add(new ResourceHandler("font/" + FONT_INFO.entry, (inputStream, cb) -> {
+                FontManager.registerFont(inputStream);
+                cb.succeeded(null);
+            }));
+            if (FONT_INFO.monoFamily != null) {
+                ret.add(new ResourceHandler("font/" + FONT_INFO.monoEntry, ((inputStream, cb) -> {
                     FontManager.registerFont(inputStream);
                     cb.succeeded(null);
-                }));
-                break;
-            default:
-                Logger.error("The plugin does not contain your language: " + lang);
+                })));
+            }
         }
         return ret;
     }
 
     @Override
     public void launch() {
-        Logger.info("current font families list: " + Font.getFamilies());
-        FontManager.setDefaultFontFamily("Noto Sans SC Regular");
+        if (FONT_INFO != null) {
+            Logger.info("current font families list: " + Font.getFamilies());
+            FontManager.setDefaultFontFamily(FONT_INFO.family);
+            if (FONT_INFO.monoFamily != null) {
+                FontManager.setDefaultMonospaceFontFamily(FONT_INFO.monoFamily);
+            }
+        }
     }
 
     @Override

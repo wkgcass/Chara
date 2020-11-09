@@ -52,12 +52,11 @@ public class Words extends WordsSelector {
      * @return the retrieved string array
      */
     public String[] get() {
-        assert Logger.debug("current locale lang = " + locale.getLanguage() + ", region = " + locale.getCountry());
-        String lang = locale.getLanguage();
-        String region = locale.getCountry();
+        String locale = getLocale();
+        assert Logger.debug("current locale = " + locale);
 
         //noinspection SwitchStatementWithTooFewBranches
-        switch (lang + "-" + region) {
+        switch (locale) {
             case "zh-CN":
                 return sc;
             default:
@@ -66,6 +65,15 @@ public class Words extends WordsSelector {
                 }
                 return en;
         }
+    }
+
+    /**
+     * Get language-region, e.g. zh-CN, en-US, etc.
+     *
+     * @return {@link Locale#getLanguage()}-{@link Locale#getCountry()}
+     */
+    public static String getLocale() {
+        return locale.getLanguage() + "-" + locale.getCountry();
     }
 
     @Override
