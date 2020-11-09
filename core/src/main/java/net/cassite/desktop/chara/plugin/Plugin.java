@@ -30,7 +30,7 @@ public interface Plugin {
      *
      * @return priority of the plugin
      */
-    default double priority() {
+    default int priority() {
         return 0;
     }
 
@@ -66,6 +66,7 @@ public interface Plugin {
      */
     String about();
 
+    int GENERAL_PRIORITY_STEP = 100;
     int GENERAL_FONT_PRIORITY = 5000;
     int GENERAL_PRE_PRIORITY = 1000;
 }

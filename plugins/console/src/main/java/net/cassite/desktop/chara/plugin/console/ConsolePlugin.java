@@ -76,7 +76,7 @@ public class ConsolePlugin implements Plugin {
     }
 
     @Override
-    public double priority() {
+    public int priority() {
         return GENERAL_PRE_PRIORITY;
     }
 

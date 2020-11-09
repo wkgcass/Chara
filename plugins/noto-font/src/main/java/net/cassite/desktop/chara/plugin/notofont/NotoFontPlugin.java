@@ -28,8 +28,9 @@ public class NotoFontPlugin implements Plugin {
     }
 
     @Override
-    public double priority() {
-        return GENERAL_FONT_PRIORITY - 1; // load later than general font because it may not contain monospace font
+    public int priority() {
+        // load later than general font because it contains more logic and more likely to be used by user
+        return GENERAL_FONT_PRIORITY - GENERAL_PRIORITY_STEP;
     }
 
     @Override

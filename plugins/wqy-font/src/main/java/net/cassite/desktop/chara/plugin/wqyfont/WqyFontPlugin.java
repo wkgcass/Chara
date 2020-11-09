@@ -23,7 +23,7 @@ public class WqyFontPlugin implements Plugin {
     }
 
     @Override
-    public double priority() {
+    public int priority() {
         return GENERAL_FONT_PRIORITY;
     }
 

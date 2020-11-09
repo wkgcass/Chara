@@ -182,7 +182,7 @@ public class PluginManager {
             }
             // launch all plugins
             pluginsOrderedList.sort((a, b) -> {
-                if (Utils.doubleEquals(a.plugin.priority(), b.plugin.priority(), 0.00001)) {
+                if (a.plugin.priority() == b.plugin.priority()) {
                     // order by file name a -> z
                     return b.file.getName().compareTo(b.file.getName());
                 }
