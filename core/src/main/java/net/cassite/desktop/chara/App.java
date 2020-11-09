@@ -381,7 +381,7 @@ public class App {
             boolean b = !Utils.isCoordinatesScaled();
             ConfigManager.get().setCoordinatesScaled(b);
             coordinatesScaledItem.setSelected(b);
-            Alert.alert(I18nConsts.applyAfterReboot.get()[0]);
+            Alert.alert(I18nConsts.resetScalingRatioAfterReboot.get()[0]);
         });
         Menu pluginMenu = new Menu(I18nConsts.pluginMenu.get()[0]);
         for (Plugin plugin : PluginManager.get().getPlugins()) {

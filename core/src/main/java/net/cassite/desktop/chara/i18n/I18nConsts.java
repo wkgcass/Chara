@@ -84,7 +84,7 @@ public class I18nConsts {
         .setEn("Show on taskbar")
         .build();
     public static final Words coordinatesScaledItem = new WordsBuilder
-        ("坐标经过缩放")
+        ("坐标缩放")
         .setEn("Coordinates scaled")
         .build();
     public static final Words pluginMenu = new WordsBuilder
@@ -111,6 +111,10 @@ public class I18nConsts {
     public static final Words applyAfterReboot = new WordsBuilder
         ("重新启动本程序后生效")
         .setEn("Apply after rebooting this program")
+        .build();
+    public static final Words resetScalingRatioAfterReboot = new WordsBuilder
+        ("重新启动本程序后重置缩放比例")
+        .setEn("Reset scaling ratio after rebooting this program")
         .build();
 
     public static Words copyAllMenuItem = new WordsBuilder
