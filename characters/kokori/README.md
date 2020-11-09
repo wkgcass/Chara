@@ -105,7 +105,7 @@
 | `look-at-left-or-right` | R18 && 欲望值 == 1                       | -                     | 0.5            | 动画            | 眼睛随机看向左边/右边                                    |
 | `enable-propose`        | 羁绊值 >= 0.85                           | -                     | 0.006          | 系统            | 表白按钮设为可点击                                       |
 | -                       | -                                        | -                     | -              | -               | -                                                        |
-| `reset-points-related`  | 无                                       | 羁绊值/欲望值发生变化 | -              | 触发器          | 触发`reset-mouth reset-cheek reset-highlight reset-like-menu reset-bond-stories reset-propose-menu reset-eye-position`
+| `reset-points-related`  | 无                                       | 羁绊值/欲望值发生变化 | -              | 触发器          | 触发`reset-mouth reset-cheek reset-highlight reset-conversation reset-like-menu reset-bond-stories reset-propose-menu reset-eye-position`
 | -                       | -                                        | -                     | -              | -               | -                                                        |
 | `reset-mouth`           | R18 && 欲望值 == 1                       | -                     | -              | 动画            | 嘴巴一张一合（呼吸状）                                   |
 | `reset-mouth`           | else if 羁绊值 < badMood                 | -                     | -              | 动画            | 嘴巴变为伤心状态                                         |
@@ -118,6 +118,9 @@
 | `reset-highlight`       | else if 欲望值 < reallyBadMood           | -                     | -              | 动画            | 高光消失                                                 |
 | `reset-highlight`       | else                                     | -                     | -              | 动画            | 高光恢复                                                 |
 | -                       | -                                        | -                     | -              | -               | -                                                        |
+| `reset-conversation`    | 羁绊值 < 0.65                            | -                     | -              | 系统            | 对话按钮不可点击                                         |
+| `reset-conversation`    | else                                     | -                     | -              | 系统            | 对话按钮可点击                                           |
+| -                       |                                          | -                     | -              | -               | -                                                        |
 | `reset-like-menu`       | 羁绊值 < 0.7                             | -                     | -              | 系统            | 喜欢的东西按钮不可点击                                   |
 | `reset-like-menu`       | else                                     | -                     | -              | 系统            | 喜欢的东西按钮可点击                                     |
 | -                       | -                                        | -                     | -              | -               | -                                                        |
@@ -235,7 +238,8 @@
 | -                       | -                                        | -                     | -              | -               | -                                                        |
 | `about-name`            | 无                                       | 点击关于名字菜单项    | -              | 对话            | 显示aboutName                                            |
 | -                       | -                                        | -                     | -              | -               | -                                                        |
-| `conversation`          | pre-i-check                              | 点击对话菜单项        | -              | 对话            | 显示menuConversations                                    |
+| `conversation`          | pre-i-check && 羁绊值 < 0.65             | 点击对话菜单项        | -              | 无              | -                                                        |
+| `conversation`          | pre-i-check && else                      | 点击对话菜单项        | -              | 对话            | 显示menuConversations                                    |
 | -                       | -                                        | -                     | -              | -               | -                                                        |
 | `things-she-likes`      | pre-i-check && 羁绊值 < 0.7              | 点击喜欢的东西菜单项  | -              | 无              | -                                                        |
 | `things-she-likes`      | pre-i-check && else if 羁绊值 < 0.8      | 点击喜欢的东西菜单项  | -              | 对话            | 显示thingsLikes1                                         |

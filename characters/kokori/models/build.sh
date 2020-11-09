@@ -2,7 +2,7 @@
 
 set -e
 
-ls ./kokori-full
+ls ./kokori-high-dpi
 ls ./kokori-mini
 ls ./shared
 
@@ -14,7 +14,7 @@ function clean_shared() {
 }
 
 function clean_output() {
-  rm -f "kokori-full.model"
+  rm -f "kokori-high-dpi.model"
   rm -f "kokori-mini.model"
 }
 
@@ -55,16 +55,16 @@ function build_model() {
 
 clean_shared
 clean_output
-clean_model "kokori-full"
+clean_model "kokori-high-dpi"
 clean_model "kokori-mini"
 
 compile
-copy_shared "kokori-full"
+copy_shared "kokori-high-dpi"
 copy_shared "kokori-mini"
 
-build_model "kokori-full"
+build_model "kokori-high-dpi"
 build_model "kokori-mini"
 
 clean_shared
-clean_model "kokori-full"
+clean_model "kokori-high-dpi"
 clean_model "kokori-mini"

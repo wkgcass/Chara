@@ -285,6 +285,7 @@ public class Kokori implements Chara {
 
     private void resetMenuItems() {
         double bondPoint = personality.getBondPoint();
+        conversationMenuItem.setDisable(bondPoint < 0.65);
         thingsSheLikesMenuItem.setDisable(bondPoint < 0.7);
         for (int i = 0; i < bondStoriesMenuItems.length; ++i) {
             var menuItem = bondStoriesMenuItems[i];
@@ -894,6 +895,9 @@ public class Kokori implements Chara {
 
     private void conversation() {
         if (preInteractionCheckFail()) {
+            return;
+        }
+        if (personality.getBondPoint() < 0.65) {
             return;
         }
         appCallback.showMessage(KokoriWords.menuConversations().select());
