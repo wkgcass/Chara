@@ -8,7 +8,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -18,6 +17,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
@@ -360,12 +360,10 @@ public class UStage {
 
     private void calculateTitlePosition(boolean calculateSize) {
         if (calculateSize) {
-            Label t = new Label(title.getText());
-            t.setFont(new Font(TITLE_TEXT_SIZE));
-            new Scene(t);
-            var img = t.snapshot(new SnapshotParameters(), null);
-            titleTextWidth = img.getWidth();
-            titleTextHeight = img.getHeight();
+            Text text = new Text(title.getText());
+            text.setFont(new Font(TITLE_TEXT_SIZE));
+            titleTextWidth = text.getLayoutBounds().getWidth();
+            titleTextHeight = text.getLayoutBounds().getHeight();
         }
         title.setLayoutX((stage.getWidth() - titleTextWidth) / 2);
         title.setLayoutY((TITLE_HEIGHT - titleTextHeight) / 2 + TEXT_Y_FIX);
