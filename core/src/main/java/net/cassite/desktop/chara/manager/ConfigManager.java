@@ -39,6 +39,7 @@ public class ConfigManager {
         private Boolean alwaysOnTop;
         private Boolean mouseIndicatorEnabled;
         private Boolean activeInteractionEnabled;
+        private Boolean coordinatesScaled;
         private Double bondPoint;
         private Double desirePoint;
         private final Map<Key<Integer>, Integer> integerRegisters = new ConcurrentHashMap<>();
@@ -134,6 +135,15 @@ public class ConfigManager {
 
         public void setActiveInteractionEnabled(boolean activeInteractionEnabled) {
             this.activeInteractionEnabled = activeInteractionEnabled;
+            save();
+        }
+
+        public Boolean getCoordinatesScaled() {
+            return coordinatesScaled;
+        }
+
+        public void setCoordinatesScaled(boolean coordinatesScaled) {
+            this.coordinatesScaled = coordinatesScaled;
             save();
         }
 
@@ -280,6 +290,12 @@ public class ConfigManager {
                     this.activeInteractionEnabled = ((JSON.Bool) o).booleanValue();
                 }
             }
+            if (obj.containsKey("coordinates_scaled")) {
+                var o = obj.get("coordinates_scaled");
+                if (o instanceof JSON.Bool) {
+                    this.coordinatesScaled = ((JSON.Bool) o).booleanValue();
+                }
+            }
             if (obj.containsKey("bond_point")) {
                 var o = obj.get("bond_point");
                 if (o instanceof JSON.Double) {
@@ -376,6 +392,9 @@ public class ConfigManager {
             }
             if (activeInteractionEnabled != null) {
                 ob.put("active_interaction_enabled", activeInteractionEnabled);
+            }
+            if (coordinatesScaled != null) {
+                ob.put("coordinates_scaled", coordinatesScaled);
             }
             if (desirePoint != null) {
                 ob.put("desire_point", desirePoint);

@@ -258,6 +258,14 @@ public class Utils {
      * @return true if the stage is scaled on the current platform, false otherwise
      */
     public static boolean isCoordinatesScaled() {
+        Boolean coordinatesScaled = ConfigManager.get().getCoordinatesScaled();
+        if (coordinatesScaled == null) {
+            coordinatesScaled = Utils.isCoordinatesScaled0();
+        }
+        return coordinatesScaled;
+    }
+
+    private static boolean isCoordinatesScaled0() {
         return isWindows();
     }
 

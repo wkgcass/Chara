@@ -6,6 +6,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.util.Logger;
+import net.cassite.desktop.chara.util.Utils;
 
 /**
  * The stage transformer which holds a stage and manages relative coordinates and scales.
@@ -308,6 +309,9 @@ public class StageTransformer {
      * @return calculated real x
      */
     public double getSceneXByScreenX(double x) {
+        if (!Utils.isCoordinatesScaled()) {
+            return x - getAbsoluteX();
+        }
         Screen screen = getScreen();
         double offX = screen.getBounds().getMinX();
         x = (x - offX) / screen.getOutputScaleX() + offX;
@@ -322,6 +326,9 @@ public class StageTransformer {
      * @return calculated real y
      */
     public double getSceneYByScreenY(double y) {
+        if (!Utils.isCoordinatesScaled()) {
+            return y - getAbsoluteY();
+        }
         Screen screen = getScreen();
         double offY = screen.getBounds().getMinY();
         y = (y - offY) / screen.getOutputScaleY() + offY;

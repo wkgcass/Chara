@@ -375,6 +375,14 @@ public class App {
             showIconOnTaskbarItem.setSelected(b);
             Alert.alert(I18nConsts.applyAfterReboot.get()[0]);
         });
+        CheckMenuItem coordinatesScaledItem = new CheckMenuItem(I18nConsts.coordinatesScaledItem.get()[0]);
+        coordinatesScaledItem.setSelected(Utils.isCoordinatesScaled());
+        coordinatesScaledItem.setOnAction(e -> {
+            boolean b = !Utils.isCoordinatesScaled();
+            ConfigManager.get().setCoordinatesScaled(b);
+            coordinatesScaledItem.setSelected(b);
+            Alert.alert(I18nConsts.applyAfterReboot.get()[0]);
+        });
         Menu pluginMenu = new Menu(I18nConsts.pluginMenu.get()[0]);
         for (Plugin plugin : PluginManager.get().getPlugins()) {
             MenuItem pluginItem = new MenuItem(plugin.name() + ": " + Utils.verNum2Str(plugin.version()));
@@ -387,9 +395,9 @@ public class App {
         MenuItem exitItem = new MenuItem(I18nConsts.exitMenuItem.get()[0]);
         exitItem.setOnAction(e -> StageUtils.closePrimaryStage());
         if (Utils.isWindows()) {
-            systemMenu.getItems().addAll(showVersionsItem, showAboutItem, showIconOnTaskbarItem, pluginMenu, exitItem);
+            systemMenu.getItems().addAll(showVersionsItem, showAboutItem, showIconOnTaskbarItem, coordinatesScaledItem, pluginMenu, exitItem);
         } else {
-            systemMenu.getItems().addAll(showVersionsItem, showAboutItem, pluginMenu, exitItem);
+            systemMenu.getItems().addAll(showVersionsItem, showAboutItem, coordinatesScaledItem, pluginMenu, exitItem);
         }
         contextMenu.getItems().addAll(
             messageEnableItem,

@@ -46,6 +46,7 @@ public class Main extends Application {
             Boolean showIconOnTaskbar = ConfigManager.get().getShowIconOnTaskbar();
             if (showIconOnTaskbar == null) {
                 showIconOnTaskbar = Global.model.data().defaultShowIconOnTaskbar;
+                ConfigManager.get().setShowIconOnTaskbar(showIconOnTaskbar);
             }
             Stage primaryStage;
             if (!showIconOnTaskbar) {

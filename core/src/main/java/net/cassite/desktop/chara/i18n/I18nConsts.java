@@ -83,6 +83,10 @@ public class I18nConsts {
         ("在任务栏上显示")
         .setEn("Show on taskbar")
         .build();
+    public static final Words coordinatesScaledItem = new WordsBuilder
+        ("坐标经过缩放")
+        .setEn("Coordinates scaled")
+        .build();
     public static final Words pluginMenu = new WordsBuilder
         ("插件")
         .setEn("Plugins")
