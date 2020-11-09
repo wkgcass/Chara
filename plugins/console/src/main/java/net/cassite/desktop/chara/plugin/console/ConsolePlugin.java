@@ -54,12 +54,16 @@ public class ConsolePlugin implements Plugin {
                 Thread.sleep(HZ.UNIT * 10);
             } catch (InterruptedException ignore) {
             }
-            int size = baos.size();
-            if (size == 0) {
-                continue;
+            byte[] bytes;
+            //noinspection SynchronizationOnLocalVariableOrMethodParameter
+            synchronized (baos) {
+                int size = baos.size();
+                if (size == 0) {
+                    continue;
+                }
+                bytes = baos.toByteArray();
+                baos.reset();
             }
-            byte[] bytes = baos.toByteArray();
-            baos.reset();
             String text = new String(bytes, StandardCharsets.UTF_8);
             consoleStage.addText(text, baos == stderr);
         }
