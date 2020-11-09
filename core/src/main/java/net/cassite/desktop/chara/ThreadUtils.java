@@ -19,9 +19,8 @@ public class ThreadUtils {
     private final EventLoopGroup nonblockingThreads;
 
     private ThreadUtils() {
-        int cores = Runtime.getRuntime().availableProcessors();
         nonblockingThreads = new EventLoopGroup("nonblocking-threads");
-        for (int i = 0; i < cores; ++i) {
+        for (int i = 0; i < 1; ++i) { // we only add one thread for now
             try {
                 nonblockingThreads.add("nonblocking-thread-" + i);
             } catch (AlreadyExistException | IOException | ClosedException e) {
