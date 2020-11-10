@@ -26,6 +26,20 @@ Chara是一款基于JavaFX的桌面人物软件。
 2. Widget
 3. 动态桌面
 
+# 构建
+
+构建Chara需要JDK 15，可以在[这里](https://adoptopenjdk.net/?variant=openjdk15&jvmVariant=hotspot)下载。
+
+```
+git clone https://github.com/wkgcass/Chara.git
+cd Chara
+make bundle
+make
+
+# optionally
+make jpackage
+```
+
 # 演示
 
 请见这里：[http://blog.cassite.net/Chara/](http://blog.cassite.net/Chara/)。

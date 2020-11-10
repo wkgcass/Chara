@@ -234,3 +234,20 @@ output-noto-font-plugin: output build-noto-font-plugin
 .PHONY: deploy-noto-font-plugin
 deploy-noto-font-plugin: output-noto-font-plugin home-chara
 	cp output/noto-font.plugin ~/.chara/plugin/
+
+Chara-bundle:
+	git clone https://github.com/wkgcass/Chara-bundle.git
+vproxy.jar:
+	wget https://github.com/wkgcass/Chara-release/raw/release-vproxy-latest/vproxy.jar
+.PHONY: bundle
+bundle: Chara-bundle vproxy.jar
+	cd Chara-bundle && git pull
+	cp Chara-bundle/kokori/icon.png ./characters/kokori/models/shared/icon.png
+	mkdir -p ./characters/kokori/models/kokori-high-dpi/kokori/
+	mkdir -p ./characters/kokori/models/kokori-mini/kokori/
+	cp -r Chara-bundle/kokori/high-dpi/* ./characters/kokori/models/kokori-high-dpi/kokori/
+	cp -r Chara-bundle/kokori/mini/*     ./characters/kokori/models/kokori-mini/kokori/
+	mkdir -p ./plugins/noto-font/plugin/noto-font/font/
+	cp Chara-bundle/font/noto/* ./plugins/noto-font/plugin/noto-font/font/
+	mkdir -p ./plugins/wqy-font/plugin/wqy-font/font/
+	cp Chara-bundle/font/wqy-microhei/* ./plugins/wqy-font/plugin/wqy-font/font/
