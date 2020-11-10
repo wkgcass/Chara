@@ -4,6 +4,12 @@
 
 > “Ch”图标来源：[Icons8](https://icons8.com)
 
+# 下载
+
+[最新版下载](http://blog.cassite.net/Chara-release)
+
+# 功能
+
 Chara是一款基于JavaFX的桌面人物软件。
 
 目前支持如下功能：
