@@ -7,6 +7,7 @@ ls ./kokori-mini
 ls ./shared
 
 find . -name '.DS_Store' -type f -delete
+find . -name 'Thumbs.db' -type f -delete
 
 function clean_shared() {
   rm -rf shared/code

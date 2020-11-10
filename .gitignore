@@ -5,6 +5,7 @@ out/
 .class
 .jar
 .DS_Store
+Thumbs.db
 vproxy.jar
 .log
 output/
