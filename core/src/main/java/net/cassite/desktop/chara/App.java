@@ -21,6 +21,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.chara.Chara;
+import net.cassite.desktop.chara.control.LocaleCheckMenuItem;
 import net.cassite.desktop.chara.control.NativeMouseListenerUtils;
 import net.cassite.desktop.chara.css.MenuItemFontFamily;
 import net.cassite.desktop.chara.graphic.*;
@@ -38,6 +39,8 @@ import org.jnativehook.mouse.NativeMouseEvent;
 import vproxybase.dns.Resolver;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class App {
@@ -383,6 +386,27 @@ public class App {
             coordinatesScaledItem.setSelected(b);
             Alert.alert(I18nConsts.resetScalingRatioAfterReboot.get()[0]);
         });
+        Menu localeMenu = new Menu(I18nConsts.localeMenu.get()[0]);
+        {
+            List<LocaleCheckMenuItem> ls = new ArrayList<>();
+            ls.add(new LocaleCheckMenuItem("简体中文", "zh", "CN"));
+            ls.add(new LocaleCheckMenuItem("English", "en", "US"));
+            for (var item : ls) {
+                item.check();
+                item.setOnAction(e -> {
+                    item.set();
+                    ls.forEach(LocaleCheckMenuItem::check);
+                });
+                localeMenu.getItems().add(item);
+            }
+            MenuItem defaultLocale = new MenuItem(I18nConsts.defaultLocaleItem.get()[0]);
+            defaultLocale.setOnAction(e -> {
+                Words.setLocale(null);
+                ls.forEach(LocaleCheckMenuItem::check);
+                Alert.alert(I18nConsts.someComponentsResetAfterReboot.get()[0]);
+            });
+            localeMenu.getItems().add(defaultLocale);
+        }
         Menu pluginMenu = new Menu(I18nConsts.pluginMenu.get()[0]);
         for (Plugin plugin : PluginManager.get().getPlugins()) {
             MenuItem pluginItem = new MenuItem(plugin.name() + ": " + Utils.verNum2Str(plugin.version()));
@@ -395,9 +419,9 @@ public class App {
         MenuItem exitItem = new MenuItem(I18nConsts.exitMenuItem.get()[0]);
         exitItem.setOnAction(e -> StageUtils.closePrimaryStage());
         if (Utils.isWindows()) {
-            systemMenu.getItems().addAll(showVersionsItem, showAboutItem, showIconOnTaskbarItem, coordinatesScaledItem, pluginMenu, exitItem);
+            systemMenu.getItems().addAll(showVersionsItem, showAboutItem, showIconOnTaskbarItem, coordinatesScaledItem, localeMenu, pluginMenu, exitItem);
         } else {
-            systemMenu.getItems().addAll(showVersionsItem, showAboutItem, coordinatesScaledItem, pluginMenu, exitItem);
+            systemMenu.getItems().addAll(showVersionsItem, showAboutItem, coordinatesScaledItem, localeMenu, pluginMenu, exitItem);
         }
         contextMenu.getItems().addAll(
             messageEnableItem,

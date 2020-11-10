@@ -2,8 +2,12 @@
 
 package net.cassite.desktop.chara.i18n;
 
+import net.cassite.desktop.chara.util.Consts;
 import net.cassite.desktop.chara.util.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Locale;
 import java.util.Map;
 
@@ -11,7 +15,59 @@ import java.util.Map;
  * An object containing words in multiple languages.
  */
 public class Words extends WordsSelector {
-    private static final Locale locale = Locale.getDefault();
+    private static Locale locale = null;
+
+    private static Locale locale() {
+        if (locale == null) {
+            File f = new File(System.getProperty("user.home") + "/" + Consts.CONFIG_BASE_DIR + "/" + Consts.LOCALE_FILE_NAME);
+            if (f.isFile()) {
+                try {
+                    String s = Files.readString(f.toPath());
+                    setLocale(s);
+                } catch (IOException e) {
+                    Logger.error("failed reading locale from " + f.getAbsolutePath());
+                }
+            } else {
+                assert Logger.debug(f.getAbsolutePath() + " not exists");
+            }
+        }
+        if (locale == null) {
+            locale = Locale.getDefault();
+        }
+        return locale;
+    }
+
+    public static void setLocale(String text) {
+        if (text != null) {
+            text = text.trim();
+        }
+        File localeFile = new File(System.getProperty("user.home") + "/" + Consts.CONFIG_BASE_DIR + "/" + Consts.LOCALE_FILE_NAME);
+
+        if (text == null) {
+            locale = Locale.getDefault();
+            if (localeFile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                localeFile.delete();
+            }
+            assert Logger.debug("remove locale");
+            return;
+        }
+
+        String[] langcountry;
+        try {
+            langcountry = text.split("-");
+            locale = new Locale(langcountry[0], langcountry[1]);
+        } catch (RuntimeException e) {
+            Logger.error("failed setting locale by text " + text, e);
+            return;
+        }
+        try {
+            Files.write(localeFile.toPath(), text.getBytes());
+            assert Logger.debug("locale set to " + text);
+        } catch (IOException e) {
+            Logger.error("failed persisting locale info " + text + " from " + localeFile.getAbsolutePath(), e);
+        }
+    }
 
     private final String[] sc;
     private final String[] en;
@@ -73,7 +129,7 @@ public class Words extends WordsSelector {
      * @return {@link Locale#getLanguage()}-{@link Locale#getCountry()}
      */
     public static String getLocale() {
-        return locale.getLanguage() + "-" + locale.getCountry();
+        return locale().getLanguage() + "-" + locale().getCountry();
     }
 
     @Override

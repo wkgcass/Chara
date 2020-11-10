@@ -87,6 +87,14 @@ public class I18nConsts {
         ("坐标缩放")
         .setEn("Coordinates scaled")
         .build();
+    public static final Words localeMenu = new WordsBuilder
+        ("语言/地区")
+        .setEn("Language/Locale")
+        .build();
+    public static final Words defaultLocaleItem = new WordsBuilder
+        ("使用默认配置")
+        .setEn("Use default setting")
+        .build();
     public static final Words pluginMenu = new WordsBuilder
         ("插件")
         .setEn("Plugins")
@@ -111,6 +119,10 @@ public class I18nConsts {
     public static final Words applyAfterReboot = new WordsBuilder
         ("重新启动本程序后生效")
         .setEn("Apply after rebooting this program")
+        .build();
+    public static final Words someComponentsResetAfterReboot = new WordsBuilder
+        ("部分组件在重新启动本程序后，当前配置才会生效")
+        .setEn("Some components will not apply current config until rebooting this program")
         .build();
     public static final Words resetScalingRatioAfterReboot = new WordsBuilder
         ("重新启动本程序后重置缩放比例")

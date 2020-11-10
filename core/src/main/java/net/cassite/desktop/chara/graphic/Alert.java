@@ -4,7 +4,9 @@ package net.cassite.desktop.chara.graphic;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -31,6 +33,7 @@ public class Alert {
             Utils.isWindows() ? 0.85 : (
                 Utils.isLinux() ? 0.65 :
                     0.65)));
+    private static final int MAX_ALERT_TEXT_WIDTH = 1600;
     private static final int MAX_ALERT_TEXT_HEIGHT = 768;
 
     private static final Object _VALUE_ = new Object();
@@ -51,12 +54,19 @@ public class Alert {
         var w = foo.getLayoutBounds().getWidth();
         var h = foo.getLayoutBounds().getHeight();
 
+        if (w > MAX_ALERT_TEXT_WIDTH) {
+            w = MAX_ALERT_TEXT_WIDTH;
+            Label text = getLabel(msg, w);
+            new Scene(text);
+            WritableImage img = text.snapshot(new SnapshotParameters(), null);
+            h = img.getHeight();
+        }
+
         if (h > MAX_ALERT_TEXT_HEIGHT) {
             h = MAX_ALERT_TEXT_HEIGHT;
         }
 
-        Label label = new Label(msg);
-        label.setFont(Font.font(FontManager.getFontFamily(), FONT_SIZE));
+        Label label = getLabel(msg, w);
         label.setLayoutX(MARGIN_HORIZONTAL);
         label.setLayoutY(MARGIN_VERTICAL);
         label.setTextFill(new Color(1, 1, 1, 1));
@@ -97,6 +107,14 @@ public class Alert {
             double d = e.getDeltaY();
             pane.setLayoutY(pane.getLayoutY() + d);
         });
+    }
+
+    private static Label getLabel(String msg, double width) {
+        Label text = new Label(msg);
+        text.setFont(Font.font(FontManager.getFontFamily(), FONT_SIZE));
+        text.setPrefWidth(width);
+        text.setWrapText(true);
+        return text;
     }
 
     public static void shutdown() {
