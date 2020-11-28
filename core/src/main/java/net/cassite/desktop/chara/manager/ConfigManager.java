@@ -559,7 +559,7 @@ public class ConfigManager {
         } else {
             File path = configFile.getParentFile();
             if (path.exists()) {
-                if (!path.isFile()) {
+                if (!path.isDirectory()) {
                     throw new Exception(path + " exists but is not a directory");
                 }
             } else {
