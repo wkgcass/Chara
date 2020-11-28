@@ -1,0 +1,137 @@
+// ***LICENSE*** This file is licensed under GPLv2 with Classpath Exception. See LICENSE file under project root for more info
+
+package net.cassite.desktop.chara.chara.elithya.util;
+
+import net.cassite.desktop.chara.model.ModelInitConfig;
+
+public class ElithyaConsts {
+    public final int imageWidth;
+    public final int imageHeight;
+    public final int minWidth;
+    public final int initialWidth;
+    public final int topMiddleX;
+    public final int bottomMiddleX;
+    public final int messageOffsetX;
+    public final int messageAtMinY;
+    public final int moveDownMax;
+    public final int moveUpMax;
+    public final int moveLeftMax;
+    public final int moveRightMax;
+    public final int hatMoveUpMax;
+    public final int hatMoveDownMax;
+    public final int hatUpAccelerateLen;
+    public final int hatDownAccelerateLen;
+    public final int lanternSwingDelta;
+    public final int lanternSwingDeltaX;
+    public final int lanternSwingDeltaY;
+    public final int animateLegMaxCount;
+    public final double chainRotatePivotX;
+    public final double chainRotatePivotY;
+    public final double eyeTrackBoundMinX;
+    public final double eyeTrackBoundMaxX;
+    public final double eyeTrackBoundMinY;
+    public final double eyeTrackBoundMaxY;
+    public final double eyeLeftOriginalX;
+    public final double eyeLeftOriginalY;
+    public final double eyeLeftInitX;
+    public final double eyeLeftInitY;
+    public final double eyeLeftLeftX;
+    public final double eyeLeftLeftY;
+    public final double eyeLeftRightX;
+    public final double eyeLeftRightY;
+    public final double eyeLeftMinY;
+    public final double eyeLeftMaxY;
+    public final double eyeRightOriginalX;
+    public final double eyeRightOriginalY;
+    public final double eyeRightInitX;
+    public final double eyeRightInitY;
+    public final double eyeRightLeftX;
+    public final double eyeRightLeftY;
+    public final double eyeRightRightX;
+    public final double eyeRightRightY;
+    public final double eyeRightMinY;
+    public final double eyeRightMaxY;
+    public final double armForeRightRotateX;
+    public final double armForeRightRotateY;
+    public final double handRightRotateX;
+    public final double handRightRotateY;
+    public final double wandTipX;
+    public final double wandTipY;
+    public final double armForeRightInitDegree;
+    public final double armForeRightMinDegree;
+    public final double armForeRightMaxDegree;
+    public final double armForeRightAngularVelocity;
+    public final double handRightInitDegree;
+    public final double handRightMinDegree;
+    public final double handRightMaxDegree;
+    public final double handRightAngularVelocity;
+    public final int armRightRotateSkipTick;
+
+    public ElithyaConsts(ModelInitConfig config) {
+        imageWidth = config.getInt("imageWidth");
+        imageHeight = config.getInt("imageHeight");
+        minWidth = config.getInt("minWidth");
+        initialWidth = config.getInt("initialWidth");
+        double scale = config.getDouble("scale");
+        topMiddleX = (int) (config.getInt("topMiddleX") * scale);
+        bottomMiddleX = (int) (config.getInt("bottomMiddleX") * scale);
+        messageOffsetX = (int) (config.getInt("messageOffsetX") * scale);
+        messageAtMinY = (int) (config.getInt("messageAtMinY") * scale);
+        moveDownMax = (int) (config.getInt("moveDownMax") * scale);
+        moveUpMax = (int) (config.getInt("moveUpMax") * scale);
+        moveLeftMax = (int) (config.getInt("moveLeftMax") * scale);
+        moveRightMax = (int) (config.getInt("moveRightMax") * scale);
+        hatMoveUpMax = (int) (config.getInt("hatMoveUpMax") * scale);
+        hatMoveDownMax = (int) (config.getInt("hatMoveDownMax") * scale);
+        hatUpAccelerateLen = (int) (config.getInt("hatUpAccelerateLen") * scale);
+        hatDownAccelerateLen = (int) (config.getInt("hatDownAccelerateLen") * scale);
+        lanternSwingDelta = (int) (config.getInt("lanternSwingDelta") * scale);
+        lanternSwingDeltaX = (int) (config.getInt("lanternSwingDeltaX") * scale);
+        lanternSwingDeltaY = (int) (config.getInt("lanternSwingDeltaY") * scale);
+
+        armRightRotateSkipTick = config.getInt("armRightRotateSkipTick");
+        animateLegMaxCount = config.getInt("animateLegMaxCount");
+
+        chainRotatePivotX = config.getDouble("chainRotatePivotX") * scale;
+        chainRotatePivotY = config.getDouble("chainRotatePivotY") * scale;
+        eyeTrackBoundMinX = config.getDouble("eyeTrackBoundMinX") * scale;
+        eyeTrackBoundMaxX = config.getDouble("eyeTrackBoundMaxX") * scale;
+        eyeTrackBoundMinY = config.getDouble("eyeTrackBoundMinY") * scale;
+        eyeTrackBoundMaxY = config.getDouble("eyeTrackBoundMaxY") * scale;
+        eyeLeftOriginalX = config.getDouble("eyeLeftOriginalX") * scale;
+        eyeLeftOriginalY = config.getDouble("eyeLeftOriginalY") * scale;
+        eyeLeftInitX = config.getDouble("eyeLeftInitX") * scale;
+        eyeLeftInitY = config.getDouble("eyeLeftInitY") * scale;
+        eyeLeftLeftX = config.getDouble("eyeLeftLeftX") * scale;
+        eyeLeftLeftY = config.getDouble("eyeLeftLeftY") * scale;
+        eyeLeftRightX = config.getDouble("eyeLeftRightX") * scale;
+        eyeLeftRightY = config.getDouble("eyeLeftRightY") * scale;
+        eyeLeftMinY = config.getDouble("eyeLeftMinY") * scale;
+        eyeLeftMaxY = config.getDouble("eyeLeftMaxY") * scale;
+        eyeRightOriginalX = config.getDouble("eyeRightOriginalX") * scale;
+        eyeRightOriginalY = config.getDouble("eyeRightOriginalY") * scale;
+        eyeRightInitX = config.getDouble("eyeRightInitX") * scale;
+        eyeRightInitY = config.getDouble("eyeRightInitY") * scale;
+        eyeRightLeftX = config.getDouble("eyeRightLeftX") * scale;
+        eyeRightLeftY = config.getDouble("eyeRightLeftY") * scale;
+        eyeRightRightX = config.getDouble("eyeRightRightX") * scale;
+        eyeRightRightY = config.getDouble("eyeRightRightY") * scale;
+        eyeRightMinY = config.getDouble("eyeRightMinY") * scale;
+        eyeRightMaxY = config.getDouble("eyeRightMaxY") * scale;
+        armForeRightRotateX = config.getDouble("armForeRightRotateX") * scale;
+        armForeRightRotateY = config.getDouble("armForeRightRotateY") * scale;
+        handRightRotateX = config.getDouble("handRightRotateX") * scale;
+        handRightRotateY = config.getDouble("handRightRotateY") * scale;
+        wandTipX = config.getDouble("wandTipX") * scale;
+        wandTipY = config.getDouble("wandTipY") * scale;
+
+        armForeRightInitDegree = config.getDouble("armForeRightInitDegree");
+        armForeRightMinDegree = config.getDouble("armForeRightMinDegree");
+        armForeRightMaxDegree = config.getDouble("armForeRightMaxDegree");
+        armForeRightAngularVelocity = config.getDouble("armForeRightAngularVelocity");
+        handRightInitDegree = config.getDouble("handRightInitDegree");
+        handRightMinDegree = config.getDouble("handRightMinDegree");
+        handRightMaxDegree = config.getDouble("handRightMaxDegree");
+        handRightAngularVelocity = config.getDouble("handRightAngularVelocity");
+    }
+}

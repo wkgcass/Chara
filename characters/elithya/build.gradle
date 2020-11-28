@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+
+group 'net.cassite.desktop.chara'
+version loadVersion()
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+javafx {
+    version = 11
+    modules = ['javafx.controls', 'javafx.swing']
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+jar {
+    archiveName = 'elithya.jar'
+}
+
+dependencies {
+    compile files('../../core/build/libs/chara.jar')
+    compile files('../../vproxy.jar')
+    compile group: 'com.1stleg', name: 'jnativehook', version: '2.1.0'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+def loadVersion() {
+    def PREFIX = "return "
+    def SUFFIX = "; // _THE_VERSION_"
+    def ver = file(projectDir.getAbsolutePath() + "/src/main/java/net/cassite/desktop/chara/model/elithya/ElithyaModel.java")
+    def lines = ver.getText().split("\n")
+    for (def line : lines) {
+        line = line.trim()
+        if (line.startsWith(PREFIX) && line.endsWith(SUFFIX)) {
+            String verStr = line.substring(PREFIX.length(), line.length() - SUFFIX.length())
+            def version = Integer.parseInt(verStr)
+            return (version / 1_000_000) + "." + ((int) (version / 1_000) % 1_000) + "." + (version % 1_000)
+        }
+    }
+    return "unknown"
+}
