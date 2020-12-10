@@ -104,7 +104,6 @@ public class KokoriR18 {
             sexStartTime = System.currentTimeMillis();
         }
         kokori.state = Kokori.State.R18_SEX;
-        appCallback.setGlobalScreen(false);
         appCallback.setDraggable(false);
 
         var added = animateSex(() -> {
@@ -176,7 +175,6 @@ public class KokoriR18 {
 
                 // resume
                 Utils.delay("finish-sex", 5_000, () -> {
-                    appCallback.setGlobalScreen(true);
                     appCallback.setDraggable(true);
 
                     // reset again
