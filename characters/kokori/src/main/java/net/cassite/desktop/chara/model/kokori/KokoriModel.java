@@ -34,7 +34,7 @@ public class KokoriModel implements Model {
 
     @Override
     public int version() {
-        return 1000000; // _THE_VERSION_
+        return 1000001; // _THE_VERSION_
     }
 
     @Override

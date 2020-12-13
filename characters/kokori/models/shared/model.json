@@ -1,6 +1,6 @@
 {
   "name": "kokori",
-  "version": 1000000,
+  "version": 1000001,
   "compatibleMinCodeVersion": 1000000,
   "compatibleMaxCodeVersion": -1,
   "modelClass": "net.cassite.desktop.chara.model.kokori.KokoriModel",
