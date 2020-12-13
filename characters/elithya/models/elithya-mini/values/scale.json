@@ -1,0 +1,13 @@
+{
+  "integers": {
+    "imageWidth": 744,
+    "imageHeight": 853,
+    "minWidth": 400,
+    "initialWidth": 460
+  },
+  "doubles": {
+    "scale": 0.5
+  },
+  "integerRectangles": {
+  }
+}
