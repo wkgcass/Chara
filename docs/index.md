@@ -127,7 +127,7 @@ Chara是一款基于JavaFX的桌面人物软件。
   <tr><td> 英文名 </td> <td> Kokori </td></tr>
   <tr><td> 日文名 </td> <td> 心(ココ)璃(リ) </td></tr>
   <tr><td> 关键字 </td> <td> 巫女 温柔 病娇 </td></tr>
-  <tr><td> 作者 </td></tr>
+  <tr><td> 作者 </td> <td> wkgcass </td></tr>
   <tr><td> 设定 </td> <td> wkgcass </td></tr>
   <tr><td><a href="https://www.pixiv.net/artworks/85094809"> 原画 </a></td> <td> wkgcass </td></tr>
   <tr><td> 模型 </td> <td> wkgcass </td></tr>
@@ -136,6 +136,26 @@ Chara是一款基于JavaFX的桌面人物软件。
 </table>
    </td>
   </tr> <!-- end kokori -->
+  <tr>
+   <td>
+<a href="https://github.com/wkgcass/Chara/tree/master/characters/elithya"><img src="readme-bundle/elithya.png" width="300px" height="300px"></a>
+   </td>
+   <td>
+<table>
+<tbody>
+  <tr><td> 人物 </td></tr>
+  <tr><td> 中文名 </td> <td> 艾莉西亚 </td></tr>
+  <tr><td> 英文名 </td> <td> Elithya </td></tr>
+  <tr><td> 关键字 </td> <td> 魔女 成熟 巨乳 </td></tr>
+  <tr><td> 作者 </td> <td> wkgcass </td></tr>
+  <tr><td> 设定 </td> <td> wkgcass </td></tr>
+  <tr><td><a href="https://www.pixiv.net/artworks/85825443"> 原画 </a></td> <td> wkgcass </td></tr>
+  <tr><td> 模型 </td> <td> wkgcass </td></tr>
+  <tr><td> 编码 </td> <td> wkgcass </td></tr>
+</tbody>
+</table>
+   </td>
+  </tr> <!-- end elithya -->
 </tbody>
 </table>
 
