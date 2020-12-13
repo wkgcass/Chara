@@ -20,9 +20,29 @@ public interface AppCallback {
     /**
      * Wakeup message stage and show message bubbles with the contents inside <code>words</code>.
      *
+     * @param words      words to show
+     * @param alwaysShow true if want to always show the message, false otherwise
+     */
+    void showMessage(Words words, boolean alwaysShow);
+
+    /**
+     * Wakeup message stage and show message bubbles with the contents inside <code>words</code>.
+     *
      * @param words words to show
      */
-    void showMessage(Words words);
+    default void showMessage(Words words) {
+        showMessage(words, false);
+    }
+
+    /**
+     * Similar to {@link AppCallback#showMessage(Words)} but the input is an array of strings
+     *
+     * @param alwaysShow true if want to always show the message, false otherwise
+     * @param msg        words to show
+     */
+    default void showMessage(boolean alwaysShow, String... msg) {
+        showMessage(new Words(msg, null), alwaysShow);
+    }
 
     /**
      * Similar to {@link AppCallback#showMessage(Words)} but the input is an array of strings
@@ -30,7 +50,7 @@ public interface AppCallback {
      * @param msg words to show
      */
     default void showMessage(String... msg) {
-        showMessage(new Words(msg, null));
+        showMessage(false, msg);
     }
 
     /**
@@ -83,14 +103,6 @@ public interface AppCallback {
      * @param draggable true to be draggable, false otherwise
      */
     void setDraggable(boolean draggable);
-
-    /**
-     * Enable or disable the <code>GlobalScreen</code> feature<br>
-     * The <code>GlobalScreen</code> will keep handling events when the app is not focused or mouse not on the app.
-     *
-     * @param globalScreen true to enable, false otherwise
-     */
-    void setGlobalScreen(boolean globalScreen);
 
     /**
      * Always show chara points bars or not. Setting this option to true will override {@link #setAlwaysHideBar(boolean)}.

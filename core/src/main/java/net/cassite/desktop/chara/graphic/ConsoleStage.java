@@ -19,6 +19,7 @@ import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.manager.FontManager;
+import net.cassite.desktop.chara.util.DragHandler;
 
 import java.util.Collections;
 import java.util.List;
@@ -113,6 +114,18 @@ public class ConsoleStage extends UStage {
             textFlow.setMinHeight(now.doubleValue());
             scrollPane.setPrefHeight(now.doubleValue());
         });
+        // handle drag scroll
+        DragHandler dragHandler = new DragHandler(
+            xy -> scrollPane.setVvalue(xy[1]),
+            () -> new double[]{0, scrollPane.getVvalue()}
+        ) {
+            @Override
+            protected double calculateDeltaY(double deltaX, double deltaY) {
+                return -(deltaY / scrollPane.getHeight() / 2);
+            }
+        };
+        textFlow.setOnMousePressed(dragHandler);
+        textFlow.setOnMouseDragged(dragHandler);
     }
 
     private void copyTextContent() {

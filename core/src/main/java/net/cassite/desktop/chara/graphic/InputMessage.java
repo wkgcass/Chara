@@ -5,6 +5,7 @@ package net.cassite.desktop.chara.graphic;
 public class InputMessage {
     public final String message;
     public int colorHash;
+    public boolean alwaysShow;
 
     public InputMessage(String message) {
         this.message = message;
@@ -12,6 +13,11 @@ public class InputMessage {
 
     public InputMessage setColor(int colorHash) {
         this.colorHash = colorHash;
+        return this;
+    }
+
+    public InputMessage setAlwaysShow(boolean alwaysShow) {
+        this.alwaysShow = alwaysShow;
         return this;
     }
 }

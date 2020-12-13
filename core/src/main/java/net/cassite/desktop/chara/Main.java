@@ -16,15 +16,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import net.cassite.desktop.chara.control.NativeMouseListenerUtils;
+import net.cassite.desktop.chara.control.GlobalMouse;
 import net.cassite.desktop.chara.graphic.UStage;
 import net.cassite.desktop.chara.i18n.I18nConsts;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.ModelManager;
 import net.cassite.desktop.chara.manager.PluginManager;
 import net.cassite.desktop.chara.util.*;
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
 import vproxybase.dns.Resolver;
 import vproxybase.util.Callback;
 import vproxybase.util.Tuple3;
@@ -44,9 +42,14 @@ public class Main extends Application {
         preWork(() -> ThreadUtils.get().runOnFX(() -> {
             // get config
             Boolean showIconOnTaskbar = ConfigManager.get().getShowIconOnTaskbar();
-            if (showIconOnTaskbar == null) {
-                showIconOnTaskbar = Global.model.data().defaultShowIconOnTaskbar;
-                ConfigManager.get().setShowIconOnTaskbar(showIconOnTaskbar);
+            if (Utils.isWindows()) {
+                if (showIconOnTaskbar == null) {
+                    showIconOnTaskbar = Global.model.data().defaultShowIconOnTaskbar;
+                    ConfigManager.get().setShowIconOnTaskbar(showIconOnTaskbar);
+                }
+            } else {
+                showIconOnTaskbar = true;
+                ConfigManager.get().setShowIconOnTaskbar(true);
             }
             Stage primaryStage;
             if (!showIconOnTaskbar) {
@@ -135,20 +138,13 @@ public class Main extends Application {
 
     private void registerNativeHook() {
         // disable native mouse logger
-        java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GlobalScreen.class.getPackageName());
+        java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GlobalMouse.class.getPackageName());
         LogManager.getLogManager().reset();
         logger.setLevel(Level.WARNING);
         logger.setUseParentHandlers(false);
-        if (Global.globalScreenEnabled) {
-            // enable native mouse
-            try {
-                GlobalScreen.registerNativeHook();
-                GlobalScreen.addNativeMouseMotionListener(NativeMouseListenerUtils.get());
-            } catch (NativeHookException e) {
-                Logger.error("register native hook failed\n" +
-                    "it's necessary for detecting the mouse movements", e);
-            }
-        }
+
+        // enable global events
+        GlobalMouse.enable();
     }
 
     private void loadDefaultIcon() {
@@ -324,7 +320,8 @@ public class Main extends Application {
             {
                 var iconInputStream = ModelManager.getEntryFromModel("icon.png");
                 if (iconInputStream == null) {
-                    Logger.fatal("missing icon in model");
+                    Logger.warn("missing icon in model");
+                    cb.run();
                     return;
                 }
                 Global.modelIcon = new Image(iconInputStream);

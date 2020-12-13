@@ -22,7 +22,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.cassite.desktop.chara.chara.Chara;
 import net.cassite.desktop.chara.control.LocaleCheckMenuItem;
-import net.cassite.desktop.chara.control.NativeMouseListenerUtils;
+import net.cassite.desktop.chara.control.GlobalMouse;
 import net.cassite.desktop.chara.css.MenuItemFontFamily;
 import net.cassite.desktop.chara.graphic.*;
 import net.cassite.desktop.chara.i18n.I18nConsts;
@@ -33,9 +33,6 @@ import net.cassite.desktop.chara.manager.PluginManager;
 import net.cassite.desktop.chara.model.Model;
 import net.cassite.desktop.chara.plugin.Plugin;
 import net.cassite.desktop.chara.util.*;
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-import org.jnativehook.mouse.NativeMouseEvent;
 import vproxybase.dns.Resolver;
 
 import java.io.IOException;
@@ -58,7 +55,7 @@ public class App {
     private final Chara chara;
     private final Bars bars;
     private final ContextMenu contextMenu = new ContextMenu();
-    private final Menu characterMenu = new Menu(I18nConsts.characterMenu.get()[0]);
+    private final Menu characterMenu;
 
     private final Group mouseCircle = new Group();
     private final Scale mouseCircleScale = new Scale(0, 0);
@@ -106,6 +103,7 @@ public class App {
 
         this.scale = scale;
 
+        this.characterMenu = new Menu(Global.model.data().modelMenuItemText.get()[0]);
         this.chara = Global.model.construct(new Model.ConstructParams(getAppCallback(), root, characterMenu));
 
         this.primaryStage = new StageTransformer(primaryStage,
@@ -244,7 +242,7 @@ public class App {
                 messageStage.release();
             }
             Alert.shutdown();
-            setGlobalScreen(false);
+            setGlobalMouse(false);
             ConfigManager.get().setLastTimestamp(System.currentTimeMillis());
             ConfigManager.saveNow();
             try {
@@ -310,7 +308,7 @@ public class App {
         rootScalePane.setOnMouseClicked(this::click);
         rootPane.setOnMouseMoved(this::jfxMouseMove);
         rootPane.setOnMouseExited(this::jfxMouseLeave);
-        NativeMouseListenerUtils.setOnMouseMoved(this::mouseMove);
+        GlobalMouse.setOnMouseMoved(this::mouseMove);
         rootScalePane.setLayoutY(primaryStage.getAddAbsoluteTop());
 
         // menu
@@ -482,8 +480,8 @@ public class App {
             }
 
             @Override
-            public void showMessage(Words words) {
-                ThreadUtils.get().runOnFX(() -> App.this.showMessage(words));
+            public void showMessage(Words words, boolean alwaysShow) {
+                ThreadUtils.get().runOnFX(() -> App.this.showMessage(words, alwaysShow));
             }
 
             @Override
@@ -516,17 +514,6 @@ public class App {
             @Override
             public void setDraggable(boolean draggable) {
                 ThreadUtils.get().runOnFX(() -> App.this.windowIsDraggable = draggable);
-            }
-
-            @Override
-            public void setGlobalScreen(boolean globalScreen) {
-                ThreadUtils.get().runOnFX(() -> {
-                    setGlobalScreenFromChara = globalScreen;
-                    if (!globalScreen) {
-                        App.this.setGlobalScreen(false);
-                    }
-                    // let the mouse move event trigger globalScreen registration
-                });
             }
 
             @Override
@@ -627,8 +614,7 @@ public class App {
         EventBus.publish(Events.MouseClickedImagePosition, MOUSE_CLICK_EVENT_UTIL_OBJECT);
     }
 
-    private Scheduled deregisterGlobalScreenAfterMouseLeaveScheduledFuture;
-    private boolean setGlobalScreenFromChara = true;
+    private Scheduled deregisterGlobalMouseAfterMouseLeaveScheduledFuture;
 
     private boolean mouseIndicatorEnabled;
     private boolean mouseCircleIsShown = false;
@@ -694,38 +680,36 @@ public class App {
     }
 
     private void jfxMouseMove(MouseEvent e) {
-        var foo = deregisterGlobalScreenAfterMouseLeaveScheduledFuture;
-        deregisterGlobalScreenAfterMouseLeaveScheduledFuture = null;
+        var foo = deregisterGlobalMouseAfterMouseLeaveScheduledFuture;
+        deregisterGlobalMouseAfterMouseLeaveScheduledFuture = null;
         if (foo != null) {
             foo.cancel();
         }
 
-        if (setGlobalScreenFromChara) {
-            setGlobalScreen(true);
-        }
-        if (!GlobalScreen.isNativeHookRegistered()) {
-            // should alert events by jfx
-            double x = primaryStage.getImageXBySceneX(e.getX());
-            double y = primaryStage.getImageYBySceneY(e.getY());
-            mouseMove(x, y);
-            mouseCircleMove(e.getX(), e.getY());
-        }
+        setGlobalMouse(false); // disable global events
+
+        // should alert events by jfx
+        double x = primaryStage.getImageXBySceneX(e.getX());
+        double y = primaryStage.getImageYBySceneY(e.getY());
+        mouseMove(x, y);
+        mouseCircleMove(e.getX(), e.getY());
     }
 
     private void jfxMouseLeave(MouseEvent e) {
-        if (!GlobalScreen.isNativeHookRegistered()) {
-            // should alert events by jfx
-            double x = primaryStage.getImageXBySceneX(e.getX());
-            double y = primaryStage.getImageYBySceneY(e.getY());
-            mouseLeave(x, y);
-        }
+        // should alert events by jfx
+        double x = primaryStage.getImageXBySceneX(e.getX());
+        double y = primaryStage.getImageYBySceneY(e.getY());
+        mouseLeave(x, y);
+
+        // enable global events
+        setGlobalMouse(true);
     }
 
     private boolean mouseLeaves = true;
 
-    private void mouseMove(NativeMouseEvent e) {
-        double x = e.getX();
-        double y = e.getY();
+    private void mouseMove(MouseEvent e) {
+        double x = e.getScreenX();
+        double y = e.getScreenY();
         double sceneX = primaryStage.getSceneXByScreenX(x);
         double sceneY = primaryStage.getSceneYByScreenY(y);
         x = primaryStage.getImageXBySceneX(sceneX);
@@ -782,13 +766,13 @@ public class App {
         mouseCircleHide();
         chara.mouseLeave();
 
-        var foo = deregisterGlobalScreenAfterMouseLeaveScheduledFuture;
+        var foo = deregisterGlobalMouseAfterMouseLeaveScheduledFuture;
         if (foo != null) {
             // this should not happen, but if happens, cancel the old one
             foo.cancel();
         }
-        deregisterGlobalScreenAfterMouseLeaveScheduledFuture =
-            ThreadUtils.get().scheduleFX(() -> setGlobalScreen(false), 10, TimeUnit.SECONDS);
+        deregisterGlobalMouseAfterMouseLeaveScheduledFuture =
+            ThreadUtils.get().scheduleFX(() -> setGlobalMouse(false), 10, TimeUnit.SECONDS);
 
         // hide input box
         inputBox.hide();
@@ -798,10 +782,16 @@ public class App {
     private MessageStage messageStage = null;
     private int colorHash = 0;
 
-    private void showMessage(Words words) {
+    private void showMessage(Words words, boolean alwaysShow) {
         if (messageDisabled) {
-            Logger.info("message is disabled");
-            return;
+            // if message is supported, it can be disabled or enabled by user, currently disabled, so do not show message
+            // otherwise it cannot be managed by user, so check whether the model specified that it is enabled
+            if (Global.model.data().messageSupported || !Global.model.data().defaultMessageEnabled) {
+                Logger.info("message is disabled");
+                return;
+            }
+            // if message not supported but still want to show messages, the message is considered to be useful
+            // so let is show
         }
 
         if (messageStage == null) {
@@ -810,7 +800,7 @@ public class App {
         int colorHash = this.colorHash++;
         int n = 0;
         for (String message : words.get()) {
-            var msg = new InputMessage(message).setColor(colorHash);
+            var msg = new InputMessage(message).setColor(colorHash).setAlwaysShow(alwaysShow);
             Utils.delayNoRecord(n * 1200, () -> messageStage.pushMessage(msg));
             ++n;
         }
@@ -895,29 +885,19 @@ public class App {
         EventBus.publish(Events.PrimaryStageMoved, null);
     }
 
-    private void setGlobalScreen(boolean globalScreen) {
-        if (globalScreen) {
-            if (!Global.globalScreenEnabled) {
-                return;
-            }
-            if (GlobalScreen.isNativeHookRegistered()) {
+    private void setGlobalMouse(boolean globalMouse) {
+        if (globalMouse) {
+            if (GlobalMouse.isRunning()) {
                 return;
             }
             Logger.info("register global screen");
-            try {
-                GlobalScreen.registerNativeHook();
-            } catch (NativeHookException e) {
-                Logger.error("register global screen native hook failed", e);
-            }
+            GlobalMouse.enable();
         } else {
-            if (!GlobalScreen.isNativeHookRegistered()) {
+            if (!GlobalMouse.isRunning()) {
                 return;
             }
             Logger.info("deregister global screen");
-            try {
-                GlobalScreen.unregisterNativeHook();
-            } catch (NativeHookException ignore) {
-            }
+            GlobalMouse.disable();
         }
     }
 
@@ -975,10 +955,9 @@ public class App {
     private void showVersions() {
         Alert.alert("" +
             "code: " + Utils.verNum2Str(Consts.VERSION_NUM) + "\n" +
-            "model: " + Utils.verNum2Str(Global.modelVersion) + "\n" +
+            "model: " + Utils.verNum2Str(Global.model.version()) + "\n" +
             "vproxy: " + vproxybase.util.Version.VERSION + "\n" +
-            "vjson: " + vjson.util.VERSION.VERSION + "\n" +
-            "jnativehook: " + Consts.JNATIVEHOOK_VERSION +
+            "vjson: " + vjson.util.VERSION.VERSION +
             "");
     }
 

@@ -45,6 +45,7 @@ public class ConfigManager {
         private final Map<Key<Integer>, Integer> integerRegisters = new ConcurrentHashMap<>();
         private final Map<Key<Double>, Double> doubleRegisters = new ConcurrentHashMap<>();
         private final Map<Key<Boolean>, Boolean> booleanRegisters = new ConcurrentHashMap<>();
+        private final Map<Key<String>, String> stringRegisters = new ConcurrentHashMap<>();
 
         private String chatbot;
         private long lastTimestamp;
@@ -220,6 +221,23 @@ public class ConfigManager {
             save();
         }
 
+        public String getStringValue(Key<String> key) {
+            String s = stringRegisters.get(key);
+            if (s == null) {
+                return "";
+            }
+            return s;
+        }
+
+        public void setStringValue(Key<String> key, String v) {
+            if (v == null) {
+                stringRegisters.remove(key);
+            } else {
+                stringRegisters.put(key, v);
+            }
+            save();
+        }
+
         public long getLastTimestamp() {
             return lastTimestamp;
         }
@@ -350,6 +368,18 @@ public class ConfigManager {
                     }
                 }
             }
+            if (obj.containsKey("stringRegisters")) {
+                var o = obj.get("stringRegisters");
+                if (o instanceof JSON.Object) {
+                    var oo = (JSON.Object) o;
+                    for (var key : oo.keySet()) {
+                        var v = oo.get(key);
+                        if (v instanceof JSON.String) {
+                            this.stringRegisters.put(Key.of(key, String.class), ((JSON.String) v).toJavaObject());
+                        }
+                    }
+                }
+            }
             if (obj.containsKey("last_timestamp")) {
                 var o = obj.get("last_timestamp");
                 if (o instanceof JSON.Long) {
@@ -420,6 +450,13 @@ public class ConfigManager {
                 ob.putObject("booleanRegisters", o -> {
                     for (var key : booleanRegisters.keySet()) {
                         o.put(key.getName(), booleanRegisters.get(key));
+                    }
+                });
+            }
+            if (!stringRegisters.isEmpty()) {
+                ob.putObject("stringRegisters", o -> {
+                    for (var key : stringRegisters.keySet()) {
+                        o.put(key.getName(), stringRegisters.get(key));
                     }
                 });
             }

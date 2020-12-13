@@ -5,12 +5,12 @@ package net.cassite.desktop.chara.util;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import net.cassite.desktop.chara.ThreadUtils;
+import net.cassite.desktop.chara.control.GlobalMouse;
 import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.PluginManager;
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
 import vproxybase.dns.Resolver;
 
 import java.awt.*;
@@ -158,11 +158,8 @@ public class Utils {
             return;
         }
         // otherwise shutdown forcibly
-        if (GlobalScreen.isNativeHookRegistered()) {
-            try {
-                GlobalScreen.unregisterNativeHook();
-            } catch (NativeHookException ignore) {
-            }
+        if (GlobalMouse.isRunning()) {
+            GlobalMouse.disable();
         }
         ConfigManager.saveNow();
         Platform.runLater(() -> PluginManager.get().release());
@@ -404,5 +401,23 @@ public class Utils {
                 taskbar.setIconImage(image);
             }
         }
+    }
+
+    /**
+     * Get screen of the given coordinate
+     *
+     * @param x x
+     * @param y y
+     * @return screen of the coordinate or null if out of all screens
+     */
+    public static Screen getScreen(double x, double y) {
+        var screens = Screen.getScreens();
+        for (var s : screens) {
+            var bounds = s.getBounds();
+            if (bounds.contains(x, y)) {
+                return s;
+            }
+        }
+        return null;
     }
 }

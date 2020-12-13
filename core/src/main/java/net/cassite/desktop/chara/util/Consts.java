@@ -8,9 +8,8 @@ public class Consts {
     private Consts() {
     }
 
-    public static final String VERSION = "1.0.1"; // _THE_VERSION_
+    public static final String VERSION = "1.1.0"; // _THE_VERSION_
     public static final int VERSION_NUM;
-    public static final String JNATIVEHOOK_VERSION = "2.1.0"; // _THE_JNATIVE_HOOK_VERSION_
 
     static {
         {
@@ -22,6 +21,7 @@ public class Consts {
     public static final String CACHE_DIR_NAME = ".chara/cache";
     public static final String CONFIG_BASE_DIR = ".chara/config";
     public static final String PLUGIN_BASE_DIR = ".chara/plugin";
+    public static final String SNAPSHOT_BASE_DIR = ".chara/snapshot";
 
     public static final String LOCALE_FILE_NAME = "locale";
 

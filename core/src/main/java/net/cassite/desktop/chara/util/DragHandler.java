@@ -86,8 +86,32 @@ public class DragHandler implements EventHandler<MouseEvent> {
     protected void dragged(MouseEvent e) {
         double[] xy = new double[2];
         var offxy = offsetGetter.apply(e);
-        xy[0] = offxy[0] - this.oldOffsetX + this.oldNodeX;
-        xy[1] = offxy[1] - this.oldOffsetY + this.oldNodeY;
+        double deltaX = offxy[0] - this.oldOffsetX;
+        double deltaY = offxy[1] - this.oldOffsetY;
+        xy[0] = calculateDeltaX(deltaX, deltaY) + this.oldNodeX;
+        xy[1] = calculateDeltaY(deltaX, deltaY) + this.oldNodeY;
         setter.accept(xy);
+    }
+
+    /**
+     * Calculate actual delta X to apply
+     *
+     * @param deltaX raw deltaX
+     * @param deltaY raw deltaY
+     * @return deltaX to apply
+     */
+    protected double calculateDeltaX(double deltaX, @SuppressWarnings("unused") double deltaY) {
+        return deltaX;
+    }
+
+    /**
+     * Calculate actual delta Y to apply
+     *
+     * @param deltaX raw deltaX
+     * @param deltaY raw deltaY
+     * @return deltaY to apply
+     */
+    protected double calculateDeltaY(@SuppressWarnings("unused") double deltaX, double deltaY) {
+        return deltaY;
     }
 }

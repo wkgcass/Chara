@@ -8,7 +8,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import net.cassite.desktop.chara.Global;
 import net.cassite.desktop.chara.ThreadUtils;
 import net.cassite.desktop.chara.util.*;
 
@@ -41,7 +40,6 @@ public class MessageStage extends Stage {
         scene.setFill(Color.TRANSPARENT);
         setWidth(Consts.MSG_STAGE_WIDTH);
         setScene(scene);
-        getIcons().add(Global.modelIcon);
 
         ThreadUtils.get().scheduleAtFixedRateFX(this::checkPopBubble, 0, 500, TimeUnit.MILLISECONDS);
     }
@@ -67,10 +65,13 @@ public class MessageStage extends Stage {
 
         String message = inputMessage.message;
 
-        MessageBubble msg = new MessageBubble(message, pointToRight,
+        MessageBubble msg = new MessageBubble(message, inputMessage.alwaysShow, pointToRight,
             Consts.MSG_BUBBLE_COLORS[inputMessage.colorHash % Consts.MSG_BUBBLE_COLORS.length]);
         msg.createTime = System.currentTimeMillis();
-        msg.setOnMouseClick(() -> popMessage(msg));
+        msg.setOnMouseClick(() -> {
+            msg.alwaysShow = false;
+            popMessage(msg);
+        });
         msg.setY(ySum);
         ySum += msg.getHeight() + Consts.MSG_BUBBLE_MARGIN_VERTICAL;
         messageBubbles.add(msg);
@@ -201,6 +202,9 @@ public class MessageStage extends Stage {
     private boolean isPlaying = false;
 
     private void popMessage(MessageBubble msg) {
+        if (msg.alwaysShow) {
+            return; // do not pop the message
+        }
         if (!messageBubbles.contains(msg)) {
             // already removed
             msg.removeFrom(root); // ensure removed
@@ -400,7 +404,8 @@ public class MessageStage extends Stage {
             return;
         }
         requestFocus();
-        popMessage(messageBubble);
+        messageBubble.alwaysShow = false;
+        popMessage(messageBubble); // alwaysShow = false
     }
 
     /**
@@ -409,7 +414,8 @@ public class MessageStage extends Stage {
     public void clearAllMessages() {
         messageBubblesToBeAdded.clear();
         for (var msg : messageBubbles) {
-            popMessage(msg);
+            msg.alwaysShow = false;
+            popMessage(msg); // alwaysShow = false
         }
     }
 }

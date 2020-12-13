@@ -174,14 +174,18 @@ public class StageTransformer {
 
     private Screen lastRetrievedScreen;
 
+    // ----------- THE FOLLOWING CODE IS THE SAME AS {@link UStage#getScreen()} -----------
+    // ----------- MAKE SURE ANY CHANGE TO THIS CODE ALSO APPLY THERE -----------
+
     /**
      * Retrieve the screen that is showing the stage.<br>
      * If not retrieved, the primary screen will return.
      *
      * @return the showing screen or the primary screen
      */
+    @SuppressWarnings("DuplicatedCode")
     public Screen getScreen() {
-        Screen s = getScreen(stage.getX() + stage.getWidth() / 2, stage.getY() + stage.getHeight() / 2);
+        Screen s = Utils.getScreen(stage.getX() + stage.getWidth() / 2, stage.getY() + stage.getHeight() / 2);
         if (s == null) {
             if (lastRetrievedScreen == null) {
                 assert Logger.debug("getScreen returns primary");
@@ -193,19 +197,8 @@ public class StageTransformer {
         lastRetrievedScreen = s;
         return s;
     }
-
-    private Screen getScreen(double x, double y) {
-        var screens = Screen.getScreens();
-        for (var s : screens) {
-            var bounds = s.getBounds();
-            if (bounds.contains(x, y)) {
-                assert Logger.debug("getScreen(" + x + "," + y + ")" + " returns " + s);
-                return s;
-            }
-        }
-        assert Logger.debug("getScreen(" + x + "," + y + ")" + " returns null");
-        return null;
-    }
+    // ----------- THE UPPER CODE IS THE SAME AS {@link UStage#getScreen()} -----------
+    // ----------- MAKE SURE ANY CHANGE TO THIS CODE ALSO APPLY THERE -----------
 
     /**
      * Get pixels of image cut from the left
@@ -309,14 +302,7 @@ public class StageTransformer {
      * @return calculated real x
      */
     public double getSceneXByScreenX(double x) {
-        if (!Utils.isCoordinatesScaled()) {
-            return x - getAbsoluteX();
-        }
-        Screen screen = getScreen();
-        double offX = screen.getBounds().getMinX();
-        x = (x - offX) / screen.getOutputScaleX() + offX;
-        x -= getAbsoluteX();
-        return x;
+        return x - getAbsoluteX();
     }
 
     /**
@@ -326,13 +312,6 @@ public class StageTransformer {
      * @return calculated real y
      */
     public double getSceneYByScreenY(double y) {
-        if (!Utils.isCoordinatesScaled()) {
-            return y - getAbsoluteY();
-        }
-        Screen screen = getScreen();
-        double offY = screen.getBounds().getMinY();
-        y = (y - offY) / screen.getOutputScaleY() + offY;
-        y -= getAbsoluteY();
-        return y;
+        return y - getAbsoluteY();
     }
 }

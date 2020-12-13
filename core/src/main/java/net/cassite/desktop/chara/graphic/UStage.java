@@ -18,6 +18,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
@@ -464,6 +465,30 @@ public class UStage {
     public void centerOnScreen() {
         stage.centerOnScreen();
     }
+
+    // ----------- THE FOLLOWING CODE IS THE SAME AS {@link StageTransformer#getScreen()} -----------
+    // ----------- MAKE SURE ANY CHANGE TO THIS CODE ALSO APPLY THERE -----------
+    private Screen lastRetrievedScreen;
+
+    /**
+     * Get current screen of this stage
+     *
+     * @return screen object
+     */
+    @SuppressWarnings("DuplicatedCode")
+    public Screen getScreen() {
+        Screen s = Utils.getScreen(stage.getX() + stage.getWidth() / 2, stage.getY() + stage.getHeight() / 2);
+        if (s == null) {
+            if (lastRetrievedScreen == null) {
+                return Screen.getPrimary();
+            }
+            return lastRetrievedScreen;
+        }
+        lastRetrievedScreen = s;
+        return s;
+    }
+    // ----------- THE UPPER CODE IS THE SAME AS {@link StageTransformer#getScreen()} -----------
+    // ----------- MAKE SURE ANY CHANGE TO THIS CODE ALSO APPLY THERE -----------
 
     /**
      * Set title of the stage

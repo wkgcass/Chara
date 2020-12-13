@@ -16,6 +16,7 @@ import net.cassite.desktop.chara.util.Consts;
 
 public class MessageBubble {
     public final String message;
+    boolean alwaysShow;
     private final Label text;
     private final Label background;
     private final Polygon tri;
@@ -27,7 +28,7 @@ public class MessageBubble {
 
     private boolean pointToRight;
 
-    public MessageBubble(String message, boolean pointToRight, Consts.MsgBubbleColor color) {
+    public MessageBubble(String message, boolean alwaysShow, boolean pointToRight, Consts.MsgBubbleColor color) {
         // format message
         {
             StringBuilder sb = new StringBuilder();
@@ -47,6 +48,7 @@ public class MessageBubble {
             message = sb.toString();
         }
         this.message = message;
+        this.alwaysShow = alwaysShow;
         this.pointToRight = pointToRight;
         this.color = color;
 

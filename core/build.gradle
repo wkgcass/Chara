@@ -55,7 +55,9 @@ jlink {
 task jpackageZipDLL(type: Copy) {
     dependsOn jpackage
     def currentOs = org.gradle.internal.os.OperatingSystem.current()
-    if (!currentOs.windows) { return }
+    if (!currentOs.windows) {
+        return
+    }
     from file("$buildDir/jpackage/chara/runtime/bin/zip.dll")
     into file("$buildDir/jpackage/chara/")
 }
@@ -83,7 +85,6 @@ application {
 }
 
 dependencies {
-    compile group: 'com.1stleg', name: 'jnativehook', version: loadJnativeHookVersion()
     compile files('../vproxy.jar')
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -92,20 +93,6 @@ dependencies {
 def loadVersion() {
     def PREFIX = "public static final String VERSION = \""
     def SUFFIX = "\"; // _THE_VERSION_"
-    def ver = file(projectDir.getAbsolutePath() + "/src/main/java/net/cassite/desktop/chara/util/Consts.java")
-    def lines = ver.getText().split("\n")
-    for (def line : lines) {
-        line = line.trim()
-        if (line.startsWith(PREFIX) && line.endsWith(SUFFIX)) {
-            return line.substring(PREFIX.length(), line.length() - SUFFIX.length())
-        }
-    }
-    return "unknown"
-}
-
-def loadJnativeHookVersion() {
-    def PREFIX = "public static final String JNATIVEHOOK_VERSION = \""
-    def SUFFIX = "\"; // _THE_JNATIVE_HOOK_VERSION_"
     def ver = file(projectDir.getAbsolutePath() + "/src/main/java/net/cassite/desktop/chara/util/Consts.java")
     def lines = ver.getText().split("\n")
     for (def line : lines) {

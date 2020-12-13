@@ -24,17 +24,9 @@ public class Global {
      */
     public static Image modelIcon;
     /**
-     * the model version number
-     */
-    public static int modelVersion;
-    /**
      * the chara program default icon
      */
     public static Image charaDefaultIcon;
-    /**
-     * whether global screen enabled
-     */
-    public static final boolean globalScreenEnabled = Utils.isWindows(); // only enable for windows
 
     private static Boolean r18Features = null;
     private static Boolean debugFeatures = null;

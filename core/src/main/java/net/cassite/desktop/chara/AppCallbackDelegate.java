@@ -25,6 +25,11 @@ public class AppCallbackDelegate implements AppCallback {
     }
 
     @Override
+    public void showMessage(Words words, boolean alwaysShow) {
+        target.showMessage(words, alwaysShow);
+    }
+
+    @Override
     public void showMessage(Words words) {
         target.showMessage(words);
     }
@@ -62,11 +67,6 @@ public class AppCallbackDelegate implements AppCallback {
     @Override
     public void setDraggable(boolean draggable) {
         target.setDraggable(draggable);
-    }
-
-    @Override
-    public void setGlobalScreen(boolean globalScreen) {
-        target.setGlobalScreen(globalScreen);
     }
 
     @Override
