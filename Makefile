@@ -17,15 +17,15 @@ deploy: deploy-plugins
 jpackage: jpackage-core
 
 .PHONY: characters
-characters: kokori
+characters: kokori elithya
 .PHONY: compile-characters
-compile-characters: compile-kokori
+compile-characters: compile-kokori compile-elithya
 .PHONY: build-characters
-build-characters: build-kokori
+build-characters: build-kokori build-elithya
 .PHONY: clean-characters
-clean-characters: clean-kokori
+clean-characters: clean-kokori clean-elithya
 .PHONY: output-characters
-output-characters: output-kokori
+output-characters: output-kokori output-elithya
 
 .PHONY: plugins
 plugins: dev-plugin console-plugin tianxing-chatbot-plugin \
@@ -101,6 +101,22 @@ clean-kokori:
 .PHONY: output-kokori
 output-kokori: output build-kokori
 	cp characters/kokori/models/*.model output/
+
+.PHONY: elithya
+elithya: clean-elithya compile-elithya build-elithya output-elithya
+.PHONY: compile-elithya
+compile-elithya: compile-core
+	cd characters/elithya/ && $(CHRONIC) ./gradlew jar
+.PHONY: build-elithya
+build-elithya: compile-core
+	cd characters/elithya/models/ && $(CHRONIC) ./build.sh
+.PHONY: clean-elithya
+clean-elithya:
+	cd characters/elithya/ && $(CHRONIC) ./gradlew clean
+	cd characters/elithya/models/ && rm -f *.model
+.PHONY: output-elithya
+output-elithya: output build-elithya
+	cp characters/elithya/models/*.model output/
 
 .PHONY: dev-plugin
 dev-plugin: clean-dev-plugin compile-dev-plugin build-dev-plugin output-dev-plugin deploy-dev-plugin
@@ -246,8 +262,17 @@ bundle: Chara-bundle vproxy.jar
 	mkdir -p ./characters/kokori/models/kokori-high-dpi/kokori/
 	mkdir -p ./characters/kokori/models/kokori-mini/kokori/
 	cp -r Chara-bundle/kokori/high-dpi/* ./characters/kokori/models/kokori-high-dpi/kokori/
+	sleep 1.5s
 	cp -r Chara-bundle/kokori/mini/*     ./characters/kokori/models/kokori-mini/kokori/
+	
 	mkdir -p ./plugins/noto-font/plugin/noto-font/font/
 	cp Chara-bundle/font/noto/* ./plugins/noto-font/plugin/noto-font/font/
 	mkdir -p ./plugins/wqy-font/plugin/wqy-font/font/
 	cp Chara-bundle/font/wqy-microhei/* ./plugins/wqy-font/plugin/wqy-font/font/
+	
+	cp Chara-bundle/elithya/icon.png ./characters/elithya/models/shared/icon.png
+	mkdir -p ./characters/elithya/models/elithya-high-dpi/elithya/
+	mkdir -p ./characters/elithya/models/elithya-mini/elithya/
+	cp -r Chara-bundle/elithya/high-dpi/* ./characters/elithya/models/elithya-high-dpi/elithya/
+	sleep 1.5s
+	cp -r Chara-bundle/elithya/mini/*     ./characters/elithya/models/elithya-mini/elithya/
