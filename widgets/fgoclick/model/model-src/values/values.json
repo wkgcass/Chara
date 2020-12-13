@@ -1,0 +1,22 @@
+{
+  "integers": {
+    "width": 440,
+    "height": 130,
+    "margin": 10,
+    "cornerRadius": 15,
+    "borderWidth": 3,
+    "buttonFontSize": 30,
+    "clickPointCircleOuterRadius": 6,
+    "clickPointCircleInnerRadius": 5,
+    "clickPointTextFontSize": 15,
+    "clickPointTextMargin": 5
+  },
+  "doubles": {
+    "defaultBoundsWidth": 1024,
+    "defaultBoundsHeight": 768,
+    "strokeWidth": 1.5,
+    "enhanceColorSaturation": 0.5,
+    "enhanceColorBrightness": 1.2,
+    "colorDiffAllowed": 0.08
+  }
+}

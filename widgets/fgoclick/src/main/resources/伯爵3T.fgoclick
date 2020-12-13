@@ -1,0 +1,58 @@
+{
+  "preset": {
+    "servants": [
+      {
+        "name": "岩窟王",
+        "skills": [
+          { "name": "钢铁的决意", "action": { "type": "normal" } },
+          { "name": "黄金律", "action": { "type": "normal" } }
+        ],
+        "noblePhantasm": { "name": "虎啊，徨徨燎燃", "action": { "time": 10 } }
+      },
+      {
+        "name": "斯卡哈·斯卡蒂",
+        "skills": [
+          { "name": "原初之卢恩", "action": { "type": "select", "options": 3 } },
+          { "name": "冰冻暴风雪", "action": { "type": "normal" } },
+          { "name": "大地的睿智", "action": { "type": "select", "options": 3 } }
+        ]
+      },
+      {
+        "name": "斯卡哈·斯卡蒂",
+        "skills": [
+          { "name": "原初之卢恩", "action": { "type": "select", "options": 3 } },
+          { "name": "冰冻暴风雪", "action": { "type": "normal" } },
+          { "name": "大地的睿智", "action": { "type": "select", "options": 3 } }
+        ]
+      }
+    ],
+    "masterSkills": [
+      { "name": "净化回复", "action": { "type": "select", "options": 3 } },
+      { "name": "幻想强化", "action": { "type": "select", "options": 3 } }
+    ],
+    "settings": {
+      "totalBattles": 3,
+      "confirmDialog": true,
+      "support": "斯卡哈·斯卡蒂",
+      "useApple": "no",
+      "loop": true
+    }
+  },
+  "operations": [
+    { "type": "skill", "skill": { "servant": 1, "skill": 2 } },
+    { "type": "skill", "skill": { "servant": 2, "skill": 1, "select": 1 } },
+    { "type": "skill", "skill": { "servant": 3, "skill": 1, "select": 1 } },
+    { "type": "noblePhantasm", "noblePhantasm": { "servant": 1 } },
+    { "type": "nextBattle" },
+    { "type": "skill", "skill": { "servant": 2, "skill": 3, "select": 1 } },
+    { "type": "masterSkill", "masterSkill": { "skill": 2, "select": 1} },
+    { "type": "noblePhantasm", "noblePhantasm": { "servant": 1 } },
+    { "type": "nextBattle" },
+    { "type": "skill", "skill": { "servant": 3, "skill": 3, "select": 1 } },
+    { "type": "skill", "skill": { "servant": 2, "skill": 2 } },
+    { "type": "skill", "skill": { "servant": 3, "skill": 2 } },
+    { "type": "skill", "skill": { "servant": 1, "skill": 1 } },
+    { "type": "noblePhantasm", "noblePhantasm": { "servant": 1 } },
+    { "type": "nextBattle" }
+  ]
+}

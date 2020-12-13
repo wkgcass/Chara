@@ -1,0 +1,58 @@
+{
+  "preset": {
+    "servants": [
+      {
+        "name": "太空伊什塔尔",
+        "skills": [
+          { "name": "恶魔的砂糖", "action": { "type": "normal" } },
+          { "name": "金星驱动", "action": { "type": "select", "options": 3 } },
+          { "name": "多重星环", "action": { "type": "normal" } }
+        ],
+        "noblePhantasm": { "name": "闪耀于原始宇宙的王冠", "action": { "time": 13 } }
+      },
+      {
+        "name": "斯卡哈·斯卡蒂",
+        "skills": [
+          { "name": "原初之卢恩", "action": { "type": "select", "options": 3 } },
+          { "name": "冰冻暴风雪", "action": { "type": "normal" } },
+          { "name": "大地的睿智", "action": { "type": "select", "options": 3 } }
+        ]
+      },
+      {
+        "name": "尼禄·克劳狄乌斯[新娘]",
+        "skills": [
+          { "name": "予天以星", "action": { "type": "select", "options": 3 } },
+          { "name": "予地以花", "action": { "type": "select", "options": 3 } }
+        ]
+      }
+    ],
+    "masterSkills": [
+      { "name": "全体回复", "action": { "type": "normal" } },
+      { "name": "灵子转让", "action": { "type": "select", "options": 3 } }
+    ],
+    "settings": {
+      "totalBattles": 3,
+      "confirmDialog": true,
+      "support": "斯卡哈·斯卡蒂",
+      "useApple": "silver",
+      "loop": true
+    }
+  },
+  "operations": [
+    { "type": "skill", "skill": { "servant": 1, "skill": 1 } },
+    { "type": "skill", "skill": { "servant": 3, "skill": 2, "select": 1 } },
+    { "type": "noblePhantasm", "noblePhantasm": { "servant": 1 } },
+    { "type": "nextBattle" },
+    { "type": "skill", "skill": { "servant": 3, "skill": 1, "select": 1 } },
+    { "type": "skill", "skill": { "servant": 1, "skill": 3 } },
+    { "type": "noblePhantasm", "noblePhantasm": { "servant": 1 } },
+    { "type": "nextBattle" },
+    { "type": "skill", "skill": { "servant": 2, "skill": 1, "select": 1 } },
+    { "type": "skill", "skill": { "servant": 2, "skill": 2 } },
+    { "type": "skill", "skill": { "servant": 2, "skill": 3, "select": 1 } },
+    { "type": "skill", "skill": { "servant": 1, "skill": 2, "select": 1 } },
+    { "type": "masterSkill", "masterSkill": { "skill": 2, "select": 1 } },
+    { "type": "noblePhantasm", "noblePhantasm": { "servant": 1 } },
+    { "type": "nextBattle" }
+  ]
+}
