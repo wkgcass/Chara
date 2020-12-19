@@ -43,6 +43,15 @@ public class FgoClickConsts {
         new Color(0x00 / 255d, 0x9c / 255d, 0x95 / 255d, 1),
         new Color(0x00 / 255d, 0x82 / 255d, 0x7c / 255d, 1)
     );
+    public static final Color sleepIndicatorFine = new Color(
+        33 / 255d, 186 / 255d, 69 / 255d, 1
+    );
+    public static final Color sleepIndicatorWarn = new Color(
+        242 / 255d, 113 / 255d, 28 / 255d, 1
+    );
+    public static final Color sleepIndicatorDanger = new Color(
+        219 / 255d, 40 / 255d, 40 / 255d, 1
+    );
 
     public static final Key<Boolean> autoSnapshot = Key.of("auto_snapshot", boolean.class);
     public static final Key<Boolean> disableSleepIndicator = Key.of("disable_sleep_indicator", boolean.class);
@@ -115,6 +124,10 @@ public class FgoClickConsts {
 
     public final int sleepIndicatorRadius = 50;
     public final int sleepIndicatorBounds = 4;
+    public final double sleepIndicatorFineDegree = 210;
+    public final double sleepIndicatorWarnUpperDegree = 150;
+    public final double sleepIndicatorWarnLowerDegree = 90;
+    public final double sleepIndicatorDangerDegree = 60;
 
     public FgoClickConsts(ModelInitConfig config) {
         this.width = config.getInt("width");

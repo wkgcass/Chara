@@ -60,16 +60,24 @@ public class SleepIndicator {
 
         if (!isShown) {
             for (SleepIndicatorStage stage : stages) {
-                stage.show();
+                stage.doShow();
             }
             HZ.get().register(updatePosition);
         }
         isShown = true;
     }
 
+    private double lastMouseX = 0;
+    private double lastMouseY = 0;
+
     private void updatePosition(long ts) {
         double x = robot.getMouseX();
         double y = robot.getMouseY();
+        if (x == lastMouseX && y == lastMouseY) {
+            return;
+        }
+        lastMouseX = x;
+        lastMouseY = y;
         for (SleepIndicatorStage s : stages) {
             s.setPosition(x, y);
         }
@@ -94,10 +102,6 @@ public class SleepIndicator {
             stage.hide();
         }
         HZ.get().deregister(updatePosition);
-    }
-
-    public boolean isEnabled() {
-        return enabled;
     }
 
     public void enable() {

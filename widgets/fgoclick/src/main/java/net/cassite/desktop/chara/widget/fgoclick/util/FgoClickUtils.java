@@ -16,8 +16,6 @@ import vjson.JSON;
 import vjson.cs.CharArrayCharStream;
 import vjson.deserializer.rule.*;
 
-import javax.imageio.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -219,10 +217,7 @@ public class FgoClickUtils {
         Rule<Configuration> rule =
             new ObjectRule<>(Configuration::new)
                 .put("preset", Configuration::setPreset,
-                    new ObjectRule<>(() -> {
-                        preset[0] = new Preset();
-                        return preset[0];
-                    })
+                    new ObjectRule<>(() -> preset[0] = new Preset())
                         .put("servants", Preset::setServants, new ArrayRule<>(ArrayList::new, List::add,
                             new ObjectRule<>(Servant::new)
                                 .put("name", Servant::setName, new StringRule())
@@ -303,7 +298,6 @@ public class FgoClickUtils {
             MasterSkill skill = preset[0].getMasterSkills().get(iSkill);
             skill.setIndex(iSkill + 1);
         }
-        // TODO check
         // check settings
         {
             String support = ret.getPreset().getSettings().getSupport();
