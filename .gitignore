@@ -2,12 +2,13 @@
 .idea/
 build/
 out/
-.class
-.jar
+*.class
+*.jar
+!gradle-wrapper.jar
 .DS_Store
 Thumbs.db
 vproxy.jar
-.log
+*.log
 output/
 docs/javadoc
 Chara-bundle
