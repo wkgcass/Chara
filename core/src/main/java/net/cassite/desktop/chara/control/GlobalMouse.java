@@ -57,15 +57,24 @@ public class GlobalMouse {
     }
 
     private long lastUpdateMouseTs = 0;
+    private double lastMouseX = -1;
+    private double lastMouseY = -1;
 
     private void updateMouse(long ts) {
         if (ts - lastUpdateMouseTs < 50) {
             return;
         }
-        lastUpdateMouseTs = ts;
 
         double x = robot.getMouseX();
         double y = robot.getMouseY();
+        if (x == lastMouseX && y == lastMouseY) {
+            // mouse not moved
+            return;
+        }
+
+        lastUpdateMouseTs = ts;
+        lastMouseX = x;
+        lastMouseY = y;
         nativeMouseMoved(new MouseEvent(
             MouseEvent.MOUSE_MOVED,
             0, 0,

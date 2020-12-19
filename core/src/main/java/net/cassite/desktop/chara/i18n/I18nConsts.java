@@ -30,6 +30,10 @@ public class I18nConsts {
         ("加载中...")
         .setEn("Loading...")
         .build();
+    public static final Words OPEN_LAUNCHER = new WordsBuilder
+        ("打开启动器")
+        .setEn("Open launcher")
+        .build();
 
     public static final Words enableChatFeatureItem = new WordsBuilder
         ("启用对话功能")

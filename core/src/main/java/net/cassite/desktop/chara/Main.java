@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -105,7 +106,21 @@ public class Main extends Application {
         if (os != null && os.startsWith("Mac")) {
             MenuBar menuBar = new MenuBar();
             menuBar.setUseSystemMenuBar(true);
-            menuBar.getMenus().add(new Menu(Global.model.name()));
+
+            Menu menu = new Menu(Global.model.name());
+            MenuItem openLauncher = new MenuItem(I18nConsts.OPEN_LAUNCHER.get()[0]);
+            openLauncher.setOnAction(e -> {
+                String[] cmd = new String[]{"/usr/bin/open", "/Applications/chara.app"};
+                try {
+                    Runtime.getRuntime().exec(cmd);
+                } catch (IOException ex) {
+                    Logger.error("failed executing cmd " + Arrays.toString(cmd), ex);
+                }
+            });
+            menu.getItems().add(openLauncher);
+
+            menuBar.getMenus().add(menu);
+
             BorderPane bp = new BorderPane(menuBar);
             bp.setMaxWidth(1);
             bp.setMaxHeight(1);
