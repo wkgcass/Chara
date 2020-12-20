@@ -1,0 +1,12 @@
+{
+  "name": "vpws-agent",
+  "version": 1000000,
+  "compatibleMinCodeVersion": 1001000,
+  "compatibleMaxCodeVersion": -1,
+  "modelClass": "net.cassite.desktop.chara.model.vpwsagent.WebSocksProxyAgentModel",
+  "extra": {
+    "author": "wkgcass",
+    "git": "https://github.com/wkgcass/Chara",
+    "license": "GPLv2 with classpath exception"
+  }
+}
