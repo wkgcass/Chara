@@ -164,10 +164,7 @@ public class Utils {
         ConfigManager.saveNow();
         Platform.runLater(() -> PluginManager.get().release());
         ThreadUtils.get().shutdownNow();
-        try {
-            Resolver.getDefault().stop();
-        } catch (IOException ignore) {
-        }
+        vproxyapp.process.Shutdown.releaseEverything();
         Platform.runLater(Platform::exit);
     }
 

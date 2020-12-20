@@ -23,7 +23,6 @@ import net.cassite.desktop.chara.manager.ConfigManager;
 import net.cassite.desktop.chara.manager.ModelManager;
 import net.cassite.desktop.chara.manager.PluginManager;
 import net.cassite.desktop.chara.util.*;
-import vproxybase.dns.Resolver;
 import vproxybase.util.Callback;
 import vproxybase.util.Tuple3;
 
@@ -131,7 +130,6 @@ public class Main extends Application {
     }
 
     private void preWork(Runnable cb) {
-        launchDnsResolver();
         registerNativeHook();
         loadDefaultIcon();
         loadPlugins(() ->
@@ -145,10 +143,6 @@ public class Main extends Application {
                 )
             )
         );
-    }
-
-    private void launchDnsResolver() {
-        Resolver.getDefault();
     }
 
     private void registerNativeHook() {

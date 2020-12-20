@@ -245,10 +245,7 @@ public class App {
             setGlobalMouse(false);
             ConfigManager.get().setLastTimestamp(System.currentTimeMillis());
             ConfigManager.saveNow();
-            try {
-                Resolver.getDefault().stop();
-            } catch (IOException ignore) {
-            }
+            vproxyapp.process.Shutdown.releaseEverything();
             primaryStage.getStage().hide();
             if (StageUtils.primaryTemporaryStage != null) {
                 Logger.info("hide primary temporary stage");
